@@ -1,0 +1,1 @@
+export { getAllCustomersThunk } from './getAllCustomersThunk';

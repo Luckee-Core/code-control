@@ -3,7 +3,7 @@ import type { Project } from '@/model/project';
 
 const initialState: Project = {
   id: '',
-  workspace_id: '',
+  customer_id: '',
   name: '',
   description: null,
   app_type: 'custom',

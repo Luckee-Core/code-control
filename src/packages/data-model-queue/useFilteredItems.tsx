@@ -1,6 +1,7 @@
 import { useMemo, useCallback } from 'react';
 import { useAppSelector } from '@/store';
 import type { DataModelGenerationQueue } from '@/model';
+import { truncateId } from '@/utils/string/truncate-id';
 
 type DataModelQueueStatus = 'queued' | 'processing' | 'completed' | 'failed';
 
@@ -32,24 +33,27 @@ export const useFilteredItems = ({
   const entities = useAppSelector((state) => state.dataEntities);
 
   const getProjectName = useCallback(
-    (projectId: string): string => {
-      return projects.find((p) => p.id === projectId)?.name ?? projectId.slice(0, 8) + '…';
+    (projectId: string | undefined): string => {
+      if (!projectId) return '—';
+      return projects.find((p) => p.id === projectId)?.name ?? truncateId(projectId);
     },
     [projects]
   );
 
   const getRepoName = useCallback(
-    (repoId: string): string => {
-      return repos.find((r) => r.id === repoId)?.name ?? repoId.slice(0, 8) + '…';
+    (repoId: string | undefined): string => {
+      if (!repoId) return '—';
+      return repos.find((r) => r.id === repoId)?.name ?? truncateId(repoId);
     },
     [repos]
   );
 
   const getEntityName = useCallback(
-    (entityId: string): string => {
+    (entityId: string | undefined): string => {
+      if (!entityId) return '—';
       return (
         Object.values(entities).find((e) => e.id === entityId)?.name ??
-        (entityId.slice(0, 8) + '…' || entityId)
+        truncateId(entityId)
       );
     },
     [entities]

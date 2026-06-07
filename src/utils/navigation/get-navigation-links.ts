@@ -9,6 +9,7 @@ export type NavigationLink = {
  */
 export const getNavigationLinks = (): NavigationLink[] => {
   return [
+    { name: 'Customers', href: '/customers' },
     { name: 'Projects', href: '/projects' },
     {
       name: 'Queues',

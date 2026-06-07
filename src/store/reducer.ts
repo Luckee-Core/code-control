@@ -1,5 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import {
+  customersReducer,
   projectsReducer,
   projectReposReducer,
   dataEntitiesReducer,
@@ -28,6 +29,7 @@ import {
 } from './builders';
 
 const rootReducer = combineReducers({
+  customers: customersReducer,
   projects: projectsReducer,
   projectRepos: projectReposReducer,
   dataEntities: dataEntitiesReducer,

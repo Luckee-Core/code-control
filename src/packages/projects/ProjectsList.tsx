@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAppSelector, useAppDispatch } from '@/store';
 import { setCurrentProjectThunk } from '@/store/thunks/projects';
@@ -16,6 +17,20 @@ export const ProjectsList = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const projects = useAppSelector((state) => state.projects);
+  const customers = useAppSelector((state) => state.customers);
+
+  const customerNameById = useMemo(() => {
+    const map = new Map<string, string>();
+    Object.values(customers).forEach((customer) => {
+      map.set(customer.id, customer.name);
+    });
+    return map;
+  }, [customers]);
+
+  const getCustomerName = (customerId: string | undefined): string => {
+    if (!customerId) return '—';
+    return customerNameById.get(customerId) ?? '—';
+  };
 
   const handleOpen = (project: Project) => {
     dispatch(setCurrentProjectThunk(project));
@@ -39,7 +54,7 @@ export const ProjectsList = () => {
         <thead>
           <tr>
             <th className={styles.tableHeader}>Name</th>
-            <th className={styles.tableHeader}>Workspace</th>
+            <th className={styles.tableHeader}>Customer</th>
             <th className={styles.tableHeader}>Description</th>
             <th className={styles.tableHeader}>Updated</th>
           </tr>
@@ -57,7 +72,7 @@ export const ProjectsList = () => {
                 </button>
               </td>
               <td className={styles.cell}>
-                <span className={styles.workspaceId}>{project.workspace_id.slice(0, 8)}…</span>
+                <span className={styles.customerName}>{getCustomerName(project.customer_id)}</span>
               </td>
               <td className={styles.cellDescription}>
                 {truncate(project.description, 60)}
@@ -79,7 +94,7 @@ const styles = {
   cell: `px-4 py-3 text-sm text-gray-900`,
   cellDescription: `px-4 py-3 text-sm text-gray-600 max-w-xs`,
   projectNameButton: `font-medium text-left text-blue-600 hover:underline bg-transparent border-none cursor-pointer p-0`,
-  workspaceId: `text-gray-500 font-mono text-xs`,
+  customerName: `text-gray-700 text-sm`,
   emptyState: `border border-gray-200 rounded-lg bg-white p-8 text-center`,
   emptyTitle: `text-sm font-medium text-gray-900 mb-1`,
   emptyDescription: `text-sm text-gray-500`,

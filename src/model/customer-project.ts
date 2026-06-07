@@ -1,6 +1,6 @@
 export type CustomerProject = {
   id: string;
-  workspace_id: string;
+  customer_id: string;
   name: string;
   description: string | null;
   app_type?: string;

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAppSelector } from '@/store';
 import type { ARDGenerationQueueItem } from '@/model/ard-generation-queue';
 import { formatDateTimeWithTime } from '@/utils/date-time';
+import { truncateId } from '@/utils/string/truncate-id';
 
 type ARDQueueStatus = 'queued' | 'processing' | 'completed' | 'failed';
 
@@ -43,20 +44,23 @@ export const ARDQueuePage = () => {
   >('scheduled_at');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
 
-  const getProjectName = (projectId: string): string => {
-    return projects.find((p) => p.id === projectId)?.name ?? projectId.slice(0, 8) + '…';
+  const getProjectName = (projectId: string | undefined): string => {
+    if (!projectId) return '—';
+    return projects.find((p) => p.id === projectId)?.name ?? truncateId(projectId);
   };
 
-  const getRepoName = (repoId: string): string => {
-    return repos.find((r) => r.id === repoId)?.name ?? repoId.slice(0, 8) + '…';
+  const getRepoName = (repoId: string | undefined): string => {
+    if (!repoId) return '—';
+    return repos.find((r) => r.id === repoId)?.name ?? truncateId(repoId);
   };
 
-  const getTaskName = (taskId: string): string => {
-    return taskId.slice(0, 8) + '…';
+  const getTaskName = (taskId: string | undefined): string => {
+    return truncateId(taskId);
   };
 
-  const getProjectCustomerId = (projectId: string): string | null => {
-    return projects.find((p) => p.id === projectId)?.workspace_id ?? null;
+  const getProjectCustomerId = (projectId: string | undefined): string | null => {
+    if (!projectId) return null;
+    return projects.find((p) => p.id === projectId)?.customer_id ?? null;
   };
 
   const filteredItems = useMemo(() => {

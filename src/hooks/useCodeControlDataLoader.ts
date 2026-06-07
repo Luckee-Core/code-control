@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useAppDispatch } from '@/store';
 import {
+  getAllCustomersThunk,
   getAllProjectsThunk,
   getAllProjectReposThunk,
   getAllBuildConventionsThunk,
@@ -29,6 +30,7 @@ export const useCodeControlDataLoader = () => {
     hasLoaded.current = true;
 
     Promise.all([
+      dispatch(getAllCustomersThunk()),
       dispatch(getAllProjectsThunk()),
       dispatch(getAllProjectReposThunk()),
       dispatch(getAllBuildConventionsThunk()),

@@ -1,25 +1,28 @@
 import { ApiResponse } from '../types';
-import type { Project } from '@/model/project';
+import type { Customer } from '@/model/customer';
 
-export type CreateProjectInput = {
-  customer_id: string;
-  name: string;
-  description?: string | null;
-  app_type?: string;
+export type GetAllCustomersParams = {
+  stage?: string;
 };
 
-export const createProject = async (
-  input: CreateProjectInput,
-  apiBaseUrl?: string
-): Promise<ApiResponse<Project>> => {
+export const getAllCustomers = async (
+  apiBaseUrl?: string,
+  params?: GetAllCustomersParams
+): Promise<ApiResponse<Customer[]>> => {
   const baseUrl = apiBaseUrl || process.env.NEXT_PUBLIC_CODE_CONTROL_API_URL || 'http://localhost:3010';
+
   try {
-    const url = `${baseUrl}/api/data/projects`;
+    const searchParams = new URLSearchParams();
+    if (params?.stage) searchParams.append('stage', params.stage);
+
+    const queryString = searchParams.toString();
+    const url = `${baseUrl}/api/data/customers${queryString ? `?${queryString}` : ''}`;
+
     const response = await fetch(url, {
-      method: 'POST',
+      method: 'GET',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(input),
     });
+
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       return {
@@ -27,9 +30,10 @@ export const createProject = async (
         error: errorData.error || errorData.message || `HTTP error! status: ${response.status}`,
       };
     }
+
     return await response.json();
   } catch (error) {
-    console.error('Error creating customer project:', error);
+    console.error('Error fetching customers:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error occurred',
