@@ -1,0 +1,20 @@
+export type EmailPersona = {
+  id: string;
+  name: string;
+  voice: string;
+  tone: string;
+  audience: string;
+  leans_towards: string;
+  avoids: string;
+  hook_styles: string;
+  formatting_preferences: string;
+  emoji_usage: string;
+  rhetorical_strategies: string;
+  hashtag_usage: string;
+  cta_strategies: string;
+  dos: string;
+  donts: string;
+  is_default: boolean;
+  created_at: string;
+  updated_at: string;
+};

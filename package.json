@@ -1,5 +1,5 @@
 {
-  "name": "nextjs-template",
+  "name": "code-control",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -10,6 +10,12 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.11.2",
+    "@supabase/auth-ui-react": "^0.4.7",
+    "@supabase/auth-ui-shared": "^0.1.8",
+    "@supabase/supabase-js": "^2.39.0",
+    "@types/luxon": "^3.7.1",
+    "lucide-react": "^0.575.0",
+    "luxon": "^3.7.2",
     "next": "^16.1.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

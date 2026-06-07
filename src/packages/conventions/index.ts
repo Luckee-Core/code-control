@@ -1,0 +1,1 @@
+export { ConventionsTable } from './ConventionsTable';

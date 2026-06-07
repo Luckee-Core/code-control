@@ -1,21 +1,13 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import { ReduxProvider } from "@/components/ReduxProvider";
-import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import type { Metadata } from 'next';
+import { ReduxProvider } from '@/components/ReduxProvider';
+import { CodeControlSidebar } from '@/components/sidebar';
+import { MainContent } from '@/components/main-content/MainContent';
+import { ToastProvider } from '@/components/shared';
+import './globals.css';
 
 export const metadata: Metadata = {
-  title: "Next.js App",
-  description: "Next.js template with Redux and Tailwind",
+  title: 'Code Control',
+  description: 'Code Control — project workspace',
 };
 
 export default function RootLayout({
@@ -25,10 +17,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-gray-900`}
-      >
-        <ReduxProvider>{children}</ReduxProvider>
+      <body className="antialiased bg-white text-gray-900">
+        <ReduxProvider>
+          <ToastProvider>
+            <div className="flex h-screen overflow-hidden">
+              <CodeControlSidebar />
+              <MainContent>{children}</MainContent>
+            </div>
+          </ToastProvider>
+        </ReduxProvider>
       </body>
     </html>
   );
