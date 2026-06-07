@@ -1,4 +1,4 @@
-export type RepoType = 'express' | 'web' | 'mobile';
+export type RepoType = 'express' | 'nextjs' | 'react-native';
 
 export type ProjectRepo = {
   id: string;

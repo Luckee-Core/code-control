@@ -6,12 +6,6 @@ import { getPhasesForRepoType } from '@/config/project-setup';
 import { PhaseRow } from './PhaseRow';
 import type { RepoType } from '@/api/project-setup/types';
 
-const API_REPO_TYPE_TO_CONFIG: Record<RepoType, 'express' | 'nextjs' | 'react-native'> = {
-  express: 'express',
-  web: 'nextjs',
-  mobile: 'react-native',
-};
-
 type PhasesListProps = {
   repoId: string;
   repoType: RepoType;
@@ -25,7 +19,7 @@ export const PhasesList = ({ repoId, repoType }: PhasesListProps) => {
   const activeGuidedPhaseId = useAppSelector(
     (state) => state.workspaceBuilder.activeGuidedPhaseId
   );
-  const phases = getPhasesForRepoType(API_REPO_TYPE_TO_CONFIG[repoType]);
+  const phases = getPhasesForRepoType(repoType);
 
   const handleDetailsClick = () => {
     dispatch(WorkspaceBuilderActions.setActiveGuidedRepoId(repoId));

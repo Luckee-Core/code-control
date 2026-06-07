@@ -17,7 +17,12 @@ import {
   conventionTaskCategoriesReducer,
   cursorGenerationExchangesReducer,
 } from './dumps';
-import { currentProjectReducer, currentBuildStepReducer, currentTaskCategoryReducer } from './current';
+import {
+  currentCustomerReducer,
+  currentProjectReducer,
+  currentBuildStepReducer,
+  currentTaskCategoryReducer,
+} from './current';
 import {
   workspaceBuilderReducer,
   buildFoundationBuilderReducer,
@@ -45,6 +50,7 @@ const rootReducer = combineReducers({
   stepTaskCategories: stepTaskCategoriesReducer,
   conventionTaskCategories: conventionTaskCategoriesReducer,
   cursorGenerationExchanges: cursorGenerationExchangesReducer,
+  currentCustomer: currentCustomerReducer,
   currentProject: currentProjectReducer,
   workspaceBuilder: workspaceBuilderReducer,
   buildFoundationBuilder: buildFoundationBuilderReducer,

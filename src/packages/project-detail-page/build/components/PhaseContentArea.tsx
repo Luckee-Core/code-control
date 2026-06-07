@@ -3,17 +3,10 @@
 import { useEffect } from 'react';
 import { useAppSelector, useAppDispatch } from '@/store';
 import { WorkspaceBuilderActions } from '@/store/builders';
-import { getPhasesForRepoType, type RepoType as ConfigRepoType } from '@/config/project-setup';
-import type { RepoType as ApiRepoType } from '@/api/project-setup/types';
+import { getPhasesForRepoType } from '@/config/project-setup';
 import { NoRepoOrPhaseSelected, NoPhaseSelected } from './EmptyStates';
 import { ARDManager } from '../build-foundation';
 import { DataModelPhase, RepoDetails, CrudApiPhase } from '../phases';
-
-const apiRepoTypeToConfig: Record<ApiRepoType, ConfigRepoType> = {
-  express: 'express',
-  web: 'nextjs',
-  mobile: 'react-native',
-};
 
 export const PhaseContentArea = () => {
   const dispatch = useAppDispatch();
@@ -38,7 +31,7 @@ export const PhaseContentArea = () => {
       currentProject?.id
     ) {
       const firstRepo = projectRepos[0];
-      const phases = getPhasesForRepoType(apiRepoTypeToConfig[firstRepo.repo_type]);
+      const phases = getPhasesForRepoType(firstRepo.repo_type);
       if (phases.length > 0) {
         dispatch(WorkspaceBuilderActions.setActiveGuidedRepoId(firstRepo.id));
         dispatch(WorkspaceBuilderActions.setActiveGuidedPhaseId(phases[0].id));
@@ -47,7 +40,7 @@ export const PhaseContentArea = () => {
   }, [activeGuidedRepoId, activeGuidedPhaseId, projectRepos, currentProject?.id, dispatch]);
 
   const activeRepo = projectRepos.find((r) => r.id === activeGuidedRepoId);
-  const phases = activeRepo ? getPhasesForRepoType(apiRepoTypeToConfig[activeRepo.repo_type]) : [];
+  const phases = activeRepo ? getPhasesForRepoType(activeRepo.repo_type) : [];
   const phase = phases.find((p) => p.id === activeGuidedPhaseId);
 
   // Allow 'details' as a special phase ID

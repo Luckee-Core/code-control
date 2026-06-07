@@ -62,7 +62,7 @@ export const EntityCard = ({
     }
   }, [entity.id, selectedTasks.length, dispatch]);
 
-  const webRepo = repos.find((r) => r.repo_type === 'web');
+  const webRepo = repos.find((r) => r.repo_type === 'nextjs');
   const targetRepoId = platformId ?? webRepo?.id;
 
   const assignedRepoIds = entity.assigned_repo_ids ?? [];

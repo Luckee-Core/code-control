@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { ChevronRight } from 'lucide-react';
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useAppSelector } from '@/store';
+import { CUSTOMERS_PATH, CUSTOMER_DETAIL_PAGE_PATH } from '@/config/routes';
 import { getNavigationLinks } from '@/utils/navigation/get-navigation-links';
 import type { NavigationLink } from '@/utils/navigation/get-navigation-links';
 
@@ -19,6 +20,7 @@ export const CodeControlSidebar = () => {
   const isLinkActive = useCallback(
     (href: string): boolean => {
       if (href === '/') return pathname === '/';
+      if (href === CUSTOMERS_PATH && pathname === CUSTOMER_DETAIL_PAGE_PATH) return true;
       return pathname === href || pathname.startsWith(href + '/');
     },
     [pathname]

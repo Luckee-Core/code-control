@@ -1,3 +1,5 @@
+import { CUSTOMERS_PATH } from '@/config/routes';
+
 export type NavigationLink = {
   name: string;
   href: string;
@@ -7,9 +9,10 @@ export type NavigationLink = {
 /**
  * Code Control sidebar navigation.
  */
+
 export const getNavigationLinks = (): NavigationLink[] => {
   return [
-    { name: 'Customers', href: '/customers' },
+    { name: 'Customers', href: CUSTOMERS_PATH },
     { name: 'Projects', href: '/projects' },
     {
       name: 'Queues',

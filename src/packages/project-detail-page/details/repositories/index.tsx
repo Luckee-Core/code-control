@@ -112,7 +112,7 @@ export const ProjectDetailsRepositories = () => {
   };
 
   const expressRepos = repos.filter((repo) => repo.repo_type === 'express');
-  const webRepos = repos.filter((repo) => repo.repo_type === 'web');
+  const webRepos = repos.filter((repo) => repo.repo_type === 'nextjs');
   const expressRepo = expressRepos[0] ?? null;
 
   if (!currentProject?.id) {
