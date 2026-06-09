@@ -1,6 +1,6 @@
 import type { CreateRepoResponse } from './types';
 
-export type CreateRepoOptions = { slug?: string; name?: string };
+export type CreateRepoOptions = { slug?: string; name?: string; owner?: string };
 
 export const createExpressRepo = async (
   projectId: string,
@@ -10,7 +10,13 @@ export const createExpressRepo = async (
   const baseUrl = apiBaseUrl || process.env.NEXT_PUBLIC_CODE_CONTROL_API_URL || 'http://localhost:3010';
   try {
     const url = `${baseUrl}/api/data/projects/${projectId}/project-setup/create-express-repo`;
-    const body = options?.slug !== undefined && options.slug !== '' ? { slug: options.slug } : {};
+    const body: { slug?: string; owner?: string } = {};
+    if (options?.slug !== undefined && options.slug !== '') {
+      body.slug = options.slug;
+    }
+    if (options?.owner !== undefined && options.owner !== '') {
+      body.owner = options.owner;
+    }
     const response = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

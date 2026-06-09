@@ -4,10 +4,12 @@ import { useState, useEffect } from 'react';
 import { useAppSelector } from '@/store';
 import {
   getReposByProjectId,
+  getGithubOrgs,
   createExpressRepo,
   createWebRepo,
 } from '@/api/project-setup';
 import { getApiBaseUrl } from '@/api/config';
+import { getGithubOrgConfig, mergeGithubOrgOptions } from '@/config/github-orgs';
 import type { ProjectRepo } from '@/api/project-setup';
 import { ServerReposSection } from './servers';
 import { WebAppReposSection } from './web-apps';
@@ -26,6 +28,8 @@ const INITIAL_STEP: StepState = {
   repoUrl: null,
 };
 
+const LAST_GITHUB_ORG_KEY = 'code-control:last-github-org';
+
 const slugify = (name: string): string => {
   return name
     .trim()
@@ -35,11 +39,14 @@ const slugify = (name: string): string => {
 };
 
 export const ProjectDetailsRepositories = () => {
+  const orgConfig = getGithubOrgConfig();
   const currentProject = useAppSelector((state) => state.currentProject);
   const [repos, setRepos] = useState<ProjectRepo[]>([]);
   const [loading, setLoading] = useState(true);
   const [expressStep, setExpressStep] = useState<StepState>(INITIAL_STEP);
   const [webStep, setWebStep] = useState<StepState>(INITIAL_STEP);
+  const [githubOrgOptions, setGithubOrgOptions] = useState<string[]>(orgConfig.options);
+  const [selectedGithubOrg, setSelectedGithubOrg] = useState(orgConfig.defaultOrg);
   const defaultSlug = currentProject?.name ? slugify(currentProject.name) : '';
   const [expressSlug, setExpressSlug] = useState(defaultSlug);
   const [webSlug, setWebSlug] = useState(defaultSlug);
@@ -62,11 +69,57 @@ export const ProjectDetailsRepositories = () => {
     return () => clearTimeout(timeoutId);
   }, [currentProject?.id]);
 
+  useEffect(() => {
+    if (!currentProject?.id) {
+      return;
+    }
+
+    const loadGithubOrgs = async () => {
+      const config = getGithubOrgConfig();
+      const response = await getGithubOrgs(currentProject.id, getApiBaseUrl());
+
+      const options = mergeGithubOrgOptions(
+        config.options,
+        response.success && response.data ? response.data.options : undefined
+      );
+
+      const defaultOrg =
+        (response.success && response.data?.defaultOwner) || config.defaultOrg;
+
+      setGithubOrgOptions(options);
+
+      const storedOrg =
+        typeof window !== 'undefined' ? window.localStorage.getItem(LAST_GITHUB_ORG_KEY) : null;
+      const initialOrg =
+        storedOrg && options.includes(storedOrg) ? storedOrg : defaultOrg;
+      setSelectedGithubOrg(initialOrg);
+    };
+
+    void loadGithubOrgs();
+  }, [currentProject?.id]);
+
+  const handleGithubOrgChange = (value: string) => {
+    setSelectedGithubOrg(value);
+    if (githubOrgOptions.length > 0 && typeof window !== 'undefined') {
+      window.localStorage.setItem(LAST_GITHUB_ORG_KEY, value);
+    }
+  };
+
+  const buildCreateOptions = (fields: { slug?: string; name?: string }) => {
+    const owner = selectedGithubOrg || githubOrgOptions[0];
+    return {
+      ...fields,
+      ...(owner ? { owner } : {}),
+    };
+  };
+
   const handleCreateExpressRepo = async () => {
     if (!currentProject?.id) return;
 
     setExpressStep({ status: 'running', message: null, repoUrl: null });
-    const options = expressSlug.trim() ? { slug: expressSlug.trim() } : undefined;
+    const options = expressSlug.trim()
+      ? buildCreateOptions({ slug: expressSlug.trim() })
+      : buildCreateOptions({});
     const response = await createExpressRepo(currentProject.id, getApiBaseUrl(), options);
 
     if (response.success) {
@@ -90,7 +143,7 @@ export const ProjectDetailsRepositories = () => {
     if (!currentProject?.id || !webSlug.trim()) return;
 
     setWebStep({ status: 'running', message: null, repoUrl: null });
-    const options = { name: webSlug.trim() };
+    const options = buildCreateOptions({ name: webSlug.trim() });
     const response = await createWebRepo(currentProject.id, getApiBaseUrl(), options);
 
     if (response.success) {
@@ -125,6 +178,27 @@ export const ProjectDetailsRepositories = () => {
       <p className={styles.sectionDescription}>
         Create GitHub repositories for your project
       </p>
+
+      {githubOrgOptions.length > 0 && (
+        <fieldset className={styles.orgField}>
+          <legend className={styles.orgLabel}>GitHub organization</legend>
+          <div className={styles.orgOptions}>
+            {githubOrgOptions.map((org) => (
+              <label key={org} className={styles.orgOption}>
+                <input
+                  type="radio"
+                  name="github-org"
+                  value={org}
+                  checked={selectedGithubOrg === org}
+                  onChange={() => handleGithubOrgChange(org)}
+                  className={styles.orgRadio}
+                />
+                <span className={styles.orgOptionText}>{org}</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+      )}
 
       {loading ? (
         <p className={styles.loading}>Loading repos…</p>
@@ -161,7 +235,25 @@ const styles = {
     text-lg font-semibold text-gray-900
   `,
   sectionDescription: `
-    text-sm text-gray-500 mb-4
+    text-sm text-gray-500
+  `,
+  orgField: `
+    flex flex-col gap-2 mb-4 border-0 p-0 m-0
+  `,
+  orgLabel: `
+    text-sm font-medium text-gray-700 mb-1
+  `,
+  orgOptions: `
+    flex flex-wrap gap-3
+  `,
+  orgOption: `
+    inline-flex items-center gap-2 cursor-pointer
+  `,
+  orgRadio: `
+    h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500
+  `,
+  orgOptionText: `
+    text-sm text-gray-900
   `,
   loading: `
     text-sm text-gray-500
