@@ -1,6 +1,8 @@
 'use client';
 
 import type { ProjectRepo } from '@/api/project-setup';
+import { CopyGitCloneButton } from '@/components/copy-git-clone-button';
+import { RepoGithubLink } from '@/components/repo-github-link';
 
 type WebAppRepoRowProps = {
   repo: ProjectRepo;
@@ -9,12 +11,6 @@ type WebAppRepoRowProps = {
 const CheckIcon = () => (
   <svg className={styles.checkIconSvg} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-  </svg>
-);
-
-const ExternalLinkIcon = () => (
-  <svg className={styles.externalLinkSvg} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
   </svg>
 );
 
@@ -43,15 +39,10 @@ export const WebAppRepoRow = ({ repo }: WebAppRepoRowProps) => {
             <CheckIcon />
           </span>
           {repo.repo_url ? (
-            <a
-              href={repo.repo_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.repoLink}
-            >
-              Open repo
-              <ExternalLinkIcon />
-            </a>
+            <div className={styles.repoActions}>
+              <CopyGitCloneButton cloneUrl={repo.clone_url} repoUrl={repo.repo_url} />
+              <RepoGithubLink repoUrl={repo.repo_url} />
+            </div>
           ) : (
             <span className={styles.creatingText}>
               <SpinnerIcon /> Creating…
@@ -94,11 +85,8 @@ const styles = {
   checkIconSvg: `
     h-4 w-4
   `,
-  repoLink: `
-    text-xs text-blue-600 hover:underline inline-flex items-center gap-1
-  `,
-  externalLinkSvg: `
-    h-3 w-3
+  repoActions: `
+    flex items-center gap-2 shrink-0
   `,
   creatingText: `
     text-xs text-gray-500 inline-flex items-center gap-1

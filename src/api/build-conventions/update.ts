@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../config';
 import { ApiResponse } from '../types';
 import type { BuildConvention } from '@/model/build-convention';
 
@@ -13,7 +14,7 @@ export const updateBuildConvention = async (
   input: UpdateBuildConventionInput,
   apiBaseUrl?: string
 ): Promise<ApiResponse<BuildConvention>> => {
-  const baseUrl = apiBaseUrl || process.env.NEXT_PUBLIC_CODE_CONTROL_API_URL || 'http://localhost:3010';
+  const baseUrl = apiBaseUrl || getApiBaseUrl();
   try {
     const response = await fetch(`${baseUrl}/api/data/build-conventions/${id}`, {
       method: 'PATCH',

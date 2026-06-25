@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../config';
 import type { CreateRepoResponse } from './types';
 
 export type CreateRepoOptions = { slug?: string; name?: string; owner?: string };
@@ -7,7 +8,7 @@ export const createExpressRepo = async (
   apiBaseUrl?: string,
   options?: CreateRepoOptions
 ): Promise<CreateRepoResponse> => {
-  const baseUrl = apiBaseUrl || process.env.NEXT_PUBLIC_CODE_CONTROL_API_URL || 'http://localhost:3010';
+  const baseUrl = apiBaseUrl || getApiBaseUrl();
   try {
     const url = `${baseUrl}/api/data/projects/${projectId}/project-setup/create-express-repo`;
     const body: { slug?: string; owner?: string } = {};

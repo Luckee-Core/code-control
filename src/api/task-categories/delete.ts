@@ -1,9 +1,9 @@
+import { getApiBaseUrl } from '../config';
 import { ApiResponse } from '../types';
 
-const BASE_URL = process.env.NEXT_PUBLIC_CODE_CONTROL_API_URL || 'http://localhost:3010';
 
 export const deleteTaskCategory = async (id: string): Promise<ApiResponse<void>> => {
-  const response = await fetch(`${BASE_URL}/api/data/task-categories/${id}`, {
+  const response = await fetch(`${getApiBaseUrl()}/api/data/task-categories/${id}`, {
     method: 'DELETE',
   });
   

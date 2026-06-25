@@ -1,10 +1,10 @@
+import { getApiBaseUrl } from '../config';
 import { ApiResponse } from '../types';
 import { StepTaskCategory } from '@/model';
 
-const BASE_URL = process.env.NEXT_PUBLIC_CODE_CONTROL_API_URL || 'http://localhost:3010';
 
 export const getAllStepTaskCategories = async (): Promise<ApiResponse<StepTaskCategory[]>> => {
-  const response = await fetch(`${BASE_URL}/api/data/step-task-categories`);
+  const response = await fetch(`${getApiBaseUrl()}/api/data/step-task-categories`);
   
   if (!response.ok) {
     const error = await response.json();

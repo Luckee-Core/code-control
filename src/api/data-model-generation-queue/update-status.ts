@@ -1,7 +1,7 @@
+import { getApiBaseUrl } from '../config';
 import { ApiResponse } from '../types';
 import { DataModelGenerationQueue } from '@/model/data-model-generation-queue';
 
-const BASE_URL = process.env.NEXT_PUBLIC_CODE_CONTROL_API_URL || 'http://localhost:3010';
 
 export type UpdateDataModelQueueStatusInput = {
   status: 'queued' | 'processing' | 'completed' | 'failed';
@@ -12,7 +12,7 @@ export const updateDataModelQueueStatus = async (
   input: UpdateDataModelQueueStatusInput
 ): Promise<ApiResponse<DataModelGenerationQueue>> => {
   const response = await fetch(
-    `${BASE_URL}/api/data/data-model-generation-queue/${queueItemId}`,
+    `${getApiBaseUrl()}/api/data/data-model-generation-queue/${queueItemId}`,
     {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },

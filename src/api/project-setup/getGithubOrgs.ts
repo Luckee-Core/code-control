@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../config';
 import { ApiResponse } from '../types';
 
 export type GithubOrgOptions = {
@@ -12,7 +13,7 @@ export const getGithubOrgs = async (
   projectId: string,
   apiBaseUrl?: string
 ): Promise<ApiResponse<GithubOrgOptions>> => {
-  const baseUrl = apiBaseUrl || process.env.NEXT_PUBLIC_CODE_CONTROL_API_URL || 'http://localhost:3010';
+  const baseUrl = apiBaseUrl || getApiBaseUrl();
   try {
     const url = `${baseUrl}/api/data/projects/${projectId}/project-setup/github-orgs`;
     const response = await fetch(url, {

@@ -1,12 +1,12 @@
+import { getApiBaseUrl } from './config';
 import { ApiResponse } from './types';
 import { ARDTask } from '../model';
 
-const BASE_URL = process.env.NEXT_PUBLIC_CODE_CONTROL_API_URL || 'http://localhost:3010';
 
 export const getAllARDTasks = async (
   apiBaseUrl?: string
 ): Promise<ApiResponse<ARDTask[]>> => {
-  const baseUrl = apiBaseUrl || BASE_URL;
+  const baseUrl = apiBaseUrl || getApiBaseUrl();
   
   console.log('🌐 API: Fetching all ARD tasks from:', `${baseUrl}/api/data/ard-tasks`);
   
@@ -32,7 +32,7 @@ export const getAllARDTasks = async (
 export const getARDTasksByStackType = async (
   stackType: 'express' | 'nextjs' | 'react-native'
 ): Promise<ApiResponse<ARDTask[]>> => {
-  const response = await fetch(`${BASE_URL}/api/data/ard-tasks/stack/${stackType}`, {
+  const response = await fetch(`${getApiBaseUrl()}/api/data/ard-tasks/stack/${stackType}`, {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
   });

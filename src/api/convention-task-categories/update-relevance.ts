@@ -1,7 +1,7 @@
+import { getApiBaseUrl } from '../config';
 import { ApiResponse } from '../types';
 import { ConventionTaskCategory } from '@/model';
 
-const BASE_URL = process.env.NEXT_PUBLIC_CODE_CONTROL_API_URL || 'http://localhost:3010';
 
 export type UpdateRelevanceInput = {
   relevance_score?: number;
@@ -14,7 +14,7 @@ export const updateRelevance = async (
   input: UpdateRelevanceInput
 ): Promise<ApiResponse<ConventionTaskCategory>> => {
   const response = await fetch(
-    `${BASE_URL}/api/data/convention-task-categories/${conventionId}/${taskCategoryId}`,
+    `${getApiBaseUrl()}/api/data/convention-task-categories/${conventionId}/${taskCategoryId}`,
     {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },

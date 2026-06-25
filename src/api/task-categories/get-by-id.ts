@@ -1,10 +1,10 @@
+import { getApiBaseUrl } from '../config';
 import { ApiResponse } from '../types';
 import { TaskCategory } from '@/model';
 
-const BASE_URL = process.env.NEXT_PUBLIC_CODE_CONTROL_API_URL || 'http://localhost:3010';
 
 export const getTaskCategoryById = async (id: string): Promise<ApiResponse<TaskCategory>> => {
-  const response = await fetch(`${BASE_URL}/api/data/task-categories/${id}`);
+  const response = await fetch(`${getApiBaseUrl()}/api/data/task-categories/${id}`);
   
   if (!response.ok) {
     const error = await response.json();

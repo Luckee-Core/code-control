@@ -1,7 +1,9 @@
 'use client';
 
 import { useAppSelector } from '@/store';
-import { ExternalLink, GitBranch, Calendar, Link } from 'lucide-react';
+import { ExternalLink, GitBranch, Calendar } from 'lucide-react';
+import { CopyGitCloneButton } from '@/components/copy-git-clone-button';
+import { RepoGithubLink } from '@/components/repo-github-link';
 
 type RepoDetailsProps = {
   repoId: string;
@@ -50,33 +52,29 @@ export const RepoDetails = ({ repoId }: RepoDetailsProps) => {
             <div className={styles.infoValue}>{createdDate}</div>
           </div>
 
-          {repo.repo_url && (
+          {(repo.clone_url || repo.repo_url) && (
             <div className={styles.infoRow}>
               <div className={styles.infoLabel}>
-                <ExternalLink className="h-4 w-4" />
-                <span>Repository URL</span>
+                <span>Clone</span>
               </div>
               <div className={styles.infoValue}>
-                <a
-                  href={repo.repo_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.link}
-                >
-                  View Repository →
-                </a>
+                <CopyGitCloneButton
+                  cloneUrl={repo.clone_url}
+                  repoUrl={repo.repo_url}
+                  showCommand
+                />
               </div>
             </div>
           )}
 
-          {repo.clone_url && (
+          {repo.repo_url && (
             <div className={styles.infoRow}>
               <div className={styles.infoLabel}>
-                <Link className="h-4 w-4" />
-                <span>Clone URL</span>
+                <ExternalLink className="h-4 w-4" />
+                <span>GitHub</span>
               </div>
               <div className={styles.infoValue}>
-                <code className={styles.code}>{repo.clone_url}</code>
+                <RepoGithubLink repoUrl={repo.repo_url} label="Open repository" />
               </div>
             </div>
           )}
@@ -130,9 +128,6 @@ const styles = {
   `,
   code: `
     bg-gray-100 px-2 py-1 rounded text-xs font-mono break-all
-  `,
-  link: `
-    text-blue-600 hover:text-blue-700 hover:underline font-medium
   `,
   phaseBadge: `
     px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs font-medium

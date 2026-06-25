@@ -1,7 +1,7 @@
+import { getApiBaseUrl } from '../config';
 import { ApiResponse } from '../types';
 import { StepTaskCategory } from '@/model';
 
-const BASE_URL = process.env.NEXT_PUBLIC_CODE_CONTROL_API_URL || 'http://localhost:3010';
 
 export type AssignCategoryInput = {
   build_step_id: string;
@@ -11,7 +11,7 @@ export type AssignCategoryInput = {
 export const assignCategory = async (
   input: AssignCategoryInput
 ): Promise<ApiResponse<StepTaskCategory>> => {
-  const response = await fetch(`${BASE_URL}/api/data/step-task-categories`, {
+  const response = await fetch(`${getApiBaseUrl()}/api/data/step-task-categories`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(input),

@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../config';
 import { ApiResponse } from '../types';
 import type { DataEntityWithFields } from '@/model/data-entity';
 
@@ -5,7 +6,7 @@ export const getDataEntitiesByProjectId = async (
   projectId: string,
   apiBaseUrl?: string
 ): Promise<ApiResponse<DataEntityWithFields[]>> => {
-  const baseUrl = apiBaseUrl || process.env.NEXT_PUBLIC_CODE_CONTROL_API_URL || 'http://localhost:3010';
+  const baseUrl = apiBaseUrl || getApiBaseUrl();
   try {
     const response = await fetch(
       `${baseUrl}/api/data/data-entities?project_id=${encodeURIComponent(projectId)}`,

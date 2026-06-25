@@ -1,12 +1,12 @@
+import { getApiBaseUrl } from '../config';
 import { ApiResponse } from '../types';
 import { DataModelGenerationQueue } from '@/model/data-model-generation-queue';
 
-const BASE_URL = process.env.NEXT_PUBLIC_CODE_CONTROL_API_URL || 'http://localhost:3010';
 
 export const getAllDataModelQueue = async (
   apiBaseUrl?: string
 ): Promise<ApiResponse<DataModelGenerationQueue[]>> => {
-  const baseUrl = apiBaseUrl || BASE_URL;
+  const baseUrl = apiBaseUrl || getApiBaseUrl();
   
   const response = await fetch(`${baseUrl}/api/data/data-model-generation-queue`, {
     method: 'GET',

@@ -1,12 +1,12 @@
+import { getApiBaseUrl } from './config';
 import { ApiResponse } from './types';
 import { ARDGenerationTask } from '../model';
 
-const BASE_URL = process.env.NEXT_PUBLIC_CODE_CONTROL_API_URL || 'http://localhost:3010';
 
 export const getARDQueueByRepo = async (
   repoId: string
 ): Promise<ApiResponse<ARDGenerationTask[]>> => {
-  const response = await fetch(`${BASE_URL}/api/data/ard-generation-queue/repo/${repoId}`, {
+  const response = await fetch(`${getApiBaseUrl()}/api/data/ard-generation-queue/repo/${repoId}`, {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
   });
@@ -29,7 +29,7 @@ export type CreateARDQueueItemInput = {
 export const createARDQueueItem = async (
   input: CreateARDQueueItemInput
 ): Promise<ApiResponse<ARDGenerationTask>> => {
-  const response = await fetch(`${BASE_URL}/api/data/ard-generation-queue`, {
+  const response = await fetch(`${getApiBaseUrl()}/api/data/ard-generation-queue`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(input),
@@ -53,7 +53,7 @@ export type CreateBatchARDQueueInput = {
 export const createBatchARDQueue = async (
   input: CreateBatchARDQueueInput
 ): Promise<ApiResponse<ARDGenerationTask[]>> => {
-  const response = await fetch(`${BASE_URL}/api/data/ard-generation-queue/batch`, {
+  const response = await fetch(`${getApiBaseUrl()}/api/data/ard-generation-queue/batch`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(input),
@@ -72,7 +72,7 @@ export const getAllARDQueueByProject = async (
   projectId: string,
   apiBaseUrl?: string
 ): Promise<ApiResponse<ARDGenerationTask[]>> => {
-  const baseUrl = apiBaseUrl || BASE_URL;
+  const baseUrl = apiBaseUrl || getApiBaseUrl();
   const response = await fetch(`${baseUrl}/api/data/ard-generation-queue/project/${projectId}`, {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
@@ -96,7 +96,7 @@ export const updateARDQueueStatus = async (
   input: UpdateARDQueueStatusInput
 ): Promise<ApiResponse<ARDGenerationTask>> => {
   const response = await fetch(
-    `${BASE_URL}/api/data/ard-generation-queue/${queueItemId}`,
+    `${getApiBaseUrl()}/api/data/ard-generation-queue/${queueItemId}`,
     {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
@@ -116,7 +116,7 @@ export const updateARDQueueStatus = async (
 export const getAllARDQueue = async (
   apiBaseUrl?: string
 ): Promise<ApiResponse<ARDGenerationTask[]>> => {
-  const baseUrl = apiBaseUrl || BASE_URL;
+  const baseUrl = apiBaseUrl || getApiBaseUrl();
   
   const response = await fetch(`${baseUrl}/api/data/ard-generation-queue`, {
     method: 'GET',
@@ -136,7 +136,7 @@ export const deleteARDQueueItem = async (
   queueItemId: string,
   apiBaseUrl?: string
 ): Promise<ApiResponse<void>> => {
-  const baseUrl = apiBaseUrl || BASE_URL;
+  const baseUrl = apiBaseUrl || getApiBaseUrl();
   
   const response = await fetch(`${baseUrl}/api/data/ard-generation-queue/${queueItemId}`, {
     method: 'DELETE',

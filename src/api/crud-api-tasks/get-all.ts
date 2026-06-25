@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../config';
 /**
  * Get All CRUD API Tasks
  * Fetches all CRUD API task templates from the backend
@@ -16,12 +17,11 @@ export type CrudApiTask = {
   updated_at: string;
 };
 
-const BASE_URL = process.env.NEXT_PUBLIC_CODE_CONTROL_API_URL || 'http://localhost:3010';
 
 export const getAllCrudApiTasks = async (
   apiBaseUrl?: string
 ): Promise<{ success: boolean; data?: CrudApiTask[]; error?: string }> => {
-  const baseUrl = apiBaseUrl || BASE_URL;
+  const baseUrl = apiBaseUrl || getApiBaseUrl();
   
   console.log('🌐 API: Fetching all CRUD API tasks from:', `${baseUrl}/api/data/crud-api-tasks`);
   

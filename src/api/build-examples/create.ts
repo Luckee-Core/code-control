@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../config';
 import { ApiResponse } from '../types';
 import type { BuildExample } from '@/model/build-example';
 
@@ -12,7 +13,7 @@ export const createBuildExample = async (
   input: CreateBuildExampleInput,
   apiBaseUrl?: string
 ): Promise<ApiResponse<BuildExample>> => {
-  const baseUrl = apiBaseUrl || process.env.NEXT_PUBLIC_CODE_CONTROL_API_URL || 'http://localhost:3010';
+  const baseUrl = apiBaseUrl || getApiBaseUrl();
   try {
     const response = await fetch(`${baseUrl}/api/data/build-examples`, {
       method: 'POST',

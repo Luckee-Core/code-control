@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../config';
 import { ApiResponse } from '../types';
 import type { DataEntityField } from '@/model/data-entity';
 
@@ -15,7 +16,7 @@ export const createDataEntityField = async (
   input: CreateDataEntityFieldInput,
   apiBaseUrl?: string
 ): Promise<ApiResponse<DataEntityField>> => {
-  const baseUrl = apiBaseUrl || process.env.NEXT_PUBLIC_CODE_CONTROL_API_URL || 'http://localhost:3010';
+  const baseUrl = apiBaseUrl || getApiBaseUrl();
   try {
     const response = await fetch(`${baseUrl}/api/data/data-entity-fields`, {
       method: 'POST',

@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../config';
 import { ApiResponse } from '../types';
 import type { ProjectRepo } from './types';
 
@@ -5,7 +6,7 @@ export const getReposByProjectId = async (
   projectId: string,
   apiBaseUrl?: string
 ): Promise<ApiResponse<ProjectRepo[]>> => {
-  const baseUrl = apiBaseUrl || process.env.NEXT_PUBLIC_CODE_CONTROL_API_URL || 'http://localhost:3010';
+  const baseUrl = apiBaseUrl || getApiBaseUrl();
   try {
     const url = `${baseUrl}/api/data/projects/${projectId}/project-setup/repos`;
     const response = await fetch(url, {

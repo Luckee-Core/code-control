@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../config';
 import { ApiResponse } from '../types';
 import type { Customer } from '@/model/customer';
 
@@ -8,7 +9,7 @@ export const getCustomerById = async (
   id: string,
   apiBaseUrl?: string
 ): Promise<ApiResponse<Customer>> => {
-  const baseUrl = apiBaseUrl || process.env.NEXT_PUBLIC_CODE_CONTROL_API_URL || 'http://localhost:3010';
+  const baseUrl = apiBaseUrl || getApiBaseUrl();
 
   try {
     const url = `${baseUrl}/api/data/customers/${id}`;

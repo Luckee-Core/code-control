@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../config';
 export type GenerateCodeInput = {
   projectId: string;
   repoId: string;
@@ -22,7 +23,7 @@ export type GenerateCodeResponse = {
  * @returns Generation result with PR URL
  */
 export const generateCode = async (input: GenerateCodeInput): Promise<GenerateCodeResponse> => {
-  const baseUrl = process.env.NEXT_PUBLIC_CODE_CONTROL_API_URL || 'http://localhost:3010';
+  const baseUrl = getApiBaseUrl();
   
   const response = await fetch(
     `${baseUrl}/api/data/projects/${input.projectId}/project-setup/generate-code`,

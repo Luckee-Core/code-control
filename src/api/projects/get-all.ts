@@ -1,10 +1,11 @@
+import { getApiBaseUrl } from '../config';
 import { ApiResponse } from '../types';
 import type { Project } from '@/model/project';
 
 export const getAllProjects = async (
   apiBaseUrl?: string
 ): Promise<ApiResponse<Project[]>> => {
-  const baseUrl = apiBaseUrl || process.env.NEXT_PUBLIC_CODE_CONTROL_API_URL || 'http://localhost:3010';
+  const baseUrl = apiBaseUrl || getApiBaseUrl();
   try {
     const url = `${baseUrl}/api/data/projects`;
     const response = await fetch(url, {

@@ -1,7 +1,7 @@
+import { getApiBaseUrl } from '../config';
 import { ApiResponse } from '../types';
 import { BuildStep } from '@/model';
 
-const BASE_URL = process.env.NEXT_PUBLIC_CODE_CONTROL_API_URL || 'http://localhost:3010';
 
 export type UpdateBuildStepInput = {
   name?: string;
@@ -15,7 +15,7 @@ export const updateBuildStep = async (
   id: string,
   input: UpdateBuildStepInput
 ): Promise<ApiResponse<BuildStep>> => {
-  const response = await fetch(`${BASE_URL}/api/data/build-steps/${id}`, {
+  const response = await fetch(`${getApiBaseUrl()}/api/data/build-steps/${id}`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(input),

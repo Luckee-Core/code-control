@@ -1,10 +1,11 @@
+import { getApiBaseUrl } from '../config';
 import { ApiResponse } from '../types';
 
 export const deleteDataModelQueueItem = async (
   queueItemId: string,
   apiBaseUrl?: string
 ): Promise<ApiResponse<void>> => {
-  const baseUrl = apiBaseUrl || process.env.NEXT_PUBLIC_CODE_CONTROL_API_URL || 'http://localhost:3010';
+  const baseUrl = apiBaseUrl || getApiBaseUrl();
   
   const response = await fetch(`${baseUrl}/api/data/data-model-generation-queue/${queueItemId}`, {
     method: 'DELETE',
