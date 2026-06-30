@@ -8,6 +8,7 @@ import { CurrentProjectActions } from '@/store/current';
 import { setCurrentProjectThunk } from '@/store/thunks/projects';
 import type { Project } from '@/model/project';
 import { formatDate } from '@/utils/date-time';
+import { ProjectRowActionsMenu } from './project-row-actions-menu';
 
 const truncate = (text: string | null, max: number): string => {
   if (!text) return '—';
@@ -71,6 +72,7 @@ export const CustomerProjectsTab = () => {
             <th className={styles.tableHeader}>Name</th>
             <th className={styles.tableHeader}>Description</th>
             <th className={styles.tableHeader}>Updated</th>
+            <th className={styles.tableHeaderActions} aria-label="Actions" />
           </tr>
         </thead>
         <tbody>
@@ -89,6 +91,9 @@ export const CustomerProjectsTab = () => {
                 {truncate(project.description, 60)}
               </td>
               <td className={styles.cell}>{formatDate(project.updated_at)}</td>
+              <td className={styles.cellActions}>
+                <ProjectRowActionsMenu project={project} />
+              </td>
             </tr>
           ))}
         </tbody>
@@ -109,8 +114,10 @@ const styles = {
   tableContainer: `border border-gray-200 rounded-lg overflow-hidden bg-white`,
   table: `w-full text-left border-collapse`,
   tableHeader: `px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wide bg-gray-50 border-b border-gray-200`,
+  tableHeaderActions: `w-12 px-2 py-2.5 bg-gray-50 border-b border-gray-200`,
   row: `border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors`,
   cell: `px-4 py-3 text-sm text-gray-900`,
+  cellActions: `px-2 py-3 w-12`,
   cellDescription: `px-4 py-3 text-sm text-gray-600 max-w-xs`,
   projectNameButton: `font-medium text-left text-blue-600 hover:underline bg-transparent border-none cursor-pointer p-0`,
   emptyState: `border border-gray-200 rounded-lg bg-white p-8 text-center`,
