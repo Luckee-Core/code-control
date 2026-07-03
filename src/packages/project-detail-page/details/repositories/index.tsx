@@ -7,12 +7,14 @@ import {
   getGithubOrgs,
   createExpressRepo,
   createWebRepo,
+  linkExistingRepo,
 } from '@/api/project-setup';
 import { getApiBaseUrl } from '@/api/config';
 import { getGithubOrgConfig, mergeGithubOrgOptions } from '@/config/github-orgs';
 import type { ProjectRepo } from '@/api/project-setup';
 import { ServerReposSection } from './servers';
 import { WebAppReposSection } from './web-apps';
+import { AddExistingRepoModal } from './AddExistingRepoModal';
 
 type StepStatus = 'idle' | 'running' | 'done' | 'error';
 
@@ -50,6 +52,9 @@ export const ProjectDetailsRepositories = () => {
   const defaultSlug = currentProject?.name ? slugify(currentProject.name) : '';
   const [expressSlug, setExpressSlug] = useState(defaultSlug);
   const [webSlug, setWebSlug] = useState(defaultSlug);
+  const [isAddExistingModalOpen, setIsAddExistingModalOpen] = useState(false);
+  const [isLinkingExisting, setIsLinkingExisting] = useState(false);
+  const [linkExistingError, setLinkExistingError] = useState<string | null>(null);
 
   const fetchRepos = async (projectId: string) => {
     setLoading(true);
@@ -164,6 +169,33 @@ export const ProjectDetailsRepositories = () => {
     });
   };
 
+  const handleLinkExistingRepo = async (
+    repoType: 'express' | 'nextjs',
+    repoUrl: string
+  ) => {
+    if (!currentProject?.id) return;
+
+    setIsLinkingExisting(true);
+    setLinkExistingError(null);
+
+    const response = await linkExistingRepo(
+      currentProject.id,
+      { repo_type: repoType, repo_url: repoUrl },
+      getApiBaseUrl()
+    );
+
+    setIsLinkingExisting(false);
+
+    if (response.success) {
+      setIsAddExistingModalOpen(false);
+      setLinkExistingError(null);
+      void fetchRepos(currentProject.id);
+      return;
+    }
+
+    setLinkExistingError(response.error ?? 'Failed to add repository');
+  };
+
   const expressRepos = repos.filter((repo) => repo.repo_type === 'express');
   const webRepos = repos.filter((repo) => repo.repo_type === 'nextjs');
   const expressRepo = expressRepos[0] ?? null;
@@ -174,10 +206,24 @@ export const ProjectDetailsRepositories = () => {
 
   return (
     <div className={styles.wrapper}>
-      <h3 className={styles.sectionTitle}>Repositories</h3>
-      <p className={styles.sectionDescription}>
-        Create GitHub repositories for your project
-      </p>
+      <div className={styles.sectionHeader}>
+        <div>
+          <h3 className={styles.sectionTitle}>Repositories</h3>
+          <p className={styles.sectionDescription}>
+            Create GitHub repositories for your project
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={() => {
+            setLinkExistingError(null);
+            setIsAddExistingModalOpen(true);
+          }}
+          className={styles.addExistingButton}
+        >
+          Add existing repo
+        </button>
+      </div>
 
       {githubOrgOptions.length > 0 && (
         <fieldset className={styles.orgField}>
@@ -223,6 +269,18 @@ export const ProjectDetailsRepositories = () => {
           />
         </div>
       )}
+
+      <AddExistingRepoModal
+        isOpen={isAddExistingModalOpen}
+        hasExpressRepo={expressRepo !== null}
+        isSubmitting={isLinkingExisting}
+        errorMessage={linkExistingError}
+        onClose={() => {
+          setIsAddExistingModalOpen(false);
+          setLinkExistingError(null);
+        }}
+        onSubmit={handleLinkExistingRepo}
+      />
     </div>
   );
 };
@@ -231,11 +289,18 @@ const styles = {
   wrapper: `
     flex flex-col gap-4
   `,
+  sectionHeader: `
+    flex items-start justify-between gap-4
+  `,
   sectionTitle: `
     text-lg font-semibold text-gray-900
   `,
   sectionDescription: `
     text-sm text-gray-500
+  `,
+  addExistingButton: `
+    shrink-0 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700
+    hover:bg-gray-50 transition-colors cursor-pointer
   `,
   orgField: `
     flex flex-col gap-2 mb-4 border-0 p-0 m-0
