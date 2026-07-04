@@ -46,7 +46,7 @@ export const WebAppReposSection = ({
               value={webSlug}
               onChange={(event) => onWebSlugChange(event.target.value)}
               onKeyDown={(event) => event.key === 'Enter' && onCreateWebRepo()}
-              placeholder="Web app name (e.g. roads-admin-panel)"
+              placeholder="Web app name (e.g. roads-admin-panel-web)"
               className={styles.slugInput}
               aria-label="Web repo name"
             />

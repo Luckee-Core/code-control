@@ -26,7 +26,7 @@ export const createProjectThunk = (): AppThunk<ResponseType> => {
         return 400;
       }
       dispatch(ProjectsActions.addProject(response.data));
-      dispatch(CurrentProjectActions.reset());
+      dispatch(CurrentProjectActions.setProject(response.data));
       dispatch(WorkspaceBuilderActions.closeProjectModal());
       return 200;
     } catch (error) {

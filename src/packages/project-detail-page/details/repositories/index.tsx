@@ -40,6 +40,13 @@ const slugify = (name: string): string => {
     .replace(/[^a-z0-9-]/g, '');
 };
 
+const toWebRepoSlug = (value: string): string => {
+  const trimmed = value.trim();
+  if (!trimmed) return '';
+  const base = slugify(trimmed.replace(/-web$/i, ''));
+  return base ? `${base}-web` : '';
+};
+
 export const ProjectDetailsRepositories = () => {
   const orgConfig = getGithubOrgConfig();
   const currentProject = useAppSelector((state) => state.currentProject);
@@ -50,8 +57,9 @@ export const ProjectDetailsRepositories = () => {
   const [githubOrgOptions, setGithubOrgOptions] = useState<string[]>(orgConfig.options);
   const [selectedGithubOrg, setSelectedGithubOrg] = useState(orgConfig.defaultOrg);
   const defaultSlug = currentProject?.name ? slugify(currentProject.name) : '';
+  const defaultWebSlug = defaultSlug ? `${defaultSlug}-web` : '';
   const [expressSlug, setExpressSlug] = useState(defaultSlug);
-  const [webSlug, setWebSlug] = useState(defaultSlug);
+  const [webSlug, setWebSlug] = useState(defaultWebSlug);
   const [isAddExistingModalOpen, setIsAddExistingModalOpen] = useState(false);
   const [isLinkingExisting, setIsLinkingExisting] = useState(false);
   const [linkExistingError, setLinkExistingError] = useState<string | null>(null);
@@ -144,11 +152,22 @@ export const ProjectDetailsRepositories = () => {
     });
   };
 
+  const handleWebSlugChange = (value: string) => {
+    if (!value.trim()) {
+      setWebSlug('');
+      return;
+    }
+    setWebSlug(toWebRepoSlug(value));
+  };
+
   const handleCreateWebRepo = async () => {
     if (!currentProject?.id || !webSlug.trim()) return;
 
     setWebStep({ status: 'running', message: null, repoUrl: null });
-    const options = buildCreateOptions({ name: webSlug.trim() });
+    const baseSlug = webSlug.trim().replace(/-web$/i, '');
+    const options = baseSlug
+      ? buildCreateOptions({ slug: baseSlug })
+      : buildCreateOptions({});
     const response = await createWebRepo(currentProject.id, getApiBaseUrl(), options);
 
     if (response.success) {
@@ -157,7 +176,7 @@ export const ProjectDetailsRepositories = () => {
         message: response.already_done ? 'Already done' : 'Created',
         repoUrl: response.repo_url ?? null,
       });
-      setWebSlug('');
+      setWebSlug(defaultWebSlug);
       void fetchRepos(currentProject.id);
       return;
     }
@@ -262,7 +281,7 @@ export const ProjectDetailsRepositories = () => {
           <WebAppReposSection
             webRepos={webRepos}
             webSlug={webSlug}
-            onWebSlugChange={setWebSlug}
+            onWebSlugChange={handleWebSlugChange}
             onCreateWebRepo={handleCreateWebRepo}
             isCreating={webStep.status === 'running'}
             errorMessage={webStep.status === 'error' ? webStep.message : null}

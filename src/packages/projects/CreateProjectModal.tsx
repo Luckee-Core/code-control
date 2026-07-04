@@ -1,14 +1,31 @@
 'use client';
 
+import { useMemo } from 'react';
+import { useRouter } from 'next/navigation';
+import { useStore } from 'react-redux';
 import { useAppDispatch, useAppSelector } from '@/store';
+import type { RootState } from '@/store';
 import { WorkspaceBuilderActions } from '@/store/builders';
 import { CurrentProjectActions } from '@/store/current';
 import { createProjectThunk } from '@/store/thunks/projects';
 
 export const CreateProjectModal = () => {
+  const router = useRouter();
+  const store = useStore<RootState>();
   const dispatch = useAppDispatch();
   const isOpen = useAppSelector((state) => state.workspaceBuilder.isProjectModalOpen);
   const current = useAppSelector((state) => state.currentProject);
+  const customers = useAppSelector((state) => state.customers);
+
+  const customerOptions = useMemo(
+    () =>
+      Object.values(customers)
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .map((customer) => ({ id: customer.id, name: customer.name })),
+    [customers]
+  );
+
+  const showCustomerSelect = !current.customer_id;
 
   const handleClose = () => {
     dispatch(WorkspaceBuilderActions.closeProjectModal());
@@ -19,7 +36,10 @@ export const CreateProjectModal = () => {
     if (!current.name.trim() || !current.customer_id) return;
     const result = await dispatch(createProjectThunk());
     if (result === 200) {
-      handleClose();
+      const projectId = store.getState().currentProject.id;
+      if (projectId) {
+        router.push(`/projects/${projectId}`);
+      }
     }
   };
 
@@ -29,11 +49,34 @@ export const CreateProjectModal = () => {
     <div className={styles.overlay} onClick={handleClose}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
         <div className={styles.header}>
-          <h2 className={styles.title}>Add Project</h2>
+          <h2 className={styles.title}>Create Project</h2>
           <button type="button" onClick={handleClose} className={styles.closeButton}>
             ✕
           </button>
         </div>
+        {showCustomerSelect && (
+          <div className={styles.field}>
+            <label className={styles.label}>Customer *</label>
+            <select
+              value={current.customer_id}
+              onChange={(e) =>
+                dispatch(
+                  CurrentProjectActions.updateProjectFields({
+                    customer_id: e.target.value,
+                  })
+                )
+              }
+              className={styles.input}
+            >
+              <option value="">Select a customer</option>
+              {customerOptions.map((customer) => (
+                <option key={customer.id} value={customer.id}>
+                  {customer.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
         <div className={styles.field}>
           <label className={styles.label}>Name *</label>
           <input
@@ -89,9 +132,9 @@ export const CreateProjectModal = () => {
             type="button"
             onClick={handleSave}
             className={styles.saveButton}
-            disabled={!current.name.trim()}
+            disabled={!current.name.trim() || !current.customer_id}
           >
-            Add
+            Create
           </button>
         </div>
       </div>

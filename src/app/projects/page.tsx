@@ -1,6 +1,6 @@
 'use client';
 
-import { ProjectsList, ProjectsHeader } from '@/packages/projects';
+import { CreateProjectModal, ProjectsList, ProjectsHeader } from '@/packages/projects';
 import { useBreadcrumbs } from '@/hooks';
 
 export default function ProjectsPage() {
@@ -9,6 +9,7 @@ export default function ProjectsPage() {
     <div className={styles.page}>
       <ProjectsHeader />
       <ProjectsList />
+      <CreateProjectModal />
     </div>
   );
 }

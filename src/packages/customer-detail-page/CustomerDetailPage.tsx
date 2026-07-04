@@ -7,7 +7,7 @@ import { CUSTOMERS_PATH } from '@/config/routes';
 import { formatDate } from '@/utils/date-time';
 import type { Customer } from '@/model/customer';
 import { CustomerProjectsTab } from './CustomerProjectsTab';
-import { CreateProjectModal } from './CreateProjectModal';
+import { CreateProjectModal } from '@/packages/projects';
 
 type CustomerTab = 'Overview' | 'Projects';
 
