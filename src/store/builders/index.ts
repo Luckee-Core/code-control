@@ -5,3 +5,4 @@ export { default as dataModelBuilderReducer, DataModelBuilderActions } from './d
 export { default as layoutBuilderReducer, LayoutBuilderActions } from './layoutBuilder';
 export { default as buildStepBuilderReducer, BuildStepBuilderActions } from './buildStepBuilder';
 export { default as taskCategoryBuilderReducer, TaskCategoryBuilderActions } from './taskCategoryBuilder';
+export { default as customerBuilderReducer, CustomerBuilderActions } from './customerBuilder';

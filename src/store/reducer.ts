@@ -31,6 +31,7 @@ import {
   layoutBuilderReducer,
   buildStepBuilderReducer,
   taskCategoryBuilderReducer,
+  customerBuilderReducer,
 } from './builders';
 
 const rootReducer = combineReducers({
@@ -59,6 +60,7 @@ const rootReducer = combineReducers({
   layoutBuilder: layoutBuilderReducer,
   buildStepBuilder: buildStepBuilderReducer,
   taskCategoryBuilder: taskCategoryBuilderReducer,
+  customerBuilder: customerBuilderReducer,
   currentBuildStep: currentBuildStepReducer,
   currentTaskCategory: currentTaskCategoryReducer,
 });

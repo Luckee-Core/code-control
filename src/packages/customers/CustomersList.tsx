@@ -37,9 +37,9 @@ export const CustomersList = () => {
   if (customerList.length === 0) {
     return (
       <div className={styles.emptyState}>
-        <p className={styles.emptyTitle}>No customers loaded</p>
+        <p className={styles.emptyTitle}>No customers yet</p>
         <p className={styles.emptyDescription}>
-          Customers are managed in THT. They appear here once loaded from the API.
+          Add a customer to get started.
         </p>
       </div>
     );
