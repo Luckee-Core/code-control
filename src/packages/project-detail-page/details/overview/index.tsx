@@ -2,25 +2,12 @@
 
 import { useAppSelector } from '@/store';
 
-const APP_TYPE_LABELS: Record<string, string> = {
-  marketplace: 'Marketplace',
-  field_service: 'Field Service',
-  social: 'Social Network',
-  saas: 'SaaS Platform',
-  custom: 'Custom',
-};
-
 export const ProjectDetailsOverview = () => {
   const currentProject = useAppSelector((state) => state.currentProject);
 
   if (!currentProject?.id) {
     return null;
   }
-
-  const appTypeLabel =
-    currentProject.app_type && APP_TYPE_LABELS[currentProject.app_type]
-      ? APP_TYPE_LABELS[currentProject.app_type]
-      : currentProject.app_type ?? 'Custom';
 
   const createdDate = currentProject.created_at
     ? new Date(currentProject.created_at)
@@ -35,7 +22,6 @@ export const ProjectDetailsOverview = () => {
             <p className={styles.projectDescription}>{currentProject.description}</p>
           )}
         </div>
-        <span className={styles.appTypeBadge}>{appTypeLabel}</span>
       </div>
       <div className={styles.infoMeta}>
         {createdDate && (
@@ -69,9 +55,6 @@ const styles = {
   `,
   projectDescription: `
     text-sm text-gray-500 mt-1
-  `,
-  appTypeBadge: `
-    shrink-0 text-xs font-medium px-3 py-1 rounded-full bg-blue-100 text-blue-700
   `,
   infoMeta: `
     px-6 pb-6 flex gap-4 text-xs text-gray-500

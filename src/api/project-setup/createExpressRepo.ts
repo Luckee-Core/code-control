@@ -11,8 +11,10 @@ export const createExpressRepo = async (
   const baseUrl = apiBaseUrl || getApiBaseUrl();
   try {
     const url = `${baseUrl}/api/data/projects/${projectId}/project-setup/create-express-repo`;
-    const body: { slug?: string; owner?: string } = {};
-    if (options?.slug !== undefined && options.slug !== '') {
+    const body: { slug?: string; name?: string; owner?: string } = {};
+    if (options?.name !== undefined && options.name !== '') {
+      body.name = options.name;
+    } else if (options?.slug !== undefined && options.slug !== '') {
       body.slug = options.slug;
     }
     if (options?.owner !== undefined && options.owner !== '') {

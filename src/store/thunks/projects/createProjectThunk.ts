@@ -17,7 +17,6 @@ export const createProjectThunk = (): AppThunk<ResponseType> => {
           customer_id: current.customer_id,
           name: current.name.trim(),
           description: current.description?.trim() ?? null,
-          app_type: current.app_type && current.app_type !== 'custom' ? current.app_type : undefined,
         },
         apiBaseUrl
       );

@@ -39,7 +39,7 @@ BEFORE implementing ANY feature, you MUST:
 
 ## Quick Reference (Architecture ADRs)
 
-### Shared (001–006, 010)
+### Shared (001–006, 008, 010)
 - Architecture entrypoint → `.cursor/architecture/README.md`
 - Redux → `.cursor/architecture/001-redux-patterns.md`
 - Components → `.cursor/architecture/002-component-composition.md`
@@ -47,6 +47,7 @@ BEFORE implementing ANY feature, you MUST:
 - API integration → `.cursor/architecture/004-api-integration.md`
 - File organization → `.cursor/architecture/005-file-organization.md`
 - Constants / utilities → `.cursor/architecture/006-constants-utilities.md`
+- Detail page routing → `.cursor/architecture/008-detail-page-routing.md`
 - Public content reads from Express → `.cursor/architecture/010-public-blog-express-fetch.md`
 
 ### Product-specific (this repo)

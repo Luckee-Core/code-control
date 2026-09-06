@@ -4,17 +4,6 @@ import {
   getAllCustomersThunk,
   getAllProjectsThunk,
   getAllProjectReposThunk,
-  getAllBuildConventionsThunk,
-  getAllBuildExamplesThunk,
-  getAllDataEntitiesThunk,
-  getAllARDGenerationQueueThunk,
-  getAllARDTasksThunk,
-  getAllDataModelGenerationQueueThunk,
-  getAllCrudApiTasksThunk,
-  getAllBuildStepsThunk,
-  getAllTaskCategoriesThunk,
-  getAllStepTaskCategoriesThunk,
-  getAllConventionTaskCategoriesThunk,
 } from '@/store/thunks';
 
 /**
@@ -33,17 +22,6 @@ export const useCodeControlDataLoader = () => {
       dispatch(getAllCustomersThunk()),
       dispatch(getAllProjectsThunk()),
       dispatch(getAllProjectReposThunk()),
-      dispatch(getAllBuildConventionsThunk()),
-      dispatch(getAllBuildExamplesThunk()),
-      dispatch(getAllDataEntitiesThunk()),
-      dispatch(getAllARDGenerationQueueThunk()),
-      dispatch(getAllARDTasksThunk()),
-      dispatch(getAllCrudApiTasksThunk()),
-      dispatch(getAllDataModelGenerationQueueThunk()),
-      dispatch(getAllBuildStepsThunk()),
-      dispatch(getAllTaskCategoriesThunk()),
-      dispatch(getAllStepTaskCategoriesThunk()),
-      dispatch(getAllConventionTaskCategoriesThunk()),
     ])
       .then(() => setIsLoading(false))
       .catch((error) => {

@@ -18,6 +18,8 @@ const parseOrgList = (raw: string | undefined): string[] => {
     .filter(Boolean);
 };
 
+export const LAST_GITHUB_ORG_KEY = 'code-control:last-github-org';
+
 /**
  * GitHub org picker config for the Repositories tab.
  */
@@ -28,11 +30,11 @@ export const getGithubOrgConfig = (): GithubOrgConfig => {
     process.env.NEXT_PUBLIC_GITHUB_DEFAULT_ORG?.trim() ||
     process.env.NEXT_PUBLIC_GITHUB_OWNER?.trim() ||
     options[0] ||
-    'trouthouse-tech';
+    '';
 
   return {
     defaultOrg,
-    options: options.length > 0 ? options : [defaultOrg],
+    options,
   };
 };
 
@@ -53,5 +55,23 @@ export const mergeGithubOrgOptions = (
     }
   }
 
-  return merged.length > 0 ? merged : configOptions;
+  return merged;
+};
+
+/**
+ * Returns the GitHub owner from localStorage (including API-merged orgs not in config.options).
+ * Empty or missing values fall back to the config default.
+ */
+export const getSelectedGithubOwner = (): string => {
+  const config = getGithubOrgConfig();
+  if (typeof window === 'undefined') {
+    return config.defaultOrg;
+  }
+
+  const storedOrg = window.localStorage.getItem(LAST_GITHUB_ORG_KEY);
+  if (storedOrg) {
+    return storedOrg;
+  }
+
+  return config.defaultOrg;
 };

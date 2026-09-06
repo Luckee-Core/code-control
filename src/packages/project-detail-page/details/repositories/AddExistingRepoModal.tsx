@@ -7,7 +7,6 @@ type RepoTypeOption = Extract<RepoType, 'express' | 'nextjs'>;
 
 type AddExistingRepoModalProps = {
   isOpen: boolean;
-  hasExpressRepo: boolean;
   isSubmitting: boolean;
   errorMessage: string | null;
   onClose: () => void;
@@ -16,7 +15,6 @@ type AddExistingRepoModalProps = {
 
 export const AddExistingRepoModal = ({
   isOpen,
-  hasExpressRepo,
   isSubmitting,
   errorMessage,
   onClose,
@@ -72,7 +70,6 @@ export const AddExistingRepoModal = ({
                   name="existing-repo-type"
                   value="express"
                   checked={repoType === 'express'}
-                  disabled={hasExpressRepo}
                   onChange={() => setRepoType('express')}
                   className={styles.typeRadio}
                 />
@@ -90,9 +87,6 @@ export const AddExistingRepoModal = ({
                 <span className={styles.typeOptionText}>Next.js web app</span>
               </label>
             </div>
-            {hasExpressRepo && (
-              <p className={styles.hint}>This project already has an express server linked.</p>
-            )}
           </fieldset>
 
           <div className={styles.field}>

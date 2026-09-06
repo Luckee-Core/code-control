@@ -5,6 +5,4 @@ export * from './getGithubOrgs';
 export * from './createExpressRepo';
 export * from './createWebRepo';
 export * from './linkExistingRepo';
-export * from './generate-code';
-export * from './updateRepoPhase';
 export type { GithubOrgOptions } from './getGithubOrgs';

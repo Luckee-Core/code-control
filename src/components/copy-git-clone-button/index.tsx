@@ -43,7 +43,7 @@ export const CopyGitCloneButton = ({
         </code>
       ) : null}
       <button type="button" onClick={handleCopy} className={styles.button} title={command}>
-        {copied ? 'Copied!' : 'Copy clone'}
+        {copied ? 'Copied!' : 'Clone'}
       </button>
     </div>
   );

@@ -1,43 +1,83 @@
 'use client';
 
-import type { ProjectRepo } from '@/api/project-setup';
-import { ServerRepoRow } from './row';
+import { useEffect, useState } from 'react';
+import { useAppSelector } from '@/store';
+import { getReposByProjectId, type ProjectRepo } from '@/api/project-setup';
+import { getApiBaseUrl } from '@/api/config';
+import { RepoTable } from '../repo-table';
+import { CreateExpressRepoModal } from './create-modal';
 
-type ServerReposSectionProps = {
-  expressRepo: ProjectRepo | null;
-  expressSlug: string;
-  onExpressSlugChange: (value: string) => void;
-  onCreateExpressRepo: () => void;
-  isCreating: boolean;
-  errorMessage: string | null;
-};
+const TITLE = 'Express servers';
 
-export const ServerReposSection = ({
-  expressRepo,
-  expressSlug,
-  onExpressSlugChange,
-  onCreateExpressRepo,
-  isCreating,
-  errorMessage,
-}: ServerReposSectionProps) => {
+export const ServerReposSection = () => {
+  const currentProject = useAppSelector((state) => state.currentProject);
+  const [repos, setRepos] = useState<ProjectRepo[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+  const fetchRepos = async (projectId: string) => {
+    setIsLoading(true);
+    const response = await getReposByProjectId(projectId, getApiBaseUrl());
+    setIsLoading(false);
+    if (response.success && response.data) {
+      setRepos(response.data.filter((repo) => repo.repo_type === 'express'));
+    }
+  };
+
+  useEffect(() => {
+    if (!currentProject?.id) {
+      return;
+    }
+
+    const timeoutId = setTimeout(() => void fetchRepos(currentProject.id), 0);
+    return () => clearTimeout(timeoutId);
+  }, [currentProject?.id]);
+
+  if (!currentProject?.id) {
+    return null;
+  }
+
   return (
-    <>
-      <ServerRepoRow
-        expressRepo={expressRepo}
-        expressSlug={expressSlug}
-        onExpressSlugChange={onExpressSlugChange}
-        onCreateExpressRepo={onCreateExpressRepo}
-        isCreating={isCreating}
-      />
-      {errorMessage && (
-        <p className={styles.errorText}>{errorMessage}</p>
+    <div className={styles.section}>
+      <div className={styles.titleRow}>
+        <h4 className={styles.sectionTitle}>{TITLE}</h4>
+        <button
+          type="button"
+          onClick={() => setIsCreateModalOpen(true)}
+          className={styles.createButton}
+        >
+          Create
+        </button>
+      </div>
+      {isLoading ? (
+        <p className={styles.loading}>Loading repos…</p>
+      ) : (
+        <RepoTable repos={repos} />
       )}
-    </>
+      <CreateExpressRepoModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onCreated={() => void fetchRepos(currentProject.id)}
+      />
+    </div>
   );
 };
 
 const styles = {
-  errorText: `
-    text-xs text-red-600 mt-2
+  section: `
+    flex flex-col gap-2 min-w-0 w-full
+  `,
+  titleRow: `
+    flex items-center justify-between gap-2
+  `,
+  sectionTitle: `
+    text-sm font-semibold text-gray-900
+  `,
+  createButton: `
+    rounded border border-gray-300 bg-white px-2 py-0.5 text-xs font-medium text-gray-700
+    hover:bg-gray-50 transition-colors cursor-pointer
+  `,
+  loading: `
+    text-sm text-gray-500
   `,
 };

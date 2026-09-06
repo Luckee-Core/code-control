@@ -6,7 +6,6 @@ export type CreateProjectInput = {
   customer_id: string;
   name: string;
   description?: string | null;
-  app_type?: string;
 };
 
 export const createProject = async (

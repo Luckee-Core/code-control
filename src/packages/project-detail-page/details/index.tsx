@@ -40,7 +40,7 @@ const styles = {
     flex-1 overflow-auto p-6
   `,
   wrapper: `
-    flex flex-col gap-8 max-w-3xl
+    flex flex-col gap-8 w-full
   `,
   empty: `
     text-sm text-gray-500 italic p-4

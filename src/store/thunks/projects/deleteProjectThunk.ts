@@ -1,6 +1,5 @@
 import { AppThunk } from '../../types';
 import { ProjectsActions } from '../../dumps';
-import { WorkspaceBuilderActions } from '../../builders';
 import { deleteProject } from '@/api/projects';
 import { getApiBaseUrl } from '@/api/config';
 
@@ -16,7 +15,6 @@ export const deleteProjectThunk = (projectId: string): AppThunk<ResponseType> =>
         return 400;
       }
       dispatch(ProjectsActions.deleteProject(projectId));
-      dispatch(WorkspaceBuilderActions.setActiveProjectId(null));
       return 200;
     } catch (error) {
       console.error('Error deleting customer project:', error);

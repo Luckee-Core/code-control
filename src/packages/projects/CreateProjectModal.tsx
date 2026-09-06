@@ -90,26 +90,6 @@ export const CreateProjectModal = () => {
           />
         </div>
         <div className={styles.field}>
-          <label className={styles.label}>App Type</label>
-          <select
-            value={current.app_type ?? 'custom'}
-            onChange={(e) =>
-              dispatch(
-                CurrentProjectActions.updateProjectFields({
-                  app_type: e.target.value,
-                })
-              )
-            }
-            className={styles.input}
-          >
-            <option value="custom">Custom</option>
-            <option value="marketplace">Marketplace</option>
-            <option value="field_service">Field Service</option>
-            <option value="social">Social Network</option>
-            <option value="saas">SaaS Platform</option>
-          </select>
-        </div>
-        <div className={styles.field}>
           <label className={styles.label}>Description</label>
           <textarea
             value={current.description ?? ''}

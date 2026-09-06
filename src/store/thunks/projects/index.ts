@@ -1,7 +1,5 @@
 export { getAllProjectsThunk } from './getAllProjectsThunk';
 export { setCurrentProjectThunk } from './setCurrentProjectThunk';
-export { setActiveRepoThunk } from './setActiveRepoThunk';
-export { toggleOpenRepoThunk } from './toggleOpenRepoThunk';
 export { getProjectsByCustomerIdThunk } from './getProjectsByCustomerIdThunk';
 export { createProjectThunk } from './createProjectThunk';
 export { updateProjectThunk } from './updateProjectThunk';

@@ -6,8 +6,7 @@ type ResponseType = void;
 
 /**
  * Sets the current customer project in Redux.
- * All data (repos, entities, build profiles, ARD queue) is already loaded via useCodeControlDataLoader.
- * Call when user selects a project.
+ * Call when the user opens a project workspace.
  */
 export const setCurrentProjectThunk = (
   project: Project

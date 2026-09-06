@@ -6,7 +6,6 @@ const initialState: Project = {
   customer_id: '',
   name: '',
   description: null,
-  app_type: 'custom',
   created_at: '',
   updated_at: '',
 };
