@@ -1,28 +1,44 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import type { ProjectRepo } from '@/api/project-setup';
+import type { ProjectRepo } from '@/model/project-repo';
 
-type InitialState = ProjectRepo[];
+type ProjectReposState = Record<string, ProjectRepo>;
 
-const initialState: InitialState = [];
+const initialState: ProjectReposState = {};
 
 export const projectReposSlice = createSlice({
   name: 'projectRepos',
   initialState,
   reducers: {
-    setProjectRepos: (state, action: PayloadAction<ProjectRepo[]>) => action.payload,
+    setProjectRepos: (_state, action: PayloadAction<ProjectRepo[]>) => {
+      const next: ProjectReposState = {};
+      action.payload.forEach((repo) => {
+        next[repo.id] = repo;
+      });
+      return next;
+    },
+    replaceReposByProjectId: (
+      state,
+      action: PayloadAction<{ projectId: string; repos: ProjectRepo[] }>
+    ) => {
+      Object.keys(state).forEach((id) => {
+        if (state[id].project_id === action.payload.projectId) {
+          delete state[id];
+        }
+      });
+      action.payload.repos.forEach((repo) => {
+        state[repo.id] = repo;
+      });
+    },
     addProjectRepo: (state, action: PayloadAction<ProjectRepo>) => {
-      state.push(action.payload);
+      state[action.payload.id] = action.payload;
     },
     updateProjectRepo: (state, action: PayloadAction<ProjectRepo>) => {
-      const index = state.findIndex((r) => r.id === action.payload.id);
-      if (index !== -1) {
-        state[index] = action.payload;
-      }
+      state[action.payload.id] = action.payload;
     },
     removeProjectRepo: (state, action: PayloadAction<string>) => {
-      return state.filter((r) => r.id !== action.payload);
+      delete state[action.payload];
     },
-    clearProjectRepos: () => [],
+    clearProjectRepos: () => initialState,
   },
 });
 

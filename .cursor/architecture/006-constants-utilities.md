@@ -1,129 +1,115 @@
-# 006 — Constants & Utilities (Next.js)
+# 006 - Constants & Utilities (Next.js)
 
-## Purpose
+## Status
 
-Define a consistent approach for reusable constants and pure utilities in this Next.js codebase.
+Accepted
 
-## Rules
+## Context
 
-1. **Extract utilities when used 2+ times**
-   - If logic is duplicated in two or more places, move it into `src/utils/{domain}`.
-2. **Keep constants in `src/utils/{domain}/constants.ts`**
-   - Group related constants by domain (e.g., `pricing`, `date`, `api`, `validation`).
-3. **Utility functions must be pure**
-   - No React hooks (`useState`, `useMemo`, etc.), no Redux store access, no I/O side effects.
-4. **Use named constants**
-   - Avoid magic numbers/strings in handlers and business logic.
-5. **Require JSDoc on router factory, handlers, and business logic**
-   - Add JSDoc to:
-     - Router factory function
-     - Each HTTP handler (`GET`, `POST`, etc.)
-     - Business logic functions used by handlers
+`src/utils/` holds **generic, cross-cutting helpers** (dates, strings, numbers). It is not a home for table- or entity-specific formatters tied to Redux dumps or API row shapes.
 
-## Standard Folder Shape
+## Decision
 
-```txt
-src/
-  utils/
-    {domain}/
-      constants.ts
-      index.ts
-      <utility>.ts
+### 1) What belongs in `src/utils/`
+
+| ✅ Allowed (by **capability**, not table name) | Examples |
+|------------------------------------------------|----------|
+| Date/time | `format-date.ts`, `parse-iso-date.ts` |
+| String | `truncate.ts`, `slugify.ts` |
+| Number/currency | `format-currency.ts`, `clamp.ts` |
+| Validation primitives | `is-email.ts` |
+| Shared constants | `utils/date/constants.ts` — `MAX_PAGE_SIZE`, status codes |
+
+Folders are named by **capability** (`date/`, `string/`, `number/`), **not** by database table or Redux slice (`jobs/`, `orders/`, `users/`).
+
+### 2) What must NOT live in `src/utils/`
+
+| ❌ Forbidden in `src/utils/` | Put it here instead |
+|-----------------------------|-------------------|
+| `format-job-status.ts`, `format-order-row.ts` | `src/packages/{feature}/` (colocated helper) or inline in the component |
+| `build-job-table-columns.ts` | `src/packages/jobs/table/` |
+| `normalize-user-dto.ts` (single API entity) | `src/api/users/` or `src/packages/users/` |
+| Redux access, hooks, `fetch` | thunks / `src/api/` |
+
+**Test:** If the function only makes sense for one table or one screen, it is **not** a util.
+
+### 3) Utility rules
+
+1. Extract to `src/utils/{capability}/` when the same **generic** logic is used **2+ times** across features.
+2. Constants live in `src/utils/{capability}/constants.ts`.
+3. Functions must be **pure** — no React hooks, no Redux, no I/O.
+4. One primary function per file; kebab-case filenames.
+5. JSDoc on exported functions.
+
+### Standard folder shape
+
+```text
+src/utils/
+  date/
+    format-date.ts
+    constants.ts
+    index.ts
+  string/
+    truncate.ts
+    index.ts
 ```
 
-## ✅ Good Example
+## ✅ Good examples
 
 ```ts
-// src/utils/orders/constants.ts
-export const MAX_PAGE_SIZE = 100;
-export const DEFAULT_PAGE_SIZE = 20;
-export const BAD_REQUEST_STATUS = 400;
-export const CREATED_STATUS = 201;
-export const ORDER_ID_PARAM = "orderId";
-```
-
-```ts
-// src/utils/orders/pagination.ts
-import { DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE } from "./constants";
+// src/utils/date/format-date.ts
 
 /**
- * Returns a safe page size within allowed bounds.
+ * Formats an ISO date for display in US locale.
  */
-export function clampPageSize(rawPageSize?: number): number {
-  if (!rawPageSize) return DEFAULT_PAGE_SIZE;
-  return Math.min(Math.max(rawPageSize, 1), MAX_PAGE_SIZE);
-}
+export const formatDate = (iso: string): string =>
+  new Date(iso).toLocaleDateString('en-US');
+```
+
+```tsx
+// src/packages/orders/table/row/index.tsx
+import { formatDate } from '@/utils/date';
+import type { Order } from '@/model/order';
+
+type OrderListRowProps = { order: Order };
+
+/**
+ * Renders one order row (entity-specific copy stays in the package).
+ */
+export const OrderListRow = ({ order }: OrderListRowProps) => {
+  const label = `${order.reference} — ${order.status}`;
+  return (
+    <tr>
+      <td>{label}</td>
+      <td>{formatDate(order.createdAt)}</td>
+    </tr>
+  );
+};
+```
+
+## ❌ Bad examples
+
+```ts
+// src/utils/orders/format-order-status.ts  ❌ table-specific
+export const formatOrderStatus = (order: Order) => `${order.id}: ${order.status}`;
+```
+
+```ts
+// src/utils/jobs/build-job-row.ts  ❌ view-model for one screen
+export const buildJobRow = (job: Job, companies: Record<string, Company>) => ({
+  ...job,
+  companyName: companies[job.companyId]?.name,
+});
 ```
 
 ```ts
 // src/app/api/orders/route.ts
-import { NextRequest, NextResponse } from "next/server";
-import { BAD_REQUEST_STATUS, CREATED_STATUS } from "@/utils/orders/constants";
-import { clampPageSize } from "@/utils/orders/pagination";
-
-/**
- * Builds order route handlers with injected business dependencies.
- */
-export function createOrdersRouter(service: {
-  listOrders: (pageSize: number) => Promise<unknown>;
-  createOrder: (body: unknown) => Promise<unknown>;
-}) {
-  /**
-   * GET /api/orders
-   * Returns paginated orders.
-   */
-  async function GET(request: NextRequest) {
-    const pageSizeParam = Number(request.nextUrl.searchParams.get("pageSize"));
-    const pageSize = clampPageSize(pageSizeParam);
-    const data = await service.listOrders(pageSize);
-    return NextResponse.json(data);
-  }
-
-  /**
-   * POST /api/orders
-   * Creates a new order.
-   */
-  async function POST(request: NextRequest) {
-    const body = await request.json();
-    if (!body) {
-      return NextResponse.json(
-        { error: "Missing payload" },
-        { status: BAD_REQUEST_STATUS },
-      );
-    }
-
-    const created = await service.createOrder(body);
-    return NextResponse.json(created, { status: CREATED_STATUS });
-  }
-
-  return { GET, POST };
-}
+import { useSelector } from 'react-redux'; // ❌ hooks in non-component code
 ```
 
-## ❌ Bad Example
+## Pull request checklist
 
-```ts
-// src/app/api/orders/route.ts
-import { useSelector } from "react-redux";
-
-export async function GET(req: Request) {
-  const pageSize = Number(new URL(req.url).searchParams.get("pageSize")) || 20; // magic number
-  const capped = Math.min(pageSize, 100); // magic number
-  const token = useSelector((state) => state.auth.token); // hook usage in utility flow
-  return Response.json({ capped, token }, { status: 200 }); // magic status number
-}
-
-export async function POST(req: Request) {
-  // no JSDoc
-  const payload = await req.json();
-  return Response.json(payload, { status: 201 }); // magic number
-}
-```
-
-## Pull Request Checklist
-
-- [ ] Any repeated logic (2+ usages) moved to `src/utils/{domain}`.
-- [ ] Constants live in `src/utils/{domain}/constants.ts`.
-- [ ] Utility functions are pure and framework-agnostic.
-- [ ] No magic numbers/strings in handlers or business logic.
-- [ ] JSDoc added to router factory, each handler, and business logic functions.
+- [ ] `src/utils/` folders are capability-based (`date/`, `string/`), not table-based (`orders/`, `users/`)
+- [ ] No entity/table-specific formatters under `src/utils/`
+- [ ] Utilities are pure (no Redux, no hooks, no fetch)
+- [ ] Repeated **generic** logic (2+ uses) extracted; screen-specific logic stays in `src/packages/`

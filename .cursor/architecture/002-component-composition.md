@@ -4,7 +4,7 @@
 Accepted
 
 ## Context
-This document defines component composition rules for **luckee-web** to keep routing, feature logic, and shared UI consistent and scalable.
+This document defines component composition rules for **code-control** to keep routing, feature logic, and shared UI consistent and scalable.
 
 ## Decision
 
@@ -36,7 +36,7 @@ import { fetchOrdersThunk } from "@/packages/orders/store/thunks";
 
 export default function Page() {
   const dispatch = useAppDispatch();
-  const orders = useAppSelector((state) => state.orders.items);
+  const orders = useAppSelector((state) => state.orders.items); // ❌ nested + derived read
 
   return (
     <div>
@@ -57,29 +57,31 @@ Each feature is self-contained in its own package directory.
 Suggested structure:
 ```text
 src/packages/orders/
-  index.tsx                # main package component (required)
-  ui/
-    OrdersView.tsx
-    OrdersToolbar.tsx
-  model/
-    selectors.ts
-    types.ts
-  store/
-    slice.ts
-    thunks.ts
-  api/
-    client.ts
-  server/
-    router.ts
-    handlers.ts
-    service.ts
+  index.tsx                # export const Orders — package entry (required)
+  format-order-status.ts   # feature-specific formatters at package root
+  form-modal/
+    index.tsx              # zero props; open/close from builder + current
+    inputs/
+      title/index.tsx      # reads/writes currentOrder
+  header/
+    index.tsx
+    buttons/refresh-orders/index.tsx
+  table/
+    index.tsx
+    row/index.tsx
+  filters/
+    index.tsx
 ```
+
+Do **not** use `ui/` or `actions/` folders. Row UI lives in `table/row/` (or `{collection}/row/` — no `*-table` suffix). Page actions live in `header/buttons/`. Form fields live in `{form}/inputs/{field}/`. Modals take **no props**. See [012 – Package form inputs](./012-package-form-inputs.md).
+
+Do **not** add `selectors.ts` under packages or store. Read slices with identity `useAppSelector` only; see [001 – Redux patterns](./001-redux-patterns.md).
 
 ✅ **Do**
 ```text
 src/packages/inventory/index.tsx
-src/packages/inventory/ui/InventoryTable.tsx
-src/packages/inventory/store/thunks.ts
+src/packages/inventory/table/index.tsx
+src/packages/inventory/table/row/index.tsx
 ```
 
 ❌ **Don't**
@@ -109,7 +111,7 @@ src/components/seller-dashboard/KpiCard.tsx  # feature-specific UI
 
 Feature-specific UI must stay inside the feature package:
 ```text
-src/packages/orders/ui/OrdersFilters.tsx
+src/packages/orders/filters/index.tsx
 ```
 
 ---
@@ -149,25 +151,36 @@ export function useOrders() {
 ---
 
 ### 5) `index.tsx` is the package main component
-Each feature package exports one main component from `index.tsx`. App pages import this entry only.
+Each feature package exports one main component from `index.tsx` via `export const FeatureName`. App pages import this entry only.
 
 ✅ **Do**
 ```tsx
 // src/packages/orders/index.tsx
-import { OrdersScreen } from "./ui/OrdersScreen";
+'use client';
 
-export default function OrdersPage() {
-  return <OrdersScreen />;
-}
+export const Orders = () => {
+  return <div>...</div>;
+};
 ```
 
 ❌ **Don't**
 ```tsx
 // src/app/orders/page.tsx
-import { OrdersScreen } from "@/packages/orders/ui/OrdersScreen"; // bypasses package entrypoint
+import { OrdersTable } from '@/packages/orders/table'; // bypasses package entrypoint
 ```
 
 ---
+
+---
+
+### 6) Detail routes use static `{entity}-detail-page` paths
+
+- List: `/orders` → `src/packages/orders/`
+- Detail: `/order-detail-page` → `src/packages/order-detail-page/`
+- Open detail: thunk sets `currentOrder`, then `router.push(ORDER_DETAIL_PAGE_PATH)`
+- Forbidden: `src/app/orders/[id]/page.tsx`, `?orderId=` as source of truth
+
+See [008 – Detail page routing](./008-detail-page-routing.md).
 
 ---
 

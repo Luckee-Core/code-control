@@ -1,2 +1,2 @@
-export { useBreadcrumbs } from './useBreadcrumbs';
-export { useCodeControlDataLoader } from './useCodeControlDataLoader';
+export { useBreadcrumbs } from './use-breadcrumbs';
+export { useCodeControlDataLoader } from './use-code-control-data-loader';

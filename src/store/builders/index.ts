@@ -1,3 +1,7 @@
-export { default as workspaceBuilderReducer, WorkspaceBuilderActions } from './workspaceBuilder';
-export { default as layoutBuilderReducer, LayoutBuilderActions } from './layoutBuilder';
-export { default as customerBuilderReducer, CustomerBuilderActions } from './customerBuilder';
+export { workspaceBuilderReducer, WorkspaceBuilderActions } from './workspaceBuilder';
+export { layoutBuilderReducer, LayoutBuilderActions } from './layoutBuilder';
+export { customerBuilderReducer, CustomerBuilderActions } from './customerBuilder';
+export {
+  repositoriesBuilderReducer,
+  RepositoriesBuilderActions,
+} from './repositories-builder';

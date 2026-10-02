@@ -1,19 +1,5 @@
-'use client';
-
-import { CreateProjectModal, ProjectsList, ProjectsHeader } from '@/packages/projects';
-import { useBreadcrumbs } from '@/hooks';
+import { Projects } from '@/packages/projects';
 
 export default function ProjectsPage() {
-  useBreadcrumbs([{ label: 'Projects' }]);
-  return (
-    <div className={styles.page}>
-      <ProjectsHeader />
-      <ProjectsList />
-      <CreateProjectModal />
-    </div>
-  );
+  return <Projects />;
 }
-
-const styles = {
-  page: `p-6 flex flex-col gap-4 overflow-auto flex-1 min-h-0`,
-};

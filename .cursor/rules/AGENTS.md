@@ -1,56 +1,64 @@
-# luckee-web Next.js Rules
+# Next.js Template — Agent Rules
 
 BEFORE implementing ANY feature, you MUST:
 1. Read `.cursor/architecture/README.md`.
-2. Read the relevant ADRs in `.cursor/architecture/`.
-3. Follow documented patterns EXACTLY; if no pattern exists, you MUST add an ADR first.
+2. Read the relevant ADRs (**001–008**, **010–013**).
+3. Follow documented patterns EXACTLY; if no pattern exists, add an ADR first.
 
-## Non-Negotiable Rules
+## Redux — zero selector functions
+
+- **No** `createSelector`, Reselect, `src/store/selectors/`, or `**/selectors.ts`.
+- **`useAppSelector` only** as `(state) => state.<sliceKey>` — one whole top-level slice per call, **no** transforms inside the callback.
+- **Derive** with `useMemo` in components (`Object.values`, `[id]` lookup, filters, joins).
+- **No** view-models or joined row types stored in Redux.
+
+## Routing — static detail pages
+
+- **Never** `src/app/{entity}/[id]/page.tsx` or `[orderId]` dynamic segments.
+- **Use** `src/app/{entity}-detail-page/page.tsx` (e.g. `/project-detail-page`).
+- Detail screen reads **`current*`** from Redux; open via thunk + `router.push(DETAIL_PAGE_PATH)`.
+- **No** `useParams` / `useSearchParams` for entity id on detail pages.
+
+## Utils — generic only
+
+- `src/utils/{capability}/` — `date/`, `string/`, `number/` (formatters, parsers, clamps).
+- **Not** `src/utils/{table}/` — no `utils/orders/format-order-status.ts`.
+- Table/screen-specific formatters live in **`src/packages/{feature}/`**.
+
+## Non-negotiable rules
 
 ### Redux
-1. You MUST keep Redux logic in `src/store/` with flat layers: `dumps/`, `current/`, `builders/`, `config/` per [001 – Redux patterns](../architecture/001-redux-patterns.md).
-2. You MUST use Redux Toolkit slice patterns; NEVER write ad-hoc mutable global state.
-3. You MUST use manual thunks only (`AppThunk<Promise<200 | 400 | 500>>`); NEVER use `createAsyncThunk`.
-4. You MUST keep async side effects out of components; ALWAYS place them in thunks/services.
+1. Flat layers: `dumps/`, `current/`, `builders/`, `config/` per [001](./architecture/001-redux-patterns.md).
+2. Manual thunks only (`AppThunk<Promise<200 | 400 | 500>>`); no `createAsyncThunk`.
+3. Async side effects in thunks only, not components.
+4. Form save thunks take no payload — read `current*` via `getState()` per [012](./architecture/012-package-form-inputs.md).
 
 ### Components
-1. You MUST keep route segments in `src/app/`; feature UI MUST live in `src/packages/<feature>/`; cross-feature shared UI MUST live in `src/components/`.
-2. You MUST keep components focused and composable; NEVER mix data orchestration with presentational markup.
-3. You MUST default to Server Components and ONLY use `"use client"` when browser APIs/state are required.
-4. You MUST use `export const` for components and explicit typed props; NEVER use `any` in component public interfaces.
+1. Thin `src/app/**/page.tsx`; feature UI in `src/packages/<feature>/`.
+2. Shared UI in `src/components/`.
+3. Call thunks directly — no custom hooks that only wrap thunks.
+4. `export const` components; `type` not `interface`.
+5. Package tables use `{collection}/index.tsx` + `row/index.tsx`; form modals take no props per [012](./architecture/012-package-form-inputs.md).
 
 ### Styling
-1. You MUST follow the **styles object pattern** in [003 – Styling rules](../architecture/003-styling-rules.md): `const styles = { ... }` with template literals after the component.
-2. You MUST keep design tokens and global rules in `src/app/globals.css`.
-3. You MUST NOT use inline `style={{ ... }}` or per-component `.css` / `.module.css` files.
-4. You MUST NOT put raw Tailwind class strings directly on JSX `className` without the styles object indirection.
+1. Styles object pattern per [003](./architecture/003-styling-rules.md).
+2. No inline `style={{}}` or per-component CSS modules.
 
 ### API
-1. You MUST place HTTP handlers in `src/app/api/**/route.ts`.
-2. You MUST add JSDoc to every router factory, each exported handler (`GET`, `POST`, etc.), and all business-logic functions they call.
-3. You MUST keep handlers thin: validate input, delegate business logic, map errors to HTTP responses.
-4. You MUST NEVER access request bodies/query params directly in business logic; pass typed DTOs.
+1. HTTP lives in `src/api/{domain}/` (one function per file). Components never call API functions. Thunks only. See [004](./architecture/004-api-integration.md). Do not add `src/app/api/**/route.ts`.
 
 ### Files
-1. You MUST colocate files by feature/domain; one function or component per file; kebab-case filenames per [005 – File organization](../architecture/005-file-organization.md).
-2. You MUST use `type`, not `interface`.
-3. You MUST use barrel exports (`index.ts`) in every folder.
-4. You MUST keep import boundaries clean; NEVER create circular dependencies.
+1. kebab-case, one export per file; package entry is `index.tsx` per [005](./architecture/005-file-organization.md).
+2. Persisted entities in `src/model/{entity}.ts` per [011](./architecture/011-domain-models.md).
 
-## Quick Reference (Architecture ADRs)
+## Quick reference
 
-### Shared (001–006, 008, 010)
-- Architecture entrypoint → `.cursor/architecture/README.md`
-- Redux → `.cursor/architecture/001-redux-patterns.md`
-- Components → `.cursor/architecture/002-component-composition.md`
-- Styling → `.cursor/architecture/003-styling-rules.md`
-- API integration → `.cursor/architecture/004-api-integration.md`
-- File organization → `.cursor/architecture/005-file-organization.md`
-- Constants / utilities → `.cursor/architecture/006-constants-utilities.md`
-- Detail page routing → `.cursor/architecture/008-detail-page-routing.md`
-- Public content reads from Express → `.cursor/architecture/010-public-blog-express-fetch.md`
-
-### Product-specific (this repo)
-- Dashboard breadcrumbs → `.cursor/architecture/007-redux-dashboard-breadcrumbs.md`
-- Chat studio UI contract → `.cursor/architecture/016-standalone-chat-studio-ui-contract.md`
-- QR codes detail routing → `.cursor/architecture/017-qr-codes-redux-detail-routing.md`
+- [001 – Redux patterns](./architecture/001-redux-patterns.md)
+- [002 – Component composition](./architecture/002-component-composition.md)
+- [006 – Constants & utilities](./architecture/006-constants-utilities.md)
+- [008 – Detail page routing](./architecture/008-detail-page-routing.md)
+- [007 – Starter layout](./architecture/007-starter-template-layout.md)
+- [010 – Public Express reads](./architecture/010-public-blog-express-fetch.md)
+- [011 – Domain models](./architecture/011-domain-models.md)
+- [012 – Package form inputs](./architecture/012-package-form-inputs.md)
+- [013 – Redux breadcrumbs](./architecture/013-redux-breadcrumbs.md)

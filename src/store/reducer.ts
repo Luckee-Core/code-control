@@ -12,9 +12,10 @@ import {
   workspaceBuilderReducer,
   layoutBuilderReducer,
   customerBuilderReducer,
+  repositoriesBuilderReducer,
 } from './builders';
 
-const rootReducer = combineReducers({
+export const rootReducer = combineReducers({
   customers: customersReducer,
   projects: projectsReducer,
   projectRepos: projectReposReducer,
@@ -23,6 +24,5 @@ const rootReducer = combineReducers({
   workspaceBuilder: workspaceBuilderReducer,
   layoutBuilder: layoutBuilderReducer,
   customerBuilder: customerBuilderReducer,
+  repositoriesBuilder: repositoriesBuilderReducer,
 });
-
-export default rootReducer;

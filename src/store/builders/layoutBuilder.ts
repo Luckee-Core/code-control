@@ -33,4 +33,4 @@ const layoutBuilderSlice = createSlice({
 });
 
 export const LayoutBuilderActions = layoutBuilderSlice.actions;
-export default layoutBuilderSlice.reducer;
+export const layoutBuilderReducer = layoutBuilderSlice.reducer;

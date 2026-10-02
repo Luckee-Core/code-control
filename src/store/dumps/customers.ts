@@ -1,11 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { Customer } from '@/model/customer';
 
-type InitialState = {
-  [key: string]: Customer;
-};
+type CustomersState = Record<string, Customer>;
 
-const initialState: InitialState = {};
+const initialState: CustomersState = {};
 
 export const customersSlice = createSlice({
   name: 'customers',
@@ -31,4 +29,3 @@ export const customersSlice = createSlice({
 
 export const CustomersActions = customersSlice.actions;
 export const customersReducer = customersSlice.reducer;
-export default customersSlice.reducer;

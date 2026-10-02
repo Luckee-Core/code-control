@@ -2,7 +2,7 @@
 
 import { Provider } from 'react-redux';
 import { store } from '@/store';
-import { useCodeControlDataLoader } from '@/hooks/useCodeControlDataLoader';
+import { useCodeControlDataLoader } from '@/hooks/use-code-control-data-loader';
 import { useEffect, useState } from 'react';
 
 const DataLoader = ({ children }: { children: React.ReactNode }) => {

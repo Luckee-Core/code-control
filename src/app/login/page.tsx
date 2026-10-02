@@ -1,18 +1,5 @@
-'use client';
+import { Login } from '@/packages/login';
 
 export default function LoginPage() {
-  return (
-    <main className="min-h-screen flex items-center justify-center p-8">
-      <div className="max-w-md w-full space-y-4 text-center">
-        <h1 className="text-2xl font-semibold">Code Control</h1>
-        <p className="text-gray-600 text-sm">
-          No login required for local use. Open the workspace to manage customers, projects, and
-          repositories.
-        </p>
-        <a href="/projects" className="inline-block px-4 py-2 bg-blue-600 text-white rounded-lg">
-          Continue to Projects
-        </a>
-      </div>
-    </main>
-  );
+  return <Login />;
 }

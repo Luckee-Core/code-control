@@ -5,13 +5,14 @@ import { usePathname } from 'next/navigation';
 import { ChevronRight } from 'lucide-react';
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useAppSelector } from '@/store';
-import { CUSTOMERS_PATH, CUSTOMER_DETAIL_PAGE_PATH } from '@/config/routes';
-import { getNavigationLinks } from '@/utils/navigation/get-navigation-links';
-import type { NavigationLink } from '@/utils/navigation/get-navigation-links';
+import { CUSTOMERS_PATH, CUSTOMER_DETAIL_PAGE_PATH, PROJECTS_PATH, PROJECT_DETAIL_PAGE_PATH } from '@/config/routes';
+import { getNavigationLinks } from '@/utils/navigation';
+import type { NavigationLink } from '@/utils/navigation';
 
 export const CodeControlSidebar = () => {
   const pathname = usePathname();
-  const isSidebarOpen = useAppSelector((state) => state.layoutBuilder.isSidebarOpen);
+  const layoutBuilder = useAppSelector((state) => state.layoutBuilder);
+  const isSidebarOpen = layoutBuilder.isSidebarOpen;
   const navigationLinks = useMemo(() => getNavigationLinks(), []);
   const [expandedItems, setExpandedItems] = useState<Set<string>>(
     () => new Set(navigationLinks.filter((l) => l.children).map((l) => l.name))
@@ -21,6 +22,7 @@ export const CodeControlSidebar = () => {
     (href: string): boolean => {
       if (href === '/') return pathname === '/';
       if (href === CUSTOMERS_PATH && pathname === CUSTOMER_DETAIL_PAGE_PATH) return true;
+      if (href === PROJECTS_PATH && pathname === PROJECT_DETAIL_PAGE_PATH) return true;
       return pathname === href || pathname.startsWith(href + '/');
     },
     [pathname]
@@ -113,7 +115,7 @@ export const CodeControlSidebar = () => {
   return (
     <aside className={styles.sidebar}>
       <div className={styles.header}>
-        <Link href="/projects" className={styles.logo}>
+        <Link href={PROJECTS_PATH} className={styles.logo}>
           Code Control
         </Link>
       </div>

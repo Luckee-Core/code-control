@@ -1,6 +1,6 @@
 import { getApiBaseUrl } from '../config';
 import { ApiResponse } from '../types';
-import type { ProjectRepo } from './types';
+import type { ProjectRepo } from '@/model';
 
 export const getReposByProjectId = async (
   projectId: string,

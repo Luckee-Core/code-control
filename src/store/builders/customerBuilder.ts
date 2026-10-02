@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
 type CustomerBuilderState = {
   isModalOpen: boolean;
@@ -22,4 +22,4 @@ export const customerBuilderSlice = createSlice({
 });
 
 export const CustomerBuilderActions = customerBuilderSlice.actions;
-export default customerBuilderSlice.reducer;
+export const customerBuilderReducer = customerBuilderSlice.reducer;

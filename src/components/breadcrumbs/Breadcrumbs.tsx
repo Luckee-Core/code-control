@@ -7,8 +7,9 @@ import { PanelLeft, PanelLeftClose } from 'lucide-react';
 
 export const Breadcrumbs = () => {
   const dispatch = useAppDispatch();
-  const isSidebarOpen = useAppSelector((state) => state.layoutBuilder.isSidebarOpen);
-  const breadcrumbs = useAppSelector((state) => state.layoutBuilder.breadcrumbs);
+  const layoutBuilder = useAppSelector((state) => state.layoutBuilder);
+  const isSidebarOpen = layoutBuilder.isSidebarOpen;
+  const breadcrumbs = layoutBuilder.breadcrumbs;
 
   const handleToggleSidebar = () => {
     dispatch(LayoutBuilderActions.toggleSidebar());

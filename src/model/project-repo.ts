@@ -1,8 +1,10 @@
+export type RepoType = 'express' | 'nextjs' | 'react-native';
+
 export type ProjectRepo = {
   id: string;
   customer_id: string;
   project_id: string;
-  repo_type: 'express' | 'nextjs' | 'react-native';
+  repo_type: RepoType;
   name: string;
   repo_url: string;
   clone_url: string | null;

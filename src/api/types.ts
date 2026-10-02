@@ -1,18 +1,13 @@
-/**
- * API Types
- * Shared types for API responses
- */
-
-export interface ApiResponse<T> {
+export type ApiResponse<T> = {
   success: boolean;
   data?: T;
   count?: number;
   error?: string;
   message?: string;
-}
+};
 
-export interface PaginatedResponse<T> extends ApiResponse<T[]> {
+export type PaginatedResponse<T> = ApiResponse<T[]> & {
   page?: number;
   pageSize?: number;
   total?: number;
-}
+};

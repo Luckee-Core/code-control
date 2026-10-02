@@ -27,4 +27,4 @@ const workspaceBuilderSlice = createSlice({
 });
 
 export const WorkspaceBuilderActions = workspaceBuilderSlice.actions;
-export default workspaceBuilderSlice.reducer;
+export const workspaceBuilderReducer = workspaceBuilderSlice.reducer;

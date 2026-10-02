@@ -1,8 +1,6 @@
 # Architecture Documentation
 
-This folder contains Architecture Decision Records (ADRs) for the **Code Control** Next.js web app.
-
-> Forked from luckee-web. Product-specific ADRs (007, 016, 017) may not apply to Code Control — prefer 001–006 and 008.
+Architecture Decision Records (ADRs) for **code-control**.
 
 ## Why ADRs?
 
@@ -14,22 +12,23 @@ ADRs keep implementation consistent by documenting:
 
 ## ADR index (on-disk)
 
-### Shared conventions (001–006, 008, 010)
+### Shared conventions (001–008, 010–012)
 
-1. [001 – Redux patterns](./001-redux-patterns.md) — Flat layers, manual thunks.
+1. [001 – Redux patterns](./001-redux-patterns.md) — Flat layers, manual thunks, **zero selector functions**.
 2. [002 – Component composition](./002-component-composition.md) — Thin app routes, `src/packages/`.
 3. [003 – Styling rules](./003-styling-rules.md) — Styles object + template literals.
-4. [004 – API integration](./004-api-integration.md) — `src/api/` clients, thunks only.
-5. [005 – File organization](./005-file-organization.md) — kebab-case, barrel exports.
-6. [006 – Constants and utilities](./006-constants-utilities.md) — Pure utilities.
-8. [008 – Detail page routing](./008-detail-page-routing.md) — `{entity}-detail-page`, no `[id]` routes; Redux `current*`.
+4. [004 – API integration](./004-api-integration.md) — `src/api/` clients, thunks only; **no** Next `src/app/api` handlers.
+5. [005 – File organization](./005-file-organization.md) — kebab-case, static detail routes.
+6. [006 – Constants and utilities](./006-constants-utilities.md) — Generic formatters only (not table-specific).
+7. [007 – Starter template layout](./007-starter-template-layout.md) — Minimal shipped store and folder growth path.
+8. [008 – Detail page routing](./008-detail-page-routing.md) — `{entity}-detail-page`, no `[id]` routes.
 10. [010 – Public content reads from Express](./010-public-blog-express-fetch.md) — Server Component reads + Redux list hydration.
+11. [011 – Domain models (`src/model`)](./011-domain-models.md) — persisted entity types; one file per table entity.
+12. [012 – Package form inputs](./012-package-form-inputs.md) — `{form}/inputs/{field}`, zero-prop modals, `{collection}/row/`.
 
 ### Product-specific
 
-7. [007 – Redux dashboard breadcrumbs](./007-redux-dashboard-breadcrumbs.md) — Serializable trail, resolver hook.
-16. [016 – Standalone chat studio UI contract](./016-standalone-chat-studio-ui-contract.md) — Inline two-pane shell.
-17. [017 – QR codes Redux detail routing](./017-qr-codes-redux-detail-routing.md) — QR detail via `current*`.
+13. [013 – Redux breadcrumbs](./013-redux-breadcrumbs.md) — `layoutBuilder` trail; packages register crumbs.
 
 ## How to use
 

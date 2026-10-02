@@ -4,7 +4,7 @@
 Accepted
 
 ## Context
-This ADR defines mandatory Redux patterns for **luckee-web** so async flows, slice state, and reducer behavior remain predictable across features.
+This ADR defines mandatory Redux patterns for **code-control** and apps created from it so async flows, slice state, and reducer behavior remain predictable across features.
 
 ## Decision
 
@@ -43,15 +43,22 @@ export const refreshJobs = createAsyncThunk("jobs/refresh", async () => {
 ### 2) Every thunk must use this signature: `AppThunk<Promise<200 | 400 | 500>>`
 Thunk return values are status-code unions. This keeps dispatch call sites explicit and consistent.
 
+**Form save thunks take no arguments.** They read the editing entity from `getState().current*` and map it to the API. Persist `saveError` / `saveStatus` on the matching **builder** (primitives only). See [012 – Package form inputs](./012-package-form-inputs.md).
+
 ✅ **Do**
 ```ts
 import type { AppThunk } from "@/store";
 
-export const updateJobThunk =
-  (input: { id: string; status: JobStatus }): AppThunk<Promise<200 | 400 | 500>> =>
-  async (dispatch) => {
-    const result = await updateJobApi(input);
+export const saveJobThunk =
+  (): AppThunk<Promise<200 | 400 | 500>> =>
+  async (dispatch, getState) => {
+    const current = getState().currentJob;
+    const result =
+      current.id === ""
+        ? await createJobApi({ title: current.title })
+        : await updateJobApi(current.id, { title: current.title });
     if (!result.success || !result.data) {
+      dispatch(JobsBuilderActions.setSaveError(result.error?.message ?? "Save failed"));
       return result.httpStatus === 400 ? 400 : 500;
     }
     dispatch(JobsActions.upsertJob(result.data));
@@ -64,7 +71,12 @@ export const updateJobThunk =
 export const updateJob = () => async () => {
   return true; // ambiguous return contract
 };
+
+// Form save with a payload copied from useState
+export const createJobThunk = (payload: CreateJobPayload) => ...
 ```
+
+**Exception:** creating a *related* row from a **builder string** already in Redux is allowed. Do not pass the whole form as a payload object.
 
 ---
 
@@ -140,23 +152,50 @@ type BuilderState = {
 
 ---
 
-### 5) No view-models in Redux; derive in components or utils
-Do not store joined/fat types (`JobRow`, `BookingCardData`) in Redux. Join dumps in the component with `useMemo` or a pure util.
+### 5) Zero selector functions (strict)
 
-✅ **Do**
+**Selector count in this template: zero.** That means:
+
+| Forbidden | Allowed |
+|-----------|---------|
+| `createSelector` / Reselect | — |
+| `src/store/selectors/` or `**/selectors.ts` | — |
+| `useAppSelector` with transforms (`.filter`, `Object.values`, `[id]`, joins) | `useAppSelector` reading **one whole top-level slice** only |
+| Storing view-models in Redux (`JobRow`, joined types) | `useMemo` in the component after reading raw slices |
+
+✅ **Do** — identity slice reads + `useMemo` in the component:
+
 ```tsx
-const job = useAppSelector((s) => s.currentJob);
-const companies = useAppSelector((s) => s.companies);
-const companyName = job.companyId ? companies[job.companyId]?.name : undefined;
+const jobs = useAppSelector((state) => state.jobs);
+const currentJob = useAppSelector((state) => state.currentJob);
+const companies = useAppSelector((state) => state.companies);
+
+const jobList = useMemo(() => Object.values(jobs), [jobs]);
+
+const companyName = useMemo(() => {
+  const id = currentJob.companyId;
+  return id ? companies[id]?.name : undefined;
+}, [currentJob.companyId, companies]);
 ```
 
-❌ **Don't**
+❌ **Don't** — derived logic inside `useAppSelector`:
+
+```tsx
+const jobList = useAppSelector((state) => Object.values(state.jobs)); // ❌
+const job = useAppSelector((state) => state.jobs[jobId]); // ❌
+const openJobs = useAppSelector((state) =>
+  Object.values(state.jobs).filter((j) => j.status === "OPEN"),
+); // ❌
+```
+
 ```ts
-type JobRow = Job & { companyName: string; graphicCount: number };
-// stored in Redux or returned from a Reselect selector module
+// src/store/selectors/job-selectors.ts  ❌
+export const selectOpenJobs = createSelector(...);
 ```
 
-Do not add `src/store/selectors/` modules that rebuild joined view-models. Prefer one slice per `useAppSelector` call plus local `useMemo`.
+**Rule:** Each `useAppSelector` call passes `(state) => state.<sliceKey>` with **no** property access, indexing, or transformations on `state` inside the callback. Derive in `useMemo` (or inline in JSX for trivial cases).
+
+Entity-specific display shaping (e.g. “Job #123 — Draft”) belongs in the **package** component layer, not in selector modules and not in `src/utils/{entity}/`.
 
 ---
 

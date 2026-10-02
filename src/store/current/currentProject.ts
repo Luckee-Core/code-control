@@ -23,4 +23,4 @@ export const currentProjectSlice = createSlice({
 });
 
 export const CurrentProjectActions = currentProjectSlice.actions;
-export default currentProjectSlice.reducer;
+export const currentProjectReducer = currentProjectSlice.reducer;

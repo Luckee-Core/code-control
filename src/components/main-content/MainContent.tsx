@@ -13,7 +13,7 @@ export const MainContent = ({ children }: MainContentProps) => {
         <Breadcrumbs />
       </div>
       <div className={styles.content}>
-        {children}
+        <div className={styles.pageSlot}>{children}</div>
       </div>
     </main>
   );
@@ -28,5 +28,8 @@ const styles = {
   `,
   content: `
     flex-1 min-h-0 flex flex-col overflow-hidden
+  `,
+  pageSlot: `
+    flex-1 min-h-0 h-full flex flex-col overflow-hidden
   `,
 };

@@ -23,4 +23,4 @@ export const currentCustomerSlice = createSlice({
 });
 
 export const CurrentCustomerActions = currentCustomerSlice.actions;
-export default currentCustomerSlice.reducer;
+export const currentCustomerReducer = currentCustomerSlice.reducer;

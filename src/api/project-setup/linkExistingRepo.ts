@@ -1,5 +1,6 @@
 import { getApiBaseUrl } from '../config';
-import type { CreateRepoResponse, RepoType } from './types';
+import type { CreateRepoResponse } from './types';
+import type { RepoType } from '@/model/project-repo';
 
 export type LinkExistingRepoOptions = {
   repo_type: Extract<RepoType, 'express' | 'nextjs'>;
