@@ -4,9 +4,10 @@ import { useMemo } from 'react';
 import { useAppDispatch, useAppSelector } from '@/store';
 import { RepositoriesBuilderActions } from '@/store/builders';
 import { slugifyRepoName } from '../../slugify-repo-name';
+import { repoNameForServerRuntime } from '../server-repo-name';
 import { Table } from '../table';
 
-const TITLE = 'Express servers';
+const TITLE = 'Servers';
 
 export const Servers = () => {
   const dispatch = useAppDispatch();
@@ -17,7 +18,9 @@ export const Servers = () => {
   const repos = useMemo(
     () =>
       Object.values(projectRepos).filter(
-        (repo) => repo.project_id === currentProject.id && repo.repo_type === 'express'
+        (repo) =>
+          repo.project_id === currentProject.id &&
+          (repo.repo_type === 'express' || repo.repo_type === 'python')
       ),
     [projectRepos, currentProject.id]
   );
@@ -28,7 +31,7 @@ export const Servers = () => {
 
   const handleOpenCreate = () => {
     const slug = currentProject.name ? slugifyRepoName(currentProject.name) : '';
-    const defaultName = slug ? `${slug}-express-server` : '';
+    const defaultName = repoNameForServerRuntime('', slug, 'express');
     dispatch(RepositoriesBuilderActions.setExpressRepoName(defaultName));
     dispatch(RepositoriesBuilderActions.openExpressCreate());
   };

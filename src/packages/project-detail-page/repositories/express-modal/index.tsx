@@ -4,9 +4,10 @@ import { useAppDispatch, useAppSelector } from '@/store';
 import { RepositoriesBuilderActions } from '@/store/builders';
 import { createExpressRepoThunk } from '@/store/thunks/project-repos';
 import { NameInput } from './inputs/name';
+import { RuntimeInput } from './inputs/runtime';
 
-const TITLE = 'Create Express repo';
-const SUBMIT_LABEL = 'Create Express Repo';
+const TITLE = 'Create server';
+const SUBMIT_LABEL = 'Create server';
 
 export const ExpressModal = () => {
   const dispatch = useAppDispatch();
@@ -33,6 +34,7 @@ export const ExpressModal = () => {
           </button>
         </div>
         <div className={styles.content}>
+          <RuntimeInput />
           <NameInput />
           {repositoriesBuilder.saveStatus === 'error' && repositoriesBuilder.linkError && (
             <p className={styles.errorText}>{repositoriesBuilder.linkError}</p>

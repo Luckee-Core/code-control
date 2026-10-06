@@ -4,4 +4,5 @@ export { customerBuilderReducer, CustomerBuilderActions } from './customerBuilde
 export {
   repositoriesBuilderReducer,
   RepositoriesBuilderActions,
+  type ServerRuntime,
 } from './repositories-builder';

@@ -26,6 +26,17 @@ export const RepoTypeInput = () => {
           <input
             type="radio"
             name="existing-repo-type"
+            value="python"
+            checked={repositoriesBuilder.existingRepoType === 'python'}
+            onChange={() => dispatch(RepositoriesBuilderActions.setExistingRepoType('python'))}
+            className={styles.typeRadio}
+          />
+          <span className={styles.typeOptionText}>Python server</span>
+        </label>
+        <label className={styles.typeOption}>
+          <input
+            type="radio"
+            name="existing-repo-type"
             value="nextjs"
             checked={repositoriesBuilder.existingRepoType === 'nextjs'}
             onChange={() => dispatch(RepositoriesBuilderActions.setExistingRepoType('nextjs'))}

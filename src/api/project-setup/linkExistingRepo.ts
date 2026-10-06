@@ -3,7 +3,7 @@ import type { CreateRepoResponse } from './types';
 import type { RepoType } from '@/model/project-repo';
 
 export type LinkExistingRepoOptions = {
-  repo_type: Extract<RepoType, 'express' | 'nextjs'>;
+  repo_type: Extract<RepoType, 'express' | 'python' | 'nextjs'>;
   repo_url: string;
 };
 

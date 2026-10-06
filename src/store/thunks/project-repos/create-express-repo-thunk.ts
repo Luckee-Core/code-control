@@ -1,5 +1,5 @@
 import { AppThunk } from '@/store';
-import { createExpressRepo } from '@/api/project-setup';
+import { createExpressRepo, createPythonRepo } from '@/api/project-setup';
 import { getApiBaseUrl } from '@/api/config';
 import { RepositoriesBuilderActions } from '@/store/builders';
 import { getReposByProjectIdThunk } from './get-repos-by-project-id-thunk';
@@ -7,7 +7,7 @@ import { getReposByProjectIdThunk } from './get-repos-by-project-id-thunk';
 type ResponseType = Promise<200 | 400 | 500>;
 
 /**
- * Creates an Express GitHub repo from repositoriesBuilder.expressRepoName.
+ * Creates an Express or Python GitHub repo from repositoriesBuilder.
  */
 export const createExpressRepoThunk = (): AppThunk<ResponseType> => {
   return async (dispatch, getState): ResponseType => {
@@ -19,7 +19,9 @@ export const createExpressRepoThunk = (): AppThunk<ResponseType> => {
 
     dispatch(RepositoriesBuilderActions.setSaveStatus('saving'));
     const owner = repositoriesBuilder.selectedGithubOrg;
-    const response = await createExpressRepo(currentProject.id, getApiBaseUrl(), {
+    const createRepo =
+      repositoriesBuilder.serverRuntime === 'python' ? createPythonRepo : createExpressRepo;
+    const response = await createRepo(currentProject.id, getApiBaseUrl(), {
       name,
       ...(owner ? { owner } : {}),
     });

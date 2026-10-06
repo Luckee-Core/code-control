@@ -4,7 +4,6 @@ import { useAppDispatch, useAppSelector } from '@/store';
 import { RepositoriesBuilderActions } from '@/store/builders';
 import { createExpressRepoThunk } from '@/store/thunks/project-repos';
 
-const PLACEHOLDER = 'e.g. roads-crm-express-server';
 const NAME_LABEL = 'Repository name';
 
 export const NameInput = () => {
@@ -13,11 +12,11 @@ export const NameInput = () => {
 
   return (
     <div className={styles.field}>
-      <label htmlFor="create-express-repo-name" className={styles.label}>
+      <label htmlFor="create-server-repo-name" className={styles.label}>
         {NAME_LABEL}
       </label>
       <input
-        id="create-express-repo-name"
+        id="create-server-repo-name"
         type="text"
         value={repositoriesBuilder.expressRepoName}
         onChange={(event) =>
@@ -28,7 +27,11 @@ export const NameInput = () => {
             void dispatch(createExpressRepoThunk());
           }
         }}
-        placeholder={PLACEHOLDER}
+        placeholder={
+          repositoriesBuilder.serverRuntime === 'python'
+            ? 'e.g. roads-crm-python-server'
+            : 'e.g. roads-crm-express-server'
+        }
         className={styles.input}
         autoFocus
       />

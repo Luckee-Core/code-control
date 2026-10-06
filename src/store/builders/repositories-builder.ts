@@ -2,12 +2,14 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 type LoadStatus = 'idle' | 'loading' | 'error';
 type SaveStatus = 'idle' | 'saving' | 'error';
-type ExistingRepoType = 'express' | 'nextjs';
+type ExistingRepoType = 'express' | 'python' | 'nextjs';
+export type ServerRuntime = 'express' | 'python';
 
 type RepositoriesBuilderState = {
   isExpressCreateOpen: boolean;
   isWebCreateOpen: boolean;
   isAddExistingOpen: boolean;
+  serverRuntime: ServerRuntime;
   expressRepoName: string;
   webRepoName: string;
   existingRepoUrl: string;
@@ -24,6 +26,7 @@ const initialState: RepositoriesBuilderState = {
   isExpressCreateOpen: false,
   isWebCreateOpen: false,
   isAddExistingOpen: false,
+  serverRuntime: 'express',
   expressRepoName: '',
   webRepoName: '',
   existingRepoUrl: '',
@@ -42,10 +45,12 @@ const repositoriesBuilderSlice = createSlice({
   reducers: {
     openExpressCreate: (state) => {
       state.isExpressCreateOpen = true;
+      state.serverRuntime = 'express';
       state.saveStatus = 'idle';
     },
     closeExpressCreate: (state) => {
       state.isExpressCreateOpen = false;
+      state.serverRuntime = 'express';
       state.expressRepoName = '';
       state.saveStatus = 'idle';
     },
@@ -70,6 +75,9 @@ const repositoriesBuilderSlice = createSlice({
       state.existingRepoType = 'express';
       state.linkError = '';
       state.saveStatus = 'idle';
+    },
+    setServerRuntime: (state, action: PayloadAction<ServerRuntime>) => {
+      state.serverRuntime = action.payload;
     },
     setExpressRepoName: (state, action: PayloadAction<string>) => {
       state.expressRepoName = action.payload;
