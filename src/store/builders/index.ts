@@ -5,4 +5,5 @@ export {
   repositoriesBuilderReducer,
   RepositoriesBuilderActions,
   type ServerRuntime,
+  type FrontendRuntime,
 } from './repositories-builder';

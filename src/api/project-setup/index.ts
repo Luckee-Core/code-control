@@ -5,5 +5,6 @@ export * from './getGithubOrgs';
 export * from './createExpressRepo';
 export * from './createPythonRepo';
 export * from './createWebRepo';
+export * from './createReactNativeRepo';
 export * from './linkExistingRepo';
 export type { GithubOrgOptions } from './getGithubOrgs';

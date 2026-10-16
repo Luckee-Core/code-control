@@ -6,7 +6,7 @@ import { RepositoriesBuilderActions } from '@/store/builders';
 import { slugifyRepoName } from '../../slugify-repo-name';
 import { Table } from '../table';
 
-const TITLE = 'Web apps';
+const TITLE = 'Frontend apps';
 
 export const WebApps = () => {
   const dispatch = useAppDispatch();
@@ -17,7 +17,9 @@ export const WebApps = () => {
   const repos = useMemo(
     () =>
       Object.values(projectRepos).filter(
-        (repo) => repo.project_id === currentProject.id && repo.repo_type === 'nextjs'
+        (repo) =>
+          repo.project_id === currentProject.id &&
+          (repo.repo_type === 'nextjs' || repo.repo_type === 'react-native')
       ),
     [projectRepos, currentProject.id]
   );

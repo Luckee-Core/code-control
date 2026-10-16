@@ -2,14 +2,16 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 type LoadStatus = 'idle' | 'loading' | 'error';
 type SaveStatus = 'idle' | 'saving' | 'error';
-type ExistingRepoType = 'express' | 'python' | 'nextjs';
+type ExistingRepoType = 'express' | 'python' | 'nextjs' | 'react-native';
 export type ServerRuntime = 'express' | 'python';
+export type FrontendRuntime = 'nextjs' | 'react-native';
 
 type RepositoriesBuilderState = {
   isExpressCreateOpen: boolean;
   isWebCreateOpen: boolean;
   isAddExistingOpen: boolean;
   serverRuntime: ServerRuntime;
+  frontendRuntime: FrontendRuntime;
   expressRepoName: string;
   webRepoName: string;
   existingRepoUrl: string;
@@ -27,6 +29,7 @@ const initialState: RepositoriesBuilderState = {
   isWebCreateOpen: false,
   isAddExistingOpen: false,
   serverRuntime: 'express',
+  frontendRuntime: 'nextjs',
   expressRepoName: '',
   webRepoName: '',
   existingRepoUrl: '',
@@ -56,10 +59,12 @@ const repositoriesBuilderSlice = createSlice({
     },
     openWebCreate: (state) => {
       state.isWebCreateOpen = true;
+      state.frontendRuntime = 'nextjs';
       state.saveStatus = 'idle';
     },
     closeWebCreate: (state) => {
       state.isWebCreateOpen = false;
+      state.frontendRuntime = 'nextjs';
       state.webRepoName = '';
       state.saveStatus = 'idle';
     },
@@ -78,6 +83,9 @@ const repositoriesBuilderSlice = createSlice({
     },
     setServerRuntime: (state, action: PayloadAction<ServerRuntime>) => {
       state.serverRuntime = action.payload;
+    },
+    setFrontendRuntime: (state, action: PayloadAction<FrontendRuntime>) => {
+      state.frontendRuntime = action.payload;
     },
     setExpressRepoName: (state, action: PayloadAction<string>) => {
       state.expressRepoName = action.payload;

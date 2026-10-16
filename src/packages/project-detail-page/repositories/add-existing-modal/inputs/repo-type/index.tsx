@@ -44,6 +44,19 @@ export const RepoTypeInput = () => {
           />
           <span className={styles.typeOptionText}>Next.js web app</span>
         </label>
+        <label className={styles.typeOption}>
+          <input
+            type="radio"
+            name="existing-repo-type"
+            value="react-native"
+            checked={repositoriesBuilder.existingRepoType === 'react-native'}
+            onChange={() =>
+              dispatch(RepositoriesBuilderActions.setExistingRepoType('react-native'))
+            }
+            className={styles.typeRadio}
+          />
+          <span className={styles.typeOptionText}>React Native app</span>
+        </label>
       </div>
     </fieldset>
   );

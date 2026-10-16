@@ -1,5 +1,5 @@
 import { AppThunk } from '@/store';
-import { createWebRepo } from '@/api/project-setup';
+import { createReactNativeRepo, createWebRepo } from '@/api/project-setup';
 import { getApiBaseUrl } from '@/api/config';
 import { RepositoriesBuilderActions } from '@/store/builders';
 import { getReposByProjectIdThunk } from './get-repos-by-project-id-thunk';
@@ -7,7 +7,7 @@ import { getReposByProjectIdThunk } from './get-repos-by-project-id-thunk';
 type ResponseType = Promise<200 | 400 | 500>;
 
 /**
- * Creates a Next.js GitHub repo from repositoriesBuilder.webRepoName.
+ * Creates a Next.js or React Native GitHub repo from repositoriesBuilder.
  */
 export const createWebRepoThunk = (): AppThunk<ResponseType> => {
   return async (dispatch, getState): ResponseType => {
@@ -19,7 +19,11 @@ export const createWebRepoThunk = (): AppThunk<ResponseType> => {
 
     dispatch(RepositoriesBuilderActions.setSaveStatus('saving'));
     const owner = repositoriesBuilder.selectedGithubOrg;
-    const response = await createWebRepo(currentProject.id, getApiBaseUrl(), {
+    const createRepo =
+      repositoriesBuilder.frontendRuntime === 'react-native'
+        ? createReactNativeRepo
+        : createWebRepo;
+    const response = await createRepo(currentProject.id, getApiBaseUrl(), {
       name,
       ...(owner ? { owner } : {}),
     });

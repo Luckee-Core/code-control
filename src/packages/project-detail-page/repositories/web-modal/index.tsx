@@ -4,15 +4,16 @@ import { useAppDispatch, useAppSelector } from '@/store';
 import { RepositoriesBuilderActions } from '@/store/builders';
 import { createWebRepoThunk } from '@/store/thunks/project-repos';
 import { NameInput } from './inputs/name';
-
-const TITLE = 'Create web repo';
-const SUBMIT_LABEL = 'Create Web Repo';
+import { RuntimeInput } from './inputs/runtime';
 
 export const WebModal = () => {
   const dispatch = useAppDispatch();
   const repositoriesBuilder = useAppSelector((state) => state.repositoriesBuilder);
   const isSubmitting = repositoriesBuilder.saveStatus === 'saving';
   const canSubmit = repositoriesBuilder.webRepoName.trim().length > 0 && !isSubmitting;
+  const isReactNative = repositoriesBuilder.frontendRuntime === 'react-native';
+  const title = isReactNative ? 'Create React Native repo' : 'Create web repo';
+  const submitLabel = isReactNative ? 'Create React Native Repo' : 'Create Web Repo';
 
   if (!repositoriesBuilder.isWebCreateOpen) {
     return null;
@@ -27,12 +28,13 @@ export const WebModal = () => {
     <div className={styles.overlay} onClick={handleClose}>
       <div className={styles.modal} onClick={(event) => event.stopPropagation()}>
         <div className={styles.header}>
-          <h2 className={styles.title}>{TITLE}</h2>
+          <h2 className={styles.title}>{title}</h2>
           <button type="button" onClick={handleClose} className={styles.closeButton}>
             ✕
           </button>
         </div>
         <div className={styles.content}>
+          <RuntimeInput />
           <NameInput />
           {repositoriesBuilder.saveStatus === 'error' && repositoriesBuilder.linkError && (
             <p className={styles.errorText}>{repositoriesBuilder.linkError}</p>
@@ -53,7 +55,7 @@ export const WebModal = () => {
             className={styles.saveButton}
             disabled={!canSubmit}
           >
-            {isSubmitting ? 'Creating…' : SUBMIT_LABEL}
+            {isSubmitting ? 'Creating…' : submitLabel}
           </button>
         </div>
       </div>
