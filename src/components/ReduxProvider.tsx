@@ -3,11 +3,13 @@
 import { Provider } from 'react-redux';
 import { store } from '@/store';
 import { useCodeControlDataLoader } from '@/hooks/use-code-control-data-loader';
+import { WorkspaceLoadBanner } from '@/components/workspace-load-banner';
 import { useEffect, useState } from 'react';
 
 const DataLoader = ({ children }: { children: React.ReactNode }) => {
-  const { isLoading } = useCodeControlDataLoader();
+  const { isLoading, loadFailed } = useCodeControlDataLoader();
   const [canRender, setCanRender] = useState(false);
+  const [bannerDismissed, setBannerDismissed] = useState(false);
 
   useEffect(() => {
     if (!isLoading) {
@@ -26,7 +28,14 @@ const DataLoader = ({ children }: { children: React.ReactNode }) => {
     );
   }
 
-  return <>{children}</>;
+  return (
+    <>
+      {loadFailed && !bannerDismissed ? (
+        <WorkspaceLoadBanner onDismiss={() => setBannerDismissed(true)} />
+      ) : null}
+      {children}
+    </>
+  );
 };
 
 export const ReduxProvider = ({ children }: { children: React.ReactNode }) => {

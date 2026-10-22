@@ -13,11 +13,12 @@ export const StudioSetup = () => {
     <div className={styles.page}>
       <header className={styles.header}>
         <div>
-          <h1 className={styles.title}>Studio setup — local Postgres</h1>
+          <h1 className={styles.title}>Studio setup — storage, API, and web</h1>
           <p className={styles.subtitle}>
-            Code Control stores customers, projects, and repos on your studio machine. There is no
-            dashboard button that runs migrations for you — use the terminal steps below (or copy
-            them). This page checks whether the API and database are wired correctly.
+            Code Control stores customers, projects, and repos in Postgres behind{' '}
+            <code className={styles.inlineCode}>code-generator-storage-server</code>. The Express API
+            calls storage over HTTP; this web app calls Express. Hub <strong>Run</strong> starts
+            express and web only — start storage separately when you need data.
           </p>
         </div>
         <Link href={PROJECTS_PATH} className={styles.backLink}>
@@ -30,15 +31,16 @@ export const StudioSetup = () => {
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>Luckee Hub ports (default)</h2>
         <p className={styles.body}>
-          On the studio, Hub usually runs Express on <strong>3012</strong> and this app on{' '}
-          <strong>3013</strong>. Standalone dev often uses 3010 / 3000 — match{' '}
-          <code className={styles.inlineCode}>PORT</code> and{' '}
-          <code className={styles.inlineCode}>CODE_CONTROL_API_URL</code> to whatever you use.
+          Storage <strong>3080</strong>, Express <strong>3012</strong>, web <strong>3013</strong>.
+          Standalone dev may use other ports — match{' '}
+          <code className={styles.inlineCode}>PORT</code>,{' '}
+          <code className={styles.inlineCode}>STORAGE_EXPRESS_URL</code>, and{' '}
+          <code className={styles.inlineCode}>CODE_CONTROL_API_URL</code>.
         </p>
       </section>
 
       <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>1. Postgres on the studio</h2>
+        <h2 className={styles.sectionTitle}>1. Postgres on the storage host</h2>
         <p className={styles.body}>
           Install and start PostgreSQL (14+). Create an empty database once per machine:
         </p>
@@ -47,38 +49,36 @@ export const StudioSetup = () => {
       </section>
 
       <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>2. Express API env</h2>
+        <h2 className={styles.sectionTitle}>2. Storage env</h2>
         <p className={styles.body}>
-          In <code className={styles.inlineCode}>code-control-express-server/.env</code> (copy from{' '}
+          In <code className={styles.inlineCode}>code-generator-storage-server/.env</code> (copy from{' '}
           <code className={styles.inlineCode}>.env.example</code>):
         </p>
         <CopyBlock
           label="Required"
-          command={`DATABASE_URL=postgresql://127.0.0.1:5432/code_control\nPORT=3012`}
+          command={`PORT=3080\nSTORAGE_BIND_HOST=0.0.0.0\nDATABASE_URL=postgresql://127.0.0.1:5432/code_control\nSTORAGE_DISPATCHER_SECRET=<openssl rand -base64 32>`}
         />
-        <p className={styles.body}>
-          Add GitHub PAT and template vars if you use repo creation — see the express-server OSS
-          quickstart.
-        </p>
       </section>
 
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>3. Schema (every new machine)</h2>
         <CopyBlock
           label="Install + migrations"
-          command={`cd code-control-express-server\nnpm install\nnpm run db:apply-migrations`}
+          command={`cd code-generator-storage-server\nnpm install\nnpm run db:apply-migrations`}
         />
       </section>
 
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>4. Optional — import from Supabase (one time)</h2>
         <p className={styles.body}>
-          Moving off cloud Postgres? Temporarily add{' '}
-          <code className={styles.inlineCode}>SUPABASE_URL</code> and{' '}
-          <code className={styles.inlineCode}>SUPABASE_SERVICE_ROLE_KEY</code> to Express{' '}
-          <code className={styles.inlineCode}>.env</code>, then:
+          Add <code className={styles.inlineCode}>SUPABASE_URL</code> and{' '}
+          <code className={styles.inlineCode}>SUPABASE_SERVICE_ROLE_KEY</code> to the{' '}
+          <strong>storage</strong> <code className={styles.inlineCode}>.env</code>, then:
         </p>
-        <CopyBlock label="Import CRM rows" command="npm run db:import-from-supabase" />
+        <CopyBlock
+          label="Import CRM rows"
+          command="cd code-generator-storage-server && npm run db:import-from-supabase"
+        />
         <p className={styles.note}>
           Remove the two Supabase variables after a successful import. Re-running import is safe
           (upserts by id).
@@ -86,13 +86,32 @@ export const StudioSetup = () => {
       </section>
 
       <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>5. Start services</h2>
+        <h2 className={styles.sectionTitle}>5. Express API env</h2>
+        <p className={styles.body}>
+          In <code className={styles.inlineCode}>code-control-express-server/.env</code>:
+        </p>
         <CopyBlock
-          label="Express (terminal 1)"
+          label="Storage + port"
+          command={`STORAGE_EXPRESS_URL=http://127.0.0.1:3080\nSTORAGE_EXPRESS_SECRET=<same as STORAGE_DISPATCHER_SECRET>\nPORT=3012`}
+        />
+        <p className={styles.body}>
+          Add GitHub PAT and template vars if you use repo creation — see the express-server OSS
+          quickstart. Express has no <code className={styles.inlineCode}>DATABASE_URL</code>.
+        </p>
+      </section>
+
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>6. Start services</h2>
+        <CopyBlock
+          label="Storage (terminal 1)"
+          command={`cd code-generator-storage-server\nnpm run dev`}
+        />
+        <CopyBlock
+          label="Express (terminal 2)"
           command={`cd code-control-express-server\nnpm run dev`}
         />
         <CopyBlock
-          label="Web (terminal 2)"
+          label="Web (terminal 3)"
           command={`cd code-control\n# .env.local: CODE_CONTROL_API_URL=http://127.0.0.1:3012\nnpm run dev`}
         />
         <CopyBlock
@@ -104,11 +123,12 @@ export const StudioSetup = () => {
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>Full written guide</h2>
         <p className={styles.body}>
-          Troubleshooting, Hub notes, and security: open{' '}
+          Troubleshooting, Hub notes, and security:{' '}
+          <code className={styles.inlineCode}>code-control-express-server/DEPLOYMENT.md</code> and{' '}
           <code className={styles.inlineCode}>
             code-control-express-server/docs/studio-local-postgres-setup.md
-          </code>{' '}
-          in your studio clone (full walkthrough beyond these copy-paste steps).
+          </code>
+          .
         </p>
       </section>
     </div>

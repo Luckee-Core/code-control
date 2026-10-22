@@ -8,6 +8,13 @@ type LoadState =
   | { kind: 'error'; message: string }
   | { kind: 'ok'; data: HealthResponse };
 
+const storageLabel = (storage: HealthResponse['storage']): string => {
+  if (storage === 'ok') return 'connected';
+  if (storage === 'error') return 'unreachable';
+  if (storage === 'unconfigured') return 'not configured';
+  return 'unknown';
+};
+
 export const StatusPanel = () => {
   const [state, setState] = useState<LoadState>({ kind: 'loading' });
 
@@ -28,7 +35,7 @@ export const StatusPanel = () => {
   if (state.kind === 'loading') {
     return (
       <div className={styles.panel}>
-        <p className={styles.muted}>Checking API and database…</p>
+        <p className={styles.muted}>Checking API, storage, and database…</p>
       </div>
     );
   }
@@ -51,12 +58,15 @@ export const StatusPanel = () => {
   }
 
   const { data } = state;
+  const storage = data.storage ?? 'unconfigured';
   const db = data.database ?? 'unconfigured';
+  const storageOk = storage === 'ok';
   const dbOk = db === 'ok';
   const apiOk = data.status === 'ok' || data.status === 'degraded';
+  const allOk = apiOk && storageOk && dbOk;
 
   return (
-    <div className={dbOk && apiOk ? styles.panelOk : styles.panelWarn}>
+    <div className={allOk ? styles.panelOk : styles.panelWarn}>
       <div className={styles.statusRow}>
         <span className={styles.title}>Live status</span>
         <button type="button" onClick={refresh} className={styles.retryButton}>
@@ -68,17 +78,41 @@ export const StatusPanel = () => {
           API: <strong>{apiOk ? 'reachable' : data.status}</strong>
         </li>
         <li>
+          Storage Express:{' '}
+          <strong className={storageOk ? styles.good : styles.bad}>
+            {storageLabel(storage)}
+          </strong>
+          {data.storageUrl ? (
+            <span className={styles.url}> ({data.storageUrl})</span>
+          ) : null}
+        </li>
+        <li>
           Postgres:{' '}
           <strong className={dbOk ? styles.good : styles.bad}>
             {db === 'ok' ? 'connected' : db}
           </strong>
         </li>
       </ul>
-      {!dbOk && (
+      {storage === 'unconfigured' && (
         <p className={styles.hint}>
-          Set <code className={styles.code}>DATABASE_URL</code> in Express{' '}
-          <code className={styles.code}>.env</code>, run{' '}
-          <code className={styles.code}>npm run db:apply-migrations</code>, then restart the API.
+          Set <code className={styles.code}>STORAGE_EXPRESS_URL</code> and{' '}
+          <code className={styles.code}>STORAGE_EXPRESS_SECRET</code> in Express{' '}
+          <code className={styles.code}>.env</code>, then restart the API.
+        </p>
+      )}
+      {storage === 'error' && (
+        <p className={styles.hint}>
+          Start <code className={styles.code}>code-generator-storage-server</code> (Hub project page
+          &quot;Start storage&quot; or <code className={styles.code}>npm run dev</code>) on the host
+          in <code className={styles.code}>storageUrl</code>.
+        </p>
+      )}
+      {storageOk && !dbOk && (
+        <p className={styles.hint}>
+          Check <code className={styles.code}>DATABASE_URL</code> in the{' '}
+          <strong>storage</strong> repo <code className={styles.code}>.env</code>, run{' '}
+          <code className={styles.code}>npm run db:apply-migrations</code> there, then restart
+          storage.
         </p>
       )}
     </div>
@@ -115,6 +149,9 @@ const styles = {
   `,
   list: `
     text-sm text-gray-800 space-y-1 list-disc pl-5 m-0
+  `,
+  url: `
+    text-xs text-gray-600 font-mono
   `,
   good: `text-green-800`,
   bad: `text-amber-900`,

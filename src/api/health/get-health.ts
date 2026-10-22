@@ -3,6 +3,8 @@ import { getApiBaseUrl } from '../config';
 export type HealthResponse = {
   status: string;
   message?: string;
+  storage?: 'ok' | 'unconfigured' | 'error';
+  storageUrl?: string | null;
   database?: 'ok' | 'unconfigured' | 'error';
   timestamp?: string;
   environment?: string;
