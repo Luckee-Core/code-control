@@ -95,8 +95,8 @@ export const StatusPanel = () => {
       </ul>
       {storage === 'unconfigured' && (
         <p className={styles.hint}>
-          Set <code className={styles.code}>STORAGE_EXPRESS_URL</code> and{' '}
-          <code className={styles.code}>STORAGE_EXPRESS_SECRET</code> in Express{' '}
+          Set <code className={styles.code}>CODE_CONTROL_STORAGE_URL</code> and{' '}
+          <code className={styles.code}>CODE_CONTROL_STORAGE_SECRET</code> in Express{' '}
           <code className={styles.code}>.env</code>, then restart the API.
         </p>
       )}

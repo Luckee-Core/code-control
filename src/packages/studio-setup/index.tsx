@@ -34,7 +34,7 @@ export const StudioSetup = () => {
           Storage <strong>3080</strong>, Express <strong>3012</strong>, web <strong>3013</strong>.
           Standalone dev may use other ports — match{' '}
           <code className={styles.inlineCode}>PORT</code>,{' '}
-          <code className={styles.inlineCode}>STORAGE_EXPRESS_URL</code>, and{' '}
+          <code className={styles.inlineCode}>CODE_CONTROL_STORAGE_URL</code>, and{' '}
           <code className={styles.inlineCode}>CODE_CONTROL_API_URL</code>.
         </p>
       </section>
@@ -92,7 +92,7 @@ export const StudioSetup = () => {
         </p>
         <CopyBlock
           label="Storage + port"
-          command={`STORAGE_EXPRESS_URL=http://127.0.0.1:3080\nSTORAGE_EXPRESS_SECRET=<same as STORAGE_DISPATCHER_SECRET>\nPORT=3012`}
+          command={`CODE_CONTROL_STORAGE_URL=http://127.0.0.1:3080\nCODE_CONTROL_STORAGE_SECRET=<same as STORAGE_DISPATCHER_SECRET>\nPORT=3012`}
         />
         <p className={styles.body}>
           Add GitHub PAT and template vars if you use repo creation — see the express-server OSS
