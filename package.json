@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "license": "MIT",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --port ${WEB_DEV_PORT_START:-3013}",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"
