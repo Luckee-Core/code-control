@@ -37,19 +37,19 @@ export const Row = ({ repo }: RowProps) => {
 
 const styles = {
   row: `
-    border-b border-gray-100 hover:bg-gray-50 transition-colors
+    border-b border-gray-200 hover:bg-gray-50 transition-colors
   `,
   cell: `
-    px-4 py-3 text-sm text-gray-900 truncate
+    px-3 py-2 text-xs text-gray-900 truncate
   `,
   actionsCell: `
-    px-4 py-3 text-sm text-gray-900 whitespace-nowrap w-px
+    px-3 py-2 text-xs text-gray-900 whitespace-nowrap
   `,
   name: `
     font-medium text-gray-900
   `,
   nameLink: `
-    font-medium text-blue-600 hover:underline truncate block
+    font-medium text-blue-600 hover:underline truncate block cursor-pointer
   `,
   creatingText: `
     text-xs text-gray-500 inline-flex items-center gap-1

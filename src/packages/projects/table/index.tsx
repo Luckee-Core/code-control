@@ -1,7 +1,6 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { ArrowDown, ArrowUp } from 'lucide-react';
 import { useAppSelector } from '@/store';
 import type { Project } from '@/model/project';
 import { Row } from './row';
@@ -82,65 +81,53 @@ export const Table = ({ search, customerId }: TableProps) => {
     setSortDirection(column === 'updated' ? 'desc' : 'asc');
   };
 
+  const getSortIcon = (column: ProjectSortColumn) => {
+    if (sortColumn !== column) {
+      return '↕';
+    }
+    return sortDirection === 'asc' ? '↑' : '↓';
+  };
+
   const totalCount = Object.keys(projects).length;
-  const countLabel =
-    visibleProjects.length === totalCount
-      ? `${totalCount} project${totalCount === 1 ? '' : 's'}`
-      : `${visibleProjects.length} of ${totalCount} projects`;
 
   if (totalCount === 0) {
     return (
-      <div className={styles.emptyState}>
-        <p className={styles.emptyTitle}>No projects yet</p>
-        <p className={styles.emptyDescription}>
-          Create a project to start defining schema and running the build pathway.
-        </p>
+      <div className={styles.tableWrapper}>
+        <div className={styles.emptyState}>
+          <p className={styles.emptyText}>No projects yet</p>
+        </div>
       </div>
     );
   }
 
   if (visibleProjects.length === 0) {
     return (
-      <div className={styles.emptyState}>
-        <p className={styles.emptyTitle}>No matching projects</p>
-        <p className={styles.emptyDescription}>Try a different search or customer.</p>
+      <div className={styles.tableWrapper}>
+        <div className={styles.emptyState}>
+          <p className={styles.emptyText}>No matching projects. Try a different search or customer.</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className={styles.root}>
-      <span className={styles.count}>{countLabel}</span>
-      <div className={styles.tableContainer}>
+    <div className={styles.tableWrapper}>
+      <div className={styles.tableScrollContainer}>
         <table className={styles.table}>
           <thead>
             <tr>
-              {COLUMNS.map((column) => {
-                const isActive = sortColumn === column.key;
-                const ariaSort = isActive
-                  ? sortDirection === 'asc'
-                    ? 'ascending'
-                    : 'descending'
-                  : 'none';
-                return (
-                  <th key={column.key} className={styles.tableHeader} aria-sort={ariaSort}>
-                    <button
-                      type="button"
-                      onClick={() => handleSort(column.key)}
-                      className={styles.sortButton}
-                    >
-                      {column.label}
-                      {isActive ? (
-                        sortDirection === 'asc' ? (
-                          <ArrowUp className={styles.sortIcon} aria-hidden />
-                        ) : (
-                          <ArrowDown className={styles.sortIcon} aria-hidden />
-                        )
-                      ) : null}
-                    </button>
-                  </th>
-                );
-              })}
+              {COLUMNS.map((column) => (
+                <th key={column.key} className={styles.th}>
+                  <button
+                    type="button"
+                    onClick={() => handleSort(column.key)}
+                    className={styles.sortButton}
+                  >
+                    <span>{column.label}</span>
+                    <span className={styles.sortIcon}>{getSortIcon(column.key)}</span>
+                  </button>
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>
@@ -155,38 +142,17 @@ export const Table = ({ search, customerId }: TableProps) => {
 };
 
 const styles = {
-  root: `
-    flex flex-col flex-1 min-h-0 gap-2
-  `,
-  count: `
-    text-xs text-gray-500 shrink-0
-  `,
-  tableContainer: `
-    border border-gray-200 rounded-lg bg-white
-    flex-1 min-h-0 overflow-auto
-  `,
-  table: `
-    w-full text-left border-separate border-spacing-0
-  `,
-  tableHeader: `
-    px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wide
-    bg-gray-50 border-b border-gray-200 sticky top-0 z-10
-  `,
+  tableWrapper: `bg-white rounded border border-gray-300 overflow-visible flex-1 min-h-0 flex flex-col`,
+  tableScrollContainer: `overflow-x-auto overflow-y-auto flex-1 min-h-0`,
+  emptyState: `text-center py-12`,
+  emptyText: `text-gray-500 text-sm`,
+  table: `w-full border-collapse text-xs`,
+  th: `p-0 text-left bg-gray-100 border-b border-gray-300`,
   sortButton: `
-    inline-flex items-center gap-1 bg-transparent border-none cursor-pointer p-0
-    text-xs font-semibold text-gray-600 uppercase tracking-wide
-    hover:text-gray-900
+    flex w-full items-center justify-between gap-1 px-3 py-2
+    text-[10px] font-semibold text-gray-600 uppercase tracking-wide
+    cursor-pointer hover:bg-gray-200 transition-colors
+    border-none bg-transparent
   `,
-  sortIcon: `
-    w-3.5 h-3.5
-  `,
-  emptyState: `
-    border border-gray-200 rounded-lg bg-white p-8 text-center
-  `,
-  emptyTitle: `
-    text-sm font-medium text-gray-900 mb-1
-  `,
-  emptyDescription: `
-    text-sm text-gray-500
-  `,
-};
+  sortIcon: `text-[10px] text-gray-500 shrink-0 normal-case`,
+} as const;

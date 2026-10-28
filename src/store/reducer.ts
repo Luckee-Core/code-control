@@ -13,6 +13,7 @@ import {
   layoutBuilderReducer,
   customerBuilderReducer,
   repositoriesBuilderReducer,
+  studioStackBuilderReducer,
 } from './builders';
 
 export const rootReducer = combineReducers({
@@ -25,4 +26,5 @@ export const rootReducer = combineReducers({
   layoutBuilder: layoutBuilderReducer,
   customerBuilder: customerBuilderReducer,
   repositoriesBuilder: repositoriesBuilderReducer,
+  studioStackBuilder: studioStackBuilderReducer,
 });

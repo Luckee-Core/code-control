@@ -24,7 +24,13 @@ ADRs keep implementation consistent by documenting:
 8. [008 – Detail page routing](./008-detail-page-routing.md) — `{entity}-detail-page`, no `[id]` routes.
 10. [010 – Public content reads from Express](./010-public-blog-express-fetch.md) — Server Component reads + Redux list hydration.
 11. [011 – Domain models (`src/model`)](./011-domain-models.md) — persisted entity types; one file per table entity.
-12. [012 – Package form inputs](./012-package-form-inputs.md) — `{form}/inputs/{field}`, zero-prop modals, `{collection}/row/`.
+12. [012 – Package form inputs](./012-package-form-inputs.md) — `{form}/inputs/{field}`, zero-prop modals, `{collection}/row/`, filter bar inputs.
+16. [016 – Interactive cursor affordance](./016-interactive-cursor-affordance.md) — `cursor-pointer` on interactive controls.
+17. [017 – Floating menus and overflow](./017-floating-menus-and-overflow.md) — Portaled menus; `overflow-visible` panels.
+32. [032 – App layout header and breadcrumbs](./032-app-layout-header-and-breadcrumbs.md) — Sidebar toggle, breadcrumb trail.
+33. [033 – Detail page layout chrome](./033-detail-page-layout-chrome.md) — `detailPageStyles` panels.
+35. [035 – List and dashboard table filter bars](./035-list-table-filter-bars.md) — `listFilterBarStyles`.
+38. [038 – UI token appendix](./038-ui-token-appendix.md) — Shared style module index.
 
 ### Product-specific
 

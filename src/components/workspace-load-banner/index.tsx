@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { STUDIO_SETUP_PATH } from '@/config/routes';
+import { DASHBOARD_PATH } from '@/config/routes';
 
 type WorkspaceLoadBannerProps = {
   onDismiss: () => void;
@@ -12,8 +12,8 @@ export const WorkspaceLoadBanner = ({ onDismiss }: WorkspaceLoadBannerProps) => 
     <div className={styles.bar} role="status">
       <p className={styles.text}>
         Couldn&apos;t load workspace data. Storage Express may not be running.{' '}
-        <Link href={STUDIO_SETUP_PATH} className={styles.link}>
-          Check status
+        <Link href={DASHBOARD_PATH} className={styles.link}>
+          Check setup on Home
         </Link>
       </p>
       <button type="button" onClick={onDismiss} className={styles.dismiss} aria-label="Dismiss">
@@ -26,7 +26,7 @@ export const WorkspaceLoadBanner = ({ onDismiss }: WorkspaceLoadBannerProps) => 
 const styles = {
   bar: `
     flex items-center justify-between gap-3 px-4 py-2
-    bg-amber-50 border-b border-amber-200 text-amber-950
+    bg-amber-50 border-b border-amber-300 text-amber-950
   `,
   text: `
     text-sm m-0

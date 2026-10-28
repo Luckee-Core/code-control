@@ -64,7 +64,19 @@ src/packages/{feature}/{collection}/
 
 Do not use a `*-table` suffix. Entity packages whose collection *is* the package use `table/row/`. The shell owns `<table>`, `<thead>`, empty state, and delete orchestration. `row/index.tsx` is one mapped `<tr>` and may take the row as a prop.
 
+### 8) Filter bar inputs
+
+```text
+src/packages/{feature}/filters/
+  index.tsx
+  inputs/
+    {field}/index.tsx
+```
+
+Each `inputs/{field}/index.tsx` dispatches filter slice actions, owns all `styles` (including [017 – Floating menus and overflow](./017-floating-menus-and-overflow.md)), and exports `{Feature}Filter{Field}Input` (e.g. `TicketFilterStatusInput`). `filters/index.tsx` composes inputs only.
+
 ## Related
 
 - [001 – Redux patterns](./001-redux-patterns.md)
 - [002 – Component composition](./002-component-composition.md)
+- [017 – Floating menus and overflow](./017-floating-menus-and-overflow.md)

@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
+import { detailPageStyles } from '@/components/detail-page-styles';
 import { useAppDispatch, useAppSelector } from '@/store';
 import { RepositoriesBuilderActions } from '@/store/builders';
 import { slugifyRepoName } from '../../slugify-repo-name';
@@ -39,8 +40,8 @@ export const Servers = () => {
   return (
     <div className={styles.section}>
       <div className={styles.titleRow}>
-        <h4 className={styles.sectionTitle}>{TITLE}</h4>
-        <button type="button" onClick={handleOpenCreate} className={styles.createButton}>
+        <h3 className={detailPageStyles.sectionTitle}>{TITLE}</h3>
+        <button type="button" onClick={handleOpenCreate} className={detailPageStyles.secondaryButton}>
           Create
         </button>
       </div>
@@ -59,13 +60,6 @@ const styles = {
   `,
   titleRow: `
     flex items-center justify-between gap-2
-  `,
-  sectionTitle: `
-    text-sm font-semibold text-gray-900
-  `,
-  createButton: `
-    rounded border border-gray-300 bg-white px-2 py-0.5 text-xs font-medium text-gray-700
-    hover:bg-gray-50 transition-colors cursor-pointer
   `,
   loading: `
     text-sm text-gray-500

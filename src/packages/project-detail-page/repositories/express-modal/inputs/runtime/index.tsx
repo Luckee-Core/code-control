@@ -66,7 +66,7 @@ const styles = {
     inline-flex items-center gap-2 cursor-pointer
   `,
   radio: `
-    h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500
+    h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 cursor-pointer
   `,
   optionText: `
     text-sm text-gray-900

@@ -21,15 +21,15 @@ export const MainContent = ({ children }: MainContentProps) => {
 
 const styles = {
   main: `
-    flex-1 flex flex-col overflow-hidden
+    flex-1 flex flex-col overflow-hidden min-w-0 bg-gray-50
   `,
   breadcrumbsWrapper: `
-    py-2 border-b border-border bg-card shrink-0
+    py-2 border-b border-gray-300 bg-white shrink-0
   `,
   content: `
-    flex-1 min-h-0 flex flex-col overflow-hidden
+    flex-1 min-h-0 overflow-y-auto p-3
   `,
   pageSlot: `
-    flex-1 min-h-0 h-full flex flex-col overflow-hidden
+    w-full min-h-min
   `,
 };

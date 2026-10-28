@@ -7,3 +7,4 @@ export {
   type ServerRuntime,
   type FrontendRuntime,
 } from './repositories-builder';
+export { studioStackBuilderReducer, StudioStackBuilderActions } from './studioStackBuilder';

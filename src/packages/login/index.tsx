@@ -1,19 +1,24 @@
 'use client';
 
 import { PROJECTS_PATH } from '@/config/routes';
+import { detailPageStyles } from '@/components/detail-page-styles';
 
 export const Login = () => {
   return (
     <main className={styles.main}>
       <div className={styles.card}>
-        <h1 className={styles.title}>Code Control</h1>
-        <p className={styles.body}>
-          No login required for local use. Open the workspace to manage customers, projects, and
-          repositories.
-        </p>
-        <a href={PROJECTS_PATH} className={styles.link}>
-          Continue to Projects
-        </a>
+        <div className={detailPageStyles.panelHeader}>
+          <h1 className={detailPageStyles.panelTitle}>Code Control</h1>
+        </div>
+        <div className={detailPageStyles.panelBody}>
+          <p className={styles.body}>
+            No login required for local use. Open the workspace to manage customers, projects, and
+            repositories.
+          </p>
+          <a href={PROJECTS_PATH} className={detailPageStyles.primaryButton}>
+            Continue to Projects
+          </a>
+        </div>
       </div>
     </main>
   );
@@ -21,18 +26,12 @@ export const Login = () => {
 
 const styles = {
   main: `
-    min-h-screen flex items-center justify-center p-8
+    min-h-screen flex items-center justify-center p-8 bg-gray-50
   `,
   card: `
-    max-w-md w-full space-y-4 text-center
-  `,
-  title: `
-    text-2xl font-semibold
+    max-w-md w-full rounded border border-gray-300 bg-white overflow-hidden
   `,
   body: `
-    text-gray-600 text-sm
-  `,
-  link: `
-    inline-block px-4 py-2 bg-blue-600 text-white rounded-lg
+    text-gray-600 text-sm mb-4
   `,
 };

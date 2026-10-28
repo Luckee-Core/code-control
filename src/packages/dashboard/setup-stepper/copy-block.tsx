@@ -29,16 +29,16 @@ export const CopyBlock = ({ label, command }: CopyBlockProps) => {
 
 const styles = {
   wrap: `
-    rounded-lg border border-gray-200 bg-gray-50 overflow-hidden
+    rounded border border-gray-300 bg-gray-50 overflow-hidden
   `,
   labelRow: `
-    flex items-center justify-between px-3 py-2 border-b border-gray-200 bg-white
+    flex items-center justify-between px-3 py-2 border-b border-gray-300 bg-white
   `,
   label: `
     text-xs font-medium text-gray-600 uppercase tracking-wide
   `,
   copyButton: `
-    text-xs font-medium text-blue-600 hover:text-blue-800 cursor-pointer
+    text-xs font-medium text-gray-700 hover:text-gray-900 cursor-pointer
     bg-transparent border-none
   `,
   pre: `

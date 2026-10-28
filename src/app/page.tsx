@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
-import { PROJECTS_PATH } from '@/config/routes';
+import { DASHBOARD_PATH } from '@/config/routes';
 
 export default function HomePage() {
-  redirect(PROJECTS_PATH);
+  redirect(DASHBOARD_PATH);
 }

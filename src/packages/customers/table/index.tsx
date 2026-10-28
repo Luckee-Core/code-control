@@ -4,59 +4,82 @@ import { useMemo } from 'react';
 import { useAppSelector } from '@/store';
 import { Row } from './row';
 
-export const Table = () => {
+type TableProps = {
+  searchTerm: string;
+};
+
+export const Table = ({ searchTerm }: TableProps) => {
   const customers = useAppSelector((state) => state.customers);
-  const customerList = useMemo(
-    () => Object.values(customers).sort((a, b) => a.name.localeCompare(b.name)),
-    [customers]
-  );
+
+  const customerList = useMemo(() => {
+    const query = searchTerm.trim().toLowerCase();
+    const list = Object.values(customers);
+    const filtered = query
+      ? list.filter((customer) => customer.name.toLowerCase().includes(query))
+      : list;
+    return filtered.sort((a, b) => a.name.localeCompare(b.name));
+  }, [customers, searchTerm]);
+
+  if (Object.keys(customers).length === 0) {
+    return (
+      <div className={styles.tableWrapper}>
+        <div className={styles.emptyState}>
+          <p className={styles.emptyText}>No customers yet.</p>
+        </div>
+      </div>
+    );
+  }
 
   if (customerList.length === 0) {
     return (
-      <div className={styles.emptyState}>
-        <p className={styles.emptyTitle}>No customers yet</p>
-        <p className={styles.emptyDescription}>Add a customer to get started.</p>
+      <div className={styles.tableWrapper}>
+        <div className={styles.emptyState}>
+          <p className={styles.emptyText}>No customers match your search.</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className={styles.tableContainer}>
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            <th className={styles.tableHeader}>Name</th>
-            <th className={styles.tableHeader}>Stage</th>
-            <th className={styles.tableHeader}>Projects</th>
-          </tr>
-        </thead>
-        <tbody>
-          {customerList.map((customer) => (
-            <Row key={customer.id} customer={customer} />
-          ))}
-        </tbody>
-      </table>
+    <div className={styles.tableWrapper}>
+      <div className={styles.tableScrollContainer}>
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th className={styles.th}>Name</th>
+              <th className={styles.th}>Stage</th>
+              <th className={styles.th}>Projects</th>
+            </tr>
+          </thead>
+          <tbody>
+            {customerList.map((customer) => (
+              <Row key={customer.id} customer={customer} />
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
 
 const styles = {
-  tableContainer: `
-    border border-gray-200 rounded-lg overflow-auto bg-white flex-1 min-h-0
+  tableWrapper: `
+    bg-white rounded border border-gray-300 overflow-visible flex-1 min-h-0 flex flex-col
   `,
-  table: `
-    w-full text-left border-collapse
-  `,
-  tableHeader: `
-    px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wide bg-gray-50 border-b border-gray-200
+  tableScrollContainer: `
+    overflow-x-auto overflow-y-auto flex-1 min-h-0
   `,
   emptyState: `
-    border border-gray-200 rounded-lg bg-white p-8 text-center
+    text-center py-12
   `,
-  emptyTitle: `
-    text-sm font-medium text-gray-900 mb-1
+  emptyText: `
+    text-gray-500 text-sm
   `,
-  emptyDescription: `
-    text-sm text-gray-500
+  table: `
+    w-full border-collapse text-xs
+  `,
+  th: `
+    px-3 py-2 text-left text-[10px] font-semibold text-gray-600
+    uppercase tracking-wide bg-gray-100 border-b border-gray-300
   `,
 };

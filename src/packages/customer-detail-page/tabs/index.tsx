@@ -13,17 +13,21 @@ export const Tabs = () => {
 
   return (
     <>
-      <div className={styles.tabBar}>
-        {CUSTOMER_TABS.map((tab) => (
-          <button
-            key={tab}
-            type="button"
-            onClick={() => setActiveTab(tab)}
-            className={activeTab === tab ? styles.tabActive : styles.tabInactive}
-          >
-            {tab}
-          </button>
-        ))}
+      <div className={styles.tabsPanel}>
+        <div className={styles.tabsRow}>
+          <div className={styles.tabsContainer}>
+            {CUSTOMER_TABS.map((tab) => (
+              <button
+                key={tab}
+                type="button"
+                onClick={() => setActiveTab(tab)}
+                className={activeTab === tab ? styles.tabActive : styles.tab}
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
       <div className={styles.tabContent}>
         {activeTab === 'Overview' && <Overview />}
@@ -34,14 +38,25 @@ export const Tabs = () => {
 };
 
 const styles = {
-  tabBar: `
-    flex gap-1 border-b border-gray-200
+  tabsPanel: `
+    bg-white rounded border border-gray-300 overflow-hidden
+  `,
+  tabsRow: `
+    flex flex-wrap items-center justify-between gap-3
+    px-3 py-2 border-b border-gray-300 bg-gray-50 min-w-0
+  `,
+  tabsContainer: `
+    flex flex-wrap gap-1 min-w-0
+  `,
+  tab: `
+    px-2.5 py-1 text-xs font-medium text-gray-600 rounded border border-transparent
+    hover:text-gray-900 hover:bg-white hover:border-gray-300
+    transition-colors cursor-pointer whitespace-nowrap
   `,
   tabActive: `
-    px-4 py-2 text-sm font-medium text-blue-600 border-b-2 border-blue-600 -mb-px bg-transparent cursor-pointer
-  `,
-  tabInactive: `
-    px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 bg-transparent border-none cursor-pointer
+    px-2.5 py-1 text-xs font-semibold text-gray-900 rounded
+    border border-gray-300 bg-white ring-1 ring-inset ring-gray-300
+    cursor-pointer whitespace-nowrap
   `,
   tabContent: `
     min-h-0

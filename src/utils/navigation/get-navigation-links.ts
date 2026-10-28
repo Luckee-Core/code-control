@@ -1,4 +1,4 @@
-import { CUSTOMERS_PATH, PROJECTS_PATH, STUDIO_SETUP_PATH } from '@/config/routes';
+import { CUSTOMERS_PATH, DASHBOARD_PATH, PROJECTS_PATH } from '@/config/routes';
 import type { NavigationLink } from './navigation-link';
 
 /**
@@ -6,8 +6,8 @@ import type { NavigationLink } from './navigation-link';
  */
 export const getNavigationLinks = (): NavigationLink[] => {
   return [
+    { name: 'Home', href: DASHBOARD_PATH },
     { name: 'Customers', href: CUSTOMERS_PATH },
     { name: 'Projects', href: PROJECTS_PATH },
-    { name: 'Studio setup', href: STUDIO_SETUP_PATH },
   ];
 };

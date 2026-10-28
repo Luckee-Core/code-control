@@ -70,10 +70,10 @@ const styles = {
     hover:bg-gray-50 transition-colors
   `,
   cell: `
-    px-4 py-3 text-sm text-gray-900 border-b border-gray-100
+    px-3 py-2 text-xs text-gray-900 border-b border-gray-200
   `,
   cellDescription: `
-    px-4 py-3 text-sm text-gray-600 max-w-xs border-b border-gray-100
+    px-3 py-2 text-xs text-gray-600 max-w-xs border-b border-gray-200
   `,
   projectNameButton: `
     font-medium text-left text-blue-600 hover:underline bg-transparent border-none cursor-pointer p-0
@@ -82,6 +82,6 @@ const styles = {
     font-medium text-left text-blue-600 hover:underline bg-transparent border-none cursor-pointer p-0
   `,
   customerName: `
-    text-gray-700 text-sm
+    text-gray-700 text-xs
   `,
 };

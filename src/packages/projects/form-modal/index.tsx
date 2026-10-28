@@ -37,13 +37,15 @@ export const FormModal = () => {
         <div className={styles.header}>
           <h2 className={styles.title}>Create Project</h2>
           <button type="button" onClick={handleClose} className={styles.closeButton}>
-            ✕
+            ×
           </button>
         </div>
-        <CustomerInput />
-        <NameInput />
-        <DescriptionInput />
-        <div className={styles.buttons}>
+        <div className={styles.content}>
+          <CustomerInput />
+          <NameInput />
+          <DescriptionInput />
+        </div>
+        <div className={styles.footer}>
           <button type="button" onClick={handleClose} className={styles.cancelButton}>
             Cancel
           </button>
@@ -63,30 +65,34 @@ export const FormModal = () => {
 
 const styles = {
   overlay: `
-    fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4
+    fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4
   `,
   modal: `
-    bg-white rounded-lg shadow-xl max-w-md w-full p-6
+    bg-white rounded-lg shadow-xl max-w-md w-full border border-gray-300 overflow-hidden text-gray-900
   `,
   header: `
-    flex items-center justify-between mb-4
+    flex items-center justify-between px-6 py-4 border-b border-gray-300
   `,
   title: `
-    text-lg font-semibold text-gray-900
+    text-xl font-semibold text-gray-900
   `,
   closeButton: `
-    w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-700
-    rounded border-none bg-transparent cursor-pointer
+    text-2xl text-gray-400 hover:text-gray-600 transition-colors
+    border-none bg-transparent cursor-pointer
   `,
-  buttons: `
-    flex justify-end gap-2 mt-4
+  content: `
+    px-6 py-4 space-y-4
+  `,
+  footer: `
+    flex justify-end gap-2 px-6 py-4 border-t border-gray-300
   `,
   cancelButton: `
-    px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded
-    hover:bg-gray-50 cursor-pointer
+    px-4 py-2 rounded border border-gray-300 text-gray-700 cursor-pointer
+    hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed
   `,
   saveButton: `
-    px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded
-    hover:bg-blue-700 cursor-pointer border-none disabled:opacity-50 disabled:cursor-not-allowed
+    px-4 py-2 rounded bg-blue-600 text-white font-medium cursor-pointer
+    hover:bg-blue-700 transition-colors border-none
+    disabled:opacity-50 disabled:cursor-not-allowed
   `,
 };

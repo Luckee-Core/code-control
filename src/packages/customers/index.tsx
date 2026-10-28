@@ -1,17 +1,20 @@
 'use client';
 
+import { useState } from 'react';
 import { useBreadcrumbs } from '@/hooks';
-import { Header } from './header';
+import { CustomerFilters } from './filters';
 import { Table } from './table';
 import { FormModal } from './form-modal';
 
 export const Customers = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+
   useBreadcrumbs([{ label: 'Customers' }]);
 
   return (
     <div className={styles.page}>
-      <Header />
-      <Table />
+      <CustomerFilters searchTerm={searchTerm} onSearchChange={setSearchTerm} />
+      <Table searchTerm={searchTerm} />
       <FormModal />
     </div>
   );
@@ -19,6 +22,6 @@ export const Customers = () => {
 
 const styles = {
   page: `
-    p-6 h-full flex-1 min-h-0 flex flex-col gap-4 overflow-hidden
+    space-y-3 flex flex-col flex-1 min-h-0 overflow-hidden
   `,
 };

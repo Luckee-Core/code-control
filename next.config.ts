@@ -10,7 +10,7 @@ const nextConfig: NextConfig = {
       process.env.CODE_CONTROL_API_URL?.trim() ||
       process.env.EXPRESS_API_URL?.trim() ||
       process.env.NEXT_PUBLIC_CODE_CONTROL_API_URL?.trim() ||
-      (process.env.NODE_ENV !== 'production' ? 'http://127.0.0.1:3010' : '');
+      (process.env.NODE_ENV !== 'production' ? 'http://127.0.0.1:3012' : '');
 
     if (!expressTarget) {
       return [];

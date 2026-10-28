@@ -53,7 +53,7 @@ const styles = {
     flex flex-col items-start gap-2 min-w-0 w-full
   `,
   command: `
-    w-full break-all text-xs font-mono text-gray-800 bg-gray-100 px-2 py-1.5 rounded
+    w-full break-all text-xs font-mono text-gray-800 bg-gray-100 px-2 py-1.5 rounded border border-gray-200
   `,
   button: `
     shrink-0 rounded border border-gray-300 bg-white px-2 py-1 text-xs font-medium text-gray-700

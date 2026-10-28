@@ -6,6 +6,45 @@ import { createWebRepoThunk } from '@/store/thunks/project-repos';
 import { NameInput } from './inputs/name';
 import { RuntimeInput } from './inputs/runtime';
 
+const modalStyles = {
+  overlay: `
+    fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4
+  `,
+  modal: `
+    bg-white rounded-lg shadow-xl w-full max-w-lg max-h-[90vh] overflow-auto
+    border border-gray-300 text-gray-900 mx-4
+  `,
+  header: `
+    flex items-center justify-between px-6 py-4 border-b border-gray-300
+  `,
+  title: `
+    text-xl font-semibold text-gray-900
+  `,
+  closeButton: `
+    text-2xl text-gray-400 hover:text-gray-600 transition-colors
+    border-none bg-transparent cursor-pointer disabled:opacity-50
+  `,
+  content: `
+    px-6 py-4 space-y-4
+  `,
+  errorText: `
+    text-sm text-red-600
+  `,
+  footer: `
+    flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-300 bg-gray-50
+  `,
+  cancelButton: `
+    px-4 py-2 text-gray-700 border border-gray-300 rounded
+    font-medium hover:bg-gray-100 transition-colors bg-white cursor-pointer
+    disabled:opacity-50 disabled:cursor-not-allowed
+  `,
+  saveButton: `
+    px-4 py-2 bg-blue-600 text-white rounded font-medium border-none
+    hover:bg-blue-700 transition-colors cursor-pointer
+    disabled:opacity-50 disabled:cursor-not-allowed
+  `,
+};
+
 export const WebModal = () => {
   const dispatch = useAppDispatch();
   const repositoriesBuilder = useAppSelector((state) => state.repositoriesBuilder);
@@ -25,26 +64,26 @@ export const WebModal = () => {
   };
 
   return (
-    <div className={styles.overlay} onClick={handleClose}>
-      <div className={styles.modal} onClick={(event) => event.stopPropagation()}>
-        <div className={styles.header}>
-          <h2 className={styles.title}>{title}</h2>
-          <button type="button" onClick={handleClose} className={styles.closeButton}>
-            ✕
+    <div className={modalStyles.overlay} onClick={handleClose}>
+      <div className={modalStyles.modal} onClick={(event) => event.stopPropagation()}>
+        <div className={modalStyles.header}>
+          <h2 className={modalStyles.title}>{title}</h2>
+          <button type="button" onClick={handleClose} className={modalStyles.closeButton}>
+            ×
           </button>
         </div>
-        <div className={styles.content}>
+        <div className={modalStyles.content}>
           <RuntimeInput />
           <NameInput />
           {repositoriesBuilder.saveStatus === 'error' && repositoriesBuilder.linkError && (
-            <p className={styles.errorText}>{repositoriesBuilder.linkError}</p>
+            <p className={modalStyles.errorText}>{repositoriesBuilder.linkError}</p>
           )}
         </div>
-        <div className={styles.footer}>
+        <div className={modalStyles.footer}>
           <button
             type="button"
             onClick={handleClose}
-            className={styles.cancelButton}
+            className={modalStyles.cancelButton}
             disabled={isSubmitting}
           >
             Cancel
@@ -52,7 +91,7 @@ export const WebModal = () => {
           <button
             type="button"
             onClick={() => void dispatch(createWebRepoThunk())}
-            className={styles.saveButton}
+            className={modalStyles.saveButton}
             disabled={!canSubmit}
           >
             {isSubmitting ? 'Creating…' : submitLabel}
@@ -61,53 +100,4 @@ export const WebModal = () => {
       </div>
     </div>
   );
-};
-
-const styles = {
-  overlay: `
-    fixed inset-0 bg-black bg-opacity-50 z-50
-    flex items-center justify-center
-  `,
-  modal: `
-    bg-white rounded-lg shadow-xl
-    w-full max-w-lg max-h-[90vh] overflow-auto
-    mx-4
-  `,
-  header: `
-    flex items-center justify-between
-    px-6 py-4 border-b border-gray-200
-  `,
-  title: `
-    text-xl font-semibold text-gray-900
-  `,
-  closeButton: `
-    text-gray-400 hover:text-gray-600
-    text-2xl leading-none
-    transition-colors border-none bg-transparent cursor-pointer
-  `,
-  content: `
-    px-6 py-4 space-y-4
-  `,
-  errorText: `
-    text-sm text-red-600
-  `,
-  footer: `
-    flex items-center justify-end gap-3
-    px-6 py-4 border-t border-gray-200
-    bg-gray-50
-  `,
-  cancelButton: `
-    px-4 py-2 text-gray-700 border border-gray-300 rounded-lg
-    font-medium
-    hover:bg-gray-100
-    disabled:opacity-50 disabled:cursor-not-allowed
-    transition-colors bg-white cursor-pointer
-  `,
-  saveButton: `
-    px-4 py-2 bg-blue-600 text-white rounded-lg
-    font-medium border-none
-    hover:bg-blue-700
-    disabled:opacity-50 disabled:cursor-not-allowed
-    transition-colors cursor-pointer
-  `,
 };

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { ReduxProvider } from '@/components/ReduxProvider';
 import { CodeControlSidebar } from '@/components/sidebar';
 import { MainContent } from '@/components/main-content/MainContent';
+import { StudioStackProbe } from '@/components/studio-stack-probe';
 import { ToastProvider } from '@/components/shared';
 import './globals.css';
 
@@ -17,9 +18,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased bg-white text-gray-900">
+      <body className="antialiased bg-gray-50 text-gray-900">
         <ReduxProvider>
           <ToastProvider>
+            <StudioStackProbe />
             <div className="flex h-screen overflow-hidden">
               <CodeControlSidebar />
               <MainContent>{children}</MainContent>

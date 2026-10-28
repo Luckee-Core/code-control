@@ -7,6 +7,7 @@ import { setCurrentCustomerThunk } from '@/store/thunks/customers';
 import { CUSTOMER_DETAIL_PAGE_PATH } from '@/config/routes';
 import type { Customer } from '@/model/customer';
 import { formatStage } from '../../format-stage';
+import { stageColor } from '@/packages/customer-detail-page/stage-color';
 
 type RowProps = {
   customer: Customer;
@@ -43,7 +44,9 @@ export const Row = ({ customer }: RowProps) => {
         </button>
       </td>
       <td className={styles.cell}>
-        <span className={styles.stageBadge}>{formatStage(customer.stage)}</span>
+        <span className={`${styles.stageBadge} ${stageColor(customer.stage)}`}>
+          {formatStage(customer.stage)}
+        </span>
       </td>
       <td className={styles.cell}>{projectCount}</td>
     </tr>
@@ -52,15 +55,15 @@ export const Row = ({ customer }: RowProps) => {
 
 const styles = {
   row: `
-    border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors cursor-pointer
+    border-b border-gray-200 last:border-b-0 hover:bg-gray-50 transition-colors cursor-pointer
   `,
   cell: `
-    px-4 py-3 text-sm text-gray-900
+    px-3 py-2 text-xs text-gray-900
   `,
   customerNameButton: `
     font-medium text-left text-blue-600 hover:underline bg-transparent border-none cursor-pointer p-0
   `,
   stageBadge: `
-    text-xs text-gray-600
+    text-xs font-medium px-2 py-0.5 rounded-full
   `,
 };

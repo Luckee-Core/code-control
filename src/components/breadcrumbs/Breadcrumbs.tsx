@@ -46,29 +46,29 @@ export const Breadcrumbs = () => {
 
 const styles = {
   container: `
-    flex items-center gap-1 px-4
+    flex items-center gap-1 px-3 min-w-0
   `,
   menuButton: `
-    w-8 h-8
+    w-8 h-8 shrink-0
     flex items-center justify-center
-    text-muted-foreground
-    hover:text-foreground hover:bg-muted
+    text-gray-600
+    hover:text-gray-900 hover:bg-gray-100
     transition-colors rounded cursor-pointer
     border-none bg-transparent
-    focus:outline-none focus:ring-2 focus:ring-primary
+    focus:outline-none focus:ring-1 focus:ring-gray-400
   `,
   itemWrapper: `
-    flex items-center gap-1
+    flex items-center gap-1 min-w-0
   `,
   separator: `
-    text-muted-foreground text-sm
+    text-gray-400 text-sm
   `,
   link: `
-    text-sm text-foreground font-medium
-    hover:text-primary
-    transition-colors
+    text-sm text-gray-700 font-medium
+    hover:text-gray-900
+    transition-colors cursor-pointer truncate
   `,
   text: `
-    text-sm text-foreground font-medium
+    text-sm text-gray-900 font-medium truncate
   `,
 };

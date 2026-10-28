@@ -1,6 +1,8 @@
 'use client';
 
 import { useAppSelector } from '@/store';
+import { detailPageStyles } from '@/components/detail-page-styles';
+import { formatDate } from '@/utils/date-time';
 
 export const Overview = () => {
   const currentProject = useAppSelector((state) => state.currentProject);
@@ -9,46 +11,33 @@ export const Overview = () => {
     return null;
   }
 
-  const createdDate = currentProject.created_at ? new Date(currentProject.created_at) : null;
-
   return (
-    <div className={styles.infoCard}>
-      <div className={styles.infoHeader}>
+    <section className={detailPageStyles.panel}>
+      <div className={detailPageStyles.panelHeader}>
         <div>
-          <h2 className={styles.projectName}>{currentProject.name}</h2>
-          {currentProject.description && (
-            <p className={styles.projectDescription}>{currentProject.description}</p>
-          )}
+          <h2 className={detailPageStyles.panelTitle}>{currentProject.name}</h2>
+          {currentProject.description ? (
+            <p className={detailPageStyles.panelSubtitle}>{currentProject.description}</p>
+          ) : null}
         </div>
       </div>
-      <div className={styles.infoMeta}>
-        {createdDate && (
-          <span className={styles.metaItem}>
-            Created{' '}
-            {createdDate.toLocaleDateString(undefined, { month: 'short', year: 'numeric' })}
-          </span>
-        )}
-        <span className={styles.metaItem}>{currentProject.id}</span>
+      <div className={detailPageStyles.panelBody}>
+        <div className={styles.metaRow}>
+          {currentProject.created_at ? (
+            <span className={styles.metaItem}>
+              Created {formatDate(currentProject.created_at)}
+            </span>
+          ) : null}
+          <span className={styles.metaItem}>{currentProject.id}</span>
+        </div>
       </div>
-    </div>
+    </section>
   );
 };
 
 const styles = {
-  infoCard: `
-    rounded-lg border border-gray-200 bg-white shadow-sm overflow-hidden
-  `,
-  infoHeader: `
-    p-6 flex items-start justify-between gap-4
-  `,
-  projectName: `
-    text-2xl font-bold text-gray-900
-  `,
-  projectDescription: `
-    text-sm text-gray-500 mt-1
-  `,
-  infoMeta: `
-    px-6 pb-6 flex gap-4 text-xs text-gray-500
+  metaRow: `
+    flex flex-wrap gap-4 text-xs text-gray-500
   `,
   metaItem: `
     inline-flex items-center gap-1.5

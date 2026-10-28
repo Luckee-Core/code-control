@@ -13,46 +13,51 @@ type TableProps = {
 
 export const Table = ({ repos }: TableProps) => {
   return (
-    <div className={styles.tableContainer}>
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            <th className={styles.tableHeader}>{REPOSITORY_HEADER}</th>
-            <th className={styles.tableHeaderActions}>{ACTIONS_HEADER}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {repos.length === 0 ? (
+    <div className={styles.tableWrapper}>
+      <div className={styles.tableScrollContainer}>
+        <table className={styles.table}>
+          <thead>
             <tr>
-              <td className={styles.emptyCell} colSpan={2}>
-                {EMPTY_MESSAGE}
-              </td>
+              <th className={styles.th}>{REPOSITORY_HEADER}</th>
+              <th className={styles.thActions}>{ACTIONS_HEADER}</th>
             </tr>
-          ) : (
-            repos.map((repo) => <Row key={repo.id} repo={repo} />)
-          )}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {repos.length === 0 ? (
+              <tr>
+                <td className={styles.emptyCell} colSpan={2}>
+                  {EMPTY_MESSAGE}
+                </td>
+              </tr>
+            ) : (
+              repos.map((repo) => <Row key={repo.id} repo={repo} />)
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
 
 const styles = {
-  tableContainer: `
-    border border-gray-200 rounded-lg overflow-hidden bg-white
+  tableWrapper: `
+    bg-white rounded border border-gray-300 overflow-visible
+  `,
+  tableScrollContainer: `
+    overflow-x-auto
   `,
   table: `
-    w-full text-left border-collapse table-fixed
+    w-full text-left border-collapse text-xs table-fixed
   `,
-  tableHeader: `
-    px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wide
-    bg-gray-50 border-b border-gray-200
+  th: `
+    px-3 py-2 text-left text-[10px] font-semibold text-gray-600 uppercase tracking-wide
+    bg-gray-100 border-b border-gray-300
   `,
-  tableHeaderActions: `
-    px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wide
-    bg-gray-50 border-b border-gray-200 whitespace-nowrap w-28
+  thActions: `
+    px-3 py-2 text-left text-[10px] font-semibold text-gray-600 uppercase tracking-wide
+    bg-gray-100 border-b border-gray-300 whitespace-nowrap w-28
   `,
   emptyCell: `
-    px-4 py-6 text-sm text-gray-500 text-center
+    px-3 py-8 text-xs text-gray-500 text-center
   `,
 };

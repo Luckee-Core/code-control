@@ -42,16 +42,16 @@ export const Row = ({ project }: RowProps) => {
 
 const styles = {
   row: `
-    border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors
+    border-b border-gray-200 last:border-b-0 hover:bg-gray-50 transition-colors
   `,
   cell: `
-    px-4 py-3 text-sm text-gray-900
+    px-3 py-2 text-xs text-gray-900
   `,
   cellActions: `
-    px-2 py-3 w-12
+    px-2 py-2 w-12
   `,
   cellDescription: `
-    px-4 py-3 text-sm text-gray-600 max-w-xs
+    px-3 py-2 text-xs text-gray-600 max-w-xs
   `,
   projectNameButton: `
     font-medium text-left text-blue-600 hover:underline bg-transparent border-none cursor-pointer p-0

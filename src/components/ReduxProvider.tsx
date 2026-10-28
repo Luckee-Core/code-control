@@ -4,9 +4,12 @@ import { Provider } from 'react-redux';
 import { store } from '@/store';
 import { useCodeControlDataLoader } from '@/hooks/use-code-control-data-loader';
 import { WorkspaceLoadBanner } from '@/components/workspace-load-banner';
+import { useAppDispatch } from '@/store';
+import { probeStudioStackThunk } from '@/store/thunks/studio-stack';
 import { useEffect, useState } from 'react';
 
 const DataLoader = ({ children }: { children: React.ReactNode }) => {
+  const dispatch = useAppDispatch();
   const { isLoading, loadFailed } = useCodeControlDataLoader();
   const [canRender, setCanRender] = useState(false);
   const [bannerDismissed, setBannerDismissed] = useState(false);
@@ -16,6 +19,13 @@ const DataLoader = ({ children }: { children: React.ReactNode }) => {
       setTimeout(() => setCanRender(true), 100);
     }
   }, [isLoading]);
+
+  useEffect(() => {
+    if (isLoading) {
+      return;
+    }
+    void dispatch(probeStudioStackThunk());
+  }, [dispatch, isLoading]);
 
   if (isLoading || !canRender) {
     return (
