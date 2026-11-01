@@ -1,0 +1,35 @@
+'use client';
+
+import { useState } from 'react';
+import { useBreadcrumbs } from '@/hooks';
+import { Filters } from './filters';
+import { Table } from './table';
+import { FormModal } from './form-modal';
+
+export { FormModal } from './form-modal';
+
+export const SoftwareSystems = () => {
+  const [search, setSearch] = useState('');
+  const [customerId, setCustomerId] = useState('');
+
+  useBreadcrumbs([{ label: 'Software systems' }]);
+
+  return (
+    <div className={styles.page}>
+      <Filters
+        search={search}
+        customerId={customerId}
+        onSearchChange={setSearch}
+        onCustomerChange={setCustomerId}
+      />
+      <Table search={search} customerId={customerId} />
+      <FormModal />
+    </div>
+  );
+};
+
+const styles = {
+  page: `
+    space-y-3 flex flex-col flex-1 min-h-0 overflow-hidden
+  `,
+};

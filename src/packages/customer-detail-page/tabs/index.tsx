@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Overview } from '../overview';
-import { Projects } from '../projects';
+import { Projects } from '../software-systems';
 
 type CustomerTab = 'Overview' | 'Projects';
 

@@ -1,4 +1,4 @@
-export type Project = {
+export type SoftwareSystem = {
   id: string;
   customer_id: string;
   name: string;

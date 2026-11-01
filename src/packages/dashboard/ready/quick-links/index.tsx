@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { CUSTOMERS_PATH, PROJECTS_PATH } from '@/config/routes';
+import { CUSTOMERS_PATH, SOFTWARE_SYSTEMS_PATH } from '@/config/routes';
 import { detailPageStyles } from '@/components/detail-page-styles';
 import { useAppDispatch } from '@/store';
 import { CustomerBuilderActions, WorkspaceBuilderActions } from '@/store/builders';
@@ -41,12 +41,12 @@ export const DashboardQuickLinks = () => {
       id: 'projects',
       module: 'Projects',
       description: 'Engagements, repos, and templates',
-      href: PROJECTS_PATH,
+      href: SOFTWARE_SYSTEMS_PATH,
       primaryLabel: 'View all',
       secondaryLabel: 'Create project',
       onSecondary: () => {
-        dispatch(WorkspaceBuilderActions.openProjectModal(null));
-        router.push(PROJECTS_PATH);
+        dispatch(WorkspaceBuilderActions.openSoftwareSystemModal(null));
+        router.push(SOFTWARE_SYSTEMS_PATH);
       },
     },
   ];

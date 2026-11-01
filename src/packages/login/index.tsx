@@ -1,6 +1,6 @@
 'use client';
 
-import { PROJECTS_PATH } from '@/config/routes';
+import { SOFTWARE_SYSTEMS_PATH } from '@/config/routes';
 import { detailPageStyles } from '@/components/detail-page-styles';
 
 export const Login = () => {
@@ -15,7 +15,7 @@ export const Login = () => {
             No login required for local use. Open the workspace to manage customers, projects, and
             repositories.
           </p>
-          <a href={PROJECTS_PATH} className={detailPageStyles.primaryButton}>
+          <a href={SOFTWARE_SYSTEMS_PATH} className={detailPageStyles.primaryButton}>
             Continue to Projects
           </a>
         </div>

@@ -6,7 +6,7 @@ import { CUSTOMERS_PATH } from '@/config/routes';
 import { detailPageStyles } from '@/components/detail-page-styles';
 import { Header } from './header';
 import { Tabs } from './tabs';
-import { FormModal } from '@/packages/projects';
+import { FormModal } from '@/packages/software-systems';
 
 export const CustomerDetailPage = () => {
   const customer = useAppSelector((state) => state.currentCustomer);

@@ -1,26 +1,26 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 type WorkspaceBuilderState = {
-  isProjectModalOpen: boolean;
-  editingProjectId: string | null;
+  isSoftwareSystemModalOpen: boolean;
+  editingSoftwareSystemId: string | null;
 };
 
 const initialState: WorkspaceBuilderState = {
-  isProjectModalOpen: false,
-  editingProjectId: null,
+  isSoftwareSystemModalOpen: false,
+  editingSoftwareSystemId: null,
 };
 
 const workspaceBuilderSlice = createSlice({
   name: 'workspaceBuilder',
   initialState,
   reducers: {
-    openProjectModal: (state, action: PayloadAction<string | null>) => {
-      state.isProjectModalOpen = true;
-      state.editingProjectId = action.payload;
+    openSoftwareSystemModal: (state, action: PayloadAction<string | null>) => {
+      state.isSoftwareSystemModalOpen = true;
+      state.editingSoftwareSystemId = action.payload;
     },
-    closeProjectModal: (state) => {
-      state.isProjectModalOpen = false;
-      state.editingProjectId = null;
+    closeSoftwareSystemModal: (state) => {
+      state.isSoftwareSystemModalOpen = false;
+      state.editingSoftwareSystemId = null;
     },
     reset: () => initialState,
   },

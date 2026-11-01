@@ -1,3 +1,3 @@
 export { customersReducer, CustomersActions } from './customers';
-export { projectsReducer, ProjectsActions } from './projects';
-export { projectReposReducer, ProjectReposActions } from './projectRepos';
+export { softwareSystemsReducer, SoftwareSystemsActions } from './software-systems';
+export { softwareSystemReposReducer, SoftwareSystemReposActions } from './software-system-repos';

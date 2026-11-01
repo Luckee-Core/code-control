@@ -1,19 +1,17 @@
 import { AppThunk } from '../../types';
 import { CustomersActions } from '../../dumps/customers';
-import { getAllCustomers } from '@/api/customers';
-import { getApiBaseUrl } from '@/api/config';
+import { listCustomers } from '@/api/crm';
 
 type ResponseType = Promise<200 | 500>;
 
 /**
- * Loads every customer into the dump.
+ * Loads every customer from Ops CRM into the dump.
  */
 export const getAllCustomersThunk = (): AppThunk<ResponseType> => {
   return async (dispatch): ResponseType => {
     try {
-      const apiBaseUrl = getApiBaseUrl();
-      const response = await getAllCustomers(apiBaseUrl);
-      if (!response.success || !response.data) {
+      const response = await listCustomers();
+      if (!response.success) {
         console.error('Failed to get customers:', response.error);
         return 500;
       }

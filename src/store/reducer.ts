@@ -1,12 +1,12 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import {
   customersReducer,
-  projectsReducer,
-  projectReposReducer,
+  softwareSystemsReducer,
+  softwareSystemReposReducer,
 } from './dumps';
 import {
   currentCustomerReducer,
-  currentProjectReducer,
+  currentSoftwareSystemReducer,
 } from './current';
 import {
   workspaceBuilderReducer,
@@ -14,17 +14,19 @@ import {
   customerBuilderReducer,
   repositoriesBuilderReducer,
   studioStackBuilderReducer,
+  customerOpsSyncBuilderReducer,
 } from './builders';
 
 export const rootReducer = combineReducers({
   customers: customersReducer,
-  projects: projectsReducer,
-  projectRepos: projectReposReducer,
+  softwareSystems: softwareSystemsReducer,
+  softwareSystemRepos: softwareSystemReposReducer,
   currentCustomer: currentCustomerReducer,
-  currentProject: currentProjectReducer,
+  currentSoftwareSystem: currentSoftwareSystemReducer,
   workspaceBuilder: workspaceBuilderReducer,
   layoutBuilder: layoutBuilderReducer,
   customerBuilder: customerBuilderReducer,
   repositoriesBuilder: repositoriesBuilderReducer,
   studioStackBuilder: studioStackBuilderReducer,
+  customerOpsSyncBuilder: customerOpsSyncBuilderReducer,
 });

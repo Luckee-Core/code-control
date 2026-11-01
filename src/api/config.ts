@@ -9,3 +9,8 @@ export const getApiBaseUrl = (): string => {
   }
   return '';
 };
+
+export const getCrmProxyUrl = (path: string): string => {
+  const normalized = path.startsWith('/') ? path : `/${path}`;
+  return `/api/crm${normalized}`;
+};

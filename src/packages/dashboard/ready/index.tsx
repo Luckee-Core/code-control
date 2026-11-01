@@ -1,17 +1,20 @@
 'use client';
 
 import { useMemo } from 'react';
-import { useAppSelector } from '@/store';
+import { useAppDispatch, useAppSelector } from '@/store';
 import { STUDIO_READY_LEAD } from '@/config/studio-setup-content';
 import { detailPageStyles } from '@/components/detail-page-styles';
 import { DashboardQuickLinks } from './quick-links';
+import { CustomerOpsSyncModal } from '@/packages/customer-ops-sync-modal';
+import { fetchCustomerOpsSyncCompareThunk } from '@/store/thunks/customer-ops-sync';
 
 /**
  * Home dashboard when the local stack health check has passed.
  */
 export const DashboardReadyView = () => {
+  const dispatch = useAppDispatch();
   const customers = useAppSelector((state) => state.customers);
-  const projects = useAppSelector((state) => state.projects);
+  const projects = useAppSelector((state) => state.softwareSystems);
 
   const { customerCount, projectCount } = useMemo(() => {
     return {
@@ -37,13 +40,24 @@ export const DashboardReadyView = () => {
         </div>
         <div className={detailPageStyles.panel}>
           <div className={detailPageStyles.panelBody}>
-            <p className={styles.metricLabel}>Projects</p>
+            <p className={styles.metricLabel}>Software systems</p>
             <p className={styles.metricValue}>{projectCount}</p>
           </div>
         </div>
       </div>
 
+      <div className={styles.actionsRow}>
+        <button
+          type="button"
+          className={styles.syncButton}
+          onClick={() => void dispatch(fetchCustomerOpsSyncCompareThunk())}
+        >
+          Sync customers with Ops
+        </button>
+      </div>
+
       <DashboardQuickLinks />
+      <CustomerOpsSyncModal />
     </div>
   );
 };
@@ -60,4 +74,9 @@ const styles = {
   metricsRow: `grid grid-cols-2 gap-3`,
   metricLabel: `text-xs font-medium text-gray-500 uppercase tracking-wide m-0`,
   metricValue: `mt-1 text-2xl font-semibold text-gray-900 tabular-nums m-0`,
+  actionsRow: `flex flex-wrap gap-2`,
+  syncButton: `
+    rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-800
+    hover:bg-gray-50
+  `,
 };

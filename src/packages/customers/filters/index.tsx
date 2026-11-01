@@ -34,8 +34,7 @@ export const CustomerFilters = ({ searchTerm, onSearchChange }: CustomerFiltersP
   }, [filteredCount, totalCount, searchTerm]);
 
   const handleAddCustomer = () => {
-    dispatch(CurrentCustomerActions.reset());
-    dispatch(CustomerBuilderActions.openCustomerModal());
+    window.open('https://localhost:3037/customers', '_blank');
   };
 
   return (

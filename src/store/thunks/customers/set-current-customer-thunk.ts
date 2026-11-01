@@ -1,8 +1,7 @@
 import { AppThunk } from '../../types';
 import { CurrentCustomerActions } from '../../current';
 import { CustomersActions } from '../../dumps/customers';
-import { getCustomerById } from '@/api/customers';
-import { getApiBaseUrl } from '@/api/config';
+import { getCustomerById } from '@/api/crm';
 import type { Customer } from '@/model/customer';
 
 type ResponseType = Promise<200 | 404 | 500>;
@@ -11,7 +10,7 @@ type ResponseType = Promise<200 | 404 | 500>;
  * Sets the current customer before navigating to the customer detail page.
  */
 export const setCurrentCustomerThunk = (
-  customerOrId: Customer | string
+  customerOrId: Customer | string,
 ): AppThunk<ResponseType> => {
   return async (dispatch): ResponseType => {
     try {
@@ -20,10 +19,9 @@ export const setCurrentCustomerThunk = (
       if (typeof customerOrId === 'object') {
         customer = customerOrId;
       } else {
-        const apiBaseUrl = getApiBaseUrl();
-        const response = await getCustomerById(customerOrId, apiBaseUrl);
+        const response = await getCustomerById(customerOrId);
 
-        if (!response.success || !response.data) {
+        if (!response.success) {
           console.error('Failed to fetch customer:', response.error);
           return 404;
         }

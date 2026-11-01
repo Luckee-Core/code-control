@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import { useAppDispatch } from '@/store';
 import {
   getAllCustomersThunk,
-  getAllProjectsThunk,
-  getAllProjectReposThunk,
+  getAllSoftwareSystemsThunk,
+  getAllSoftwareSystemReposThunk,
 } from '@/store/thunks';
 
 /**
@@ -21,8 +21,8 @@ export const useCodeControlDataLoader = () => {
 
     Promise.all([
       dispatch(getAllCustomersThunk()),
-      dispatch(getAllProjectsThunk()),
-      dispatch(getAllProjectReposThunk()),
+      dispatch(getAllSoftwareSystemsThunk()),
+      dispatch(getAllSoftwareSystemReposThunk()),
     ])
       .then((results) => {
         setLoadFailed(results.some((code) => code !== 200));

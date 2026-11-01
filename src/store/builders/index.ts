@@ -8,3 +8,7 @@ export {
   type FrontendRuntime,
 } from './repositories-builder';
 export { studioStackBuilderReducer, StudioStackBuilderActions } from './studioStackBuilder';
+export {
+  customerOpsSyncBuilderReducer,
+  CustomerOpsSyncBuilderActions,
+} from './customerOpsSyncBuilder';

@@ -6,8 +6,7 @@ import { useAppSelector, useAppDispatch } from '@/store';
 import { setCurrentCustomerThunk } from '@/store/thunks/customers';
 import { CUSTOMER_DETAIL_PAGE_PATH } from '@/config/routes';
 import type { Customer } from '@/model/customer';
-import { formatStage } from '../../format-stage';
-import { stageColor } from '@/packages/customer-detail-page/stage-color';
+import { formatCustomerStatus, statusColor } from '../../format-customer-status';
 
 type RowProps = {
   customer: Customer;
@@ -16,7 +15,7 @@ type RowProps = {
 export const Row = ({ customer }: RowProps) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const projects = useAppSelector((state) => state.projects);
+  const projects = useAppSelector((state) => state.softwareSystems);
   const projectCount = useMemo(
     () => Object.values(projects).filter((project) => project.customer_id === customer.id).length,
     [projects, customer.id]
@@ -44,8 +43,8 @@ export const Row = ({ customer }: RowProps) => {
         </button>
       </td>
       <td className={styles.cell}>
-        <span className={`${styles.stageBadge} ${stageColor(customer.stage)}`}>
-          {formatStage(customer.stage)}
+        <span className={`${styles.stageBadge} ${statusColor(customer.status)}`}>
+          {formatCustomerStatus(customer.status)}
         </span>
       </td>
       <td className={styles.cell}>{projectCount}</td>

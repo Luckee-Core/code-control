@@ -1,4 +1,5 @@
 export * from './customers';
-export * from './projects';
-export * from './project-repos';
+export * from './software-systems';
+export * from './software-system-repos';
 export * from './studio-stack';
+export * from './customer-ops-sync';

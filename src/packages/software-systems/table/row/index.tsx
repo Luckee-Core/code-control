@@ -1,0 +1,87 @@
+'use client';
+
+import { useMemo } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAppSelector, useAppDispatch } from '@/store';
+import { setCurrentSoftwareSystemThunk } from '@/store/thunks/software-systems';
+import { setCurrentCustomerThunk } from '@/store/thunks/customers';
+import { CUSTOMER_DETAIL_PAGE_PATH, SOFTWARE_SYSTEM_DETAIL_PAGE_PATH } from '@/config/routes';
+import type { SoftwareSystem } from '@/model/software-system';
+import { formatDate } from '@/utils/date-time';
+import { truncateText } from '../../truncate-text';
+
+type RowProps = {
+  project: SoftwareSystem;
+};
+
+export const Row = ({ project }: RowProps) => {
+  const router = useRouter();
+  const dispatch = useAppDispatch();
+  const customers = useAppSelector((state) => state.customers);
+  const customer = useMemo(
+    () => (project.customer_id ? customers[project.customer_id] : undefined),
+    [customers, project.customer_id]
+  );
+  const customerName = customer?.name ?? '—';
+
+  const handleOpen = async () => {
+    const status = await dispatch(setCurrentSoftwareSystemThunk(project));
+    if (status === 200) {
+      router.push(SOFTWARE_SYSTEM_DETAIL_PAGE_PATH);
+    }
+  };
+
+  const handleOpenCustomer = async () => {
+    if (!customer) return;
+    const result = await dispatch(setCurrentCustomerThunk(customer));
+    if (result === 200) {
+      router.push(CUSTOMER_DETAIL_PAGE_PATH);
+    }
+  };
+
+  return (
+    <tr className={styles.row}>
+      <td className={styles.cell}>
+        <button type="button" onClick={() => void handleOpen()} className={styles.projectNameButton}>
+          {project.name}
+        </button>
+      </td>
+      <td className={styles.cell}>
+        {customer ? (
+          <button
+            type="button"
+            onClick={() => void handleOpenCustomer()}
+            className={styles.customerNameButton}
+          >
+            {customerName}
+          </button>
+        ) : (
+          <span className={styles.customerName}>{customerName}</span>
+        )}
+      </td>
+      <td className={styles.cellDescription}>{truncateText(project.description, 60)}</td>
+      <td className={styles.cell}>{formatDate(project.updated_at)}</td>
+    </tr>
+  );
+};
+
+const styles = {
+  row: `
+    hover:bg-gray-50 transition-colors
+  `,
+  cell: `
+    px-3 py-2 text-xs text-gray-900 border-b border-gray-200
+  `,
+  cellDescription: `
+    px-3 py-2 text-xs text-gray-600 max-w-xs border-b border-gray-200
+  `,
+  projectNameButton: `
+    font-medium text-left text-blue-600 hover:underline bg-transparent border-none cursor-pointer p-0
+  `,
+  customerNameButton: `
+    font-medium text-left text-blue-600 hover:underline bg-transparent border-none cursor-pointer p-0
+  `,
+  customerName: `
+    text-gray-700 text-xs
+  `,
+};

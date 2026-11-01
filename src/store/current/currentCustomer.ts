@@ -3,9 +3,18 @@ import type { Customer } from '@/model/customer';
 
 const initialState: Customer = {
   id: '',
+  user_id: null,
   name: '',
-  description: null,
-  stage: 'discovery_call',
+  status: 'pending_review',
+  company: null,
+  email: null,
+  phone: null,
+  address_line1: null,
+  address_line2: null,
+  city: null,
+  state: null,
+  postal_code: null,
+  facebook_url: null,
   created_at: '',
   updated_at: '',
 };

@@ -3,7 +3,7 @@ export type RepoType = 'express' | 'python' | 'nextjs' | 'react-native';
 export type ProjectRepo = {
   id: string;
   customer_id: string;
-  project_id: string;
+  software_system_id: string;
   repo_type: RepoType;
   name: string;
   repo_url: string;

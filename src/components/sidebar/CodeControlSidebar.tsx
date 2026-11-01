@@ -6,7 +6,7 @@ import { ChevronRight } from 'lucide-react';
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useAppSelector } from '@/store';
 import { BrandLogo } from '@/components/brand-logo';
-import { CUSTOMERS_PATH, CUSTOMER_DETAIL_PAGE_PATH, DASHBOARD_PATH, PROJECTS_PATH, PROJECT_DETAIL_PAGE_PATH } from '@/config/routes';
+import { CUSTOMERS_PATH, CUSTOMER_DETAIL_PAGE_PATH, DASHBOARD_PATH, SOFTWARE_SYSTEMS_PATH, SOFTWARE_SYSTEM_DETAIL_PAGE_PATH } from '@/config/routes';
 import { getNavigationLinks } from '@/utils/navigation';
 import type { NavigationLink } from '@/utils/navigation';
 
@@ -25,8 +25,8 @@ export const CodeControlSidebar = () => {
       if (href === CUSTOMERS_PATH) {
         return pathname === CUSTOMERS_PATH || pathname === CUSTOMER_DETAIL_PAGE_PATH;
       }
-      if (href === PROJECTS_PATH) {
-        return pathname === PROJECTS_PATH || pathname === PROJECT_DETAIL_PAGE_PATH;
+      if (href === SOFTWARE_SYSTEMS_PATH) {
+        return pathname === SOFTWARE_SYSTEMS_PATH || pathname === SOFTWARE_SYSTEM_DETAIL_PAGE_PATH;
       }
       return pathname === href || pathname.startsWith(`${href}/`);
     },
