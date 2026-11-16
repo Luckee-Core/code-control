@@ -3,3 +3,7 @@ export const CUSTOMERS_PATH = '/customers';
 export const CUSTOMER_DETAIL_PAGE_PATH = '/customer-detail-page';
 export const SOFTWARE_SYSTEMS_PATH = '/software-systems';
 export const SOFTWARE_SYSTEM_DETAIL_PAGE_PATH = '/software-system-detail-page';
+export const CONVENTIONS_PATH = '/conventions';
+export const CONVENTION_DETAIL_PAGE_PATH = '/convention-detail-page';
+export const VOCABULARY_PATH = '/vocabulary';
+export const AI_CONTEXT_PATH = '/ai-context';

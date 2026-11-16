@@ -3,10 +3,15 @@ import {
   customersReducer,
   softwareSystemsReducer,
   softwareSystemReposReducer,
+  conventionsReducer,
+  conventionOptionsReducer,
+  conventionVocabularyReducer,
+  conventionSnapshotsReducer,
 } from './dumps';
 import {
   currentCustomerReducer,
   currentSoftwareSystemReducer,
+  currentConventionReducer,
 } from './current';
 import {
   workspaceBuilderReducer,
@@ -15,6 +20,8 @@ import {
   repositoriesBuilderReducer,
   studioStackBuilderReducer,
   customerOpsSyncBuilderReducer,
+  conventionBuilderReducer,
+  aiContextBuilderReducer,
 } from './builders';
 
 export const rootReducer = combineReducers({
@@ -29,4 +36,11 @@ export const rootReducer = combineReducers({
   repositoriesBuilder: repositoriesBuilderReducer,
   studioStackBuilder: studioStackBuilderReducer,
   customerOpsSyncBuilder: customerOpsSyncBuilderReducer,
+  conventions: conventionsReducer,
+  conventionOptions: conventionOptionsReducer,
+  conventionVocabulary: conventionVocabularyReducer,
+  conventionSnapshots: conventionSnapshotsReducer,
+  currentConvention: currentConventionReducer,
+  conventionBuilder: conventionBuilderReducer,
+  aiContextBuilder: aiContextBuilderReducer,
 });
