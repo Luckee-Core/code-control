@@ -12,11 +12,6 @@ export {
   customerOpsSyncBuilderReducer,
   CustomerOpsSyncBuilderActions,
 } from './customerOpsSyncBuilder';
-export {
-  conventionBuilderReducer,
-  ConventionBuilderActions,
-  type ConventionCreateForm,
-  type ConventionExampleDraft,
-  type ConventionSourceDraft,
-} from './conventionBuilder';
+export { conventionsBuilderReducer, ConventionsBuilderActions } from './conventionsBuilder';
+export { dataModelBuilderReducer, DataModelBuilderActions } from './dataModelBuilder';
 export { aiContextBuilderReducer, AiContextBuilderActions } from './aiContextBuilder';

@@ -2,6 +2,13 @@ export { customersReducer, CustomersActions } from './customers';
 export { softwareSystemsReducer, SoftwareSystemsActions } from './software-systems';
 export { softwareSystemReposReducer, SoftwareSystemReposActions } from './software-system-repos';
 export { conventionsReducer, ConventionsActions } from './conventions';
+export { conventionsCatalogReducer, ConventionsCatalogActions } from './conventions-catalog';
+export { conventionExamplesReducer, ConventionExamplesActions } from './convention-examples';
+export { conventionSourcesReducer, ConventionSourcesActions } from './convention-sources';
+export { dataModelProposalsReducer, DataModelProposalsActions } from './data-model-proposals';
+export {
+  dataModelProposalExchangesReducer,
+  DataModelProposalExchangesActions,
+} from './data-model-proposal-exchanges';
 export { conventionOptionsReducer, ConventionOptionsActions } from './convention-options';
-export { conventionVocabularyReducer, ConventionVocabularyActions } from './convention-vocabulary';
 export { conventionSnapshotsReducer, ConventionSnapshotsActions } from './convention-snapshots';

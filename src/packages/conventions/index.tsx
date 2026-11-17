@@ -3,27 +3,29 @@
 import { useEffect, useState } from 'react';
 import { useBreadcrumbs } from '@/hooks';
 import { useAppDispatch } from '@/store';
-import { getAllConventionsThunk, getConventionOptionsThunk } from '@/store/thunks/conventions';
-import { Filters, type ConventionFilters } from './filters';
-import { Table } from './table';
+import { getConventionsThunk } from '@/store/thunks/conventions';
+import { EMPTY_CONVENTION_FILTERS, type ConventionFilterState } from './filter-conventions';
+import { Filters } from './filters';
 import { FormModal } from './form-modal';
+import { Table } from './table';
 
-const EMPTY_FILTERS: ConventionFilters = { search: '', topicKey: '', severity: '', status: '' };
+export { FormModal } from './form-modal';
 
 export const Conventions = () => {
   const dispatch = useAppDispatch();
-  const [filters, setFilters] = useState<ConventionFilters>(EMPTY_FILTERS);
+  const [filters, setFilters] = useState<ConventionFilterState>(EMPTY_CONVENTION_FILTERS);
+  const [loadFailed, setLoadFailed] = useState(false);
 
   useBreadcrumbs([{ label: 'Conventions' }]);
 
   useEffect(() => {
-    void dispatch(getConventionOptionsThunk());
-    void dispatch(getAllConventionsThunk());
+    void dispatch(getConventionsThunk()).then((status) => setLoadFailed(status !== 200));
   }, [dispatch]);
 
   return (
     <div className={styles.page}>
-      <Filters filters={filters} onChange={setFilters} onClear={() => setFilters(EMPTY_FILTERS)} />
+      <Filters filters={filters} onChange={setFilters} />
+      {loadFailed ? <p className={styles.error}>Could not load conventions. Is the storage server reachable?</p> : null}
       <Table filters={filters} />
       <FormModal />
     </div>
@@ -33,5 +35,8 @@ export const Conventions = () => {
 const styles = {
   page: `
     space-y-3 flex flex-col flex-1 min-h-0 overflow-hidden
+  `,
+  error: `
+    text-xs text-red-700 bg-red-50 border border-red-200 rounded px-3 py-2
   `,
 };

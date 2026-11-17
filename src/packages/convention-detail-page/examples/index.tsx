@@ -1,99 +1,94 @@
 'use client';
 
-import { useAppDispatch, useAppSelector } from '@/store';
-import { ConventionBuilderActions } from '@/store/builders';
-import { createConventionExampleThunk, deleteConventionExampleThunk } from '@/store/thunks/conventions';
+import { useMemo } from 'react';
 import { detailPageStyles } from '@/components/detail-page-styles';
-import { formFieldStyles } from '@/components/form-field-styles';
-import type { ConventionExampleKind, ConventionExampleLanguage } from '@/model/convention-example';
-import { EXAMPLE_KINDS, EXAMPLE_LANGUAGES } from '@/packages/conventions/convention-enums';
+import { useAppDispatch, useAppSelector } from '@/store';
+import { ConventionsBuilderActions } from '@/store/builders';
+import { deleteConventionExampleThunk } from '@/store/thunks/conventions';
+import { ExampleForm } from './form';
 
 export const Examples = () => {
   const dispatch = useAppDispatch();
-  const examples = useAppSelector((state) => state.currentConvention.examples);
-  const draft = useAppSelector((state) => state.conventionBuilder.exampleDraft);
-  const update = (fields: Parameters<typeof ConventionBuilderActions.updateExampleDraft>[0]) =>
-    dispatch(ConventionBuilderActions.updateExampleDraft(fields));
+  const examples = useAppSelector((state) => state.conventionExamples);
+  const builder = useAppSelector((state) => state.conventionsBuilder);
+
+  const sorted = useMemo(
+    () =>
+      Object.values(examples).sort(
+        (a, b) => a.kind.localeCompare(b.kind) || a.sort_order - b.sort_order || a.title.localeCompare(b.title),
+      ),
+    [examples],
+  );
+
+  const handleDelete = (id: string, title: string) => {
+    if (window.confirm(`Delete example "${title}"?`)) {
+      void dispatch(deleteConventionExampleThunk(id));
+    }
+  };
 
   return (
     <section className={detailPageStyles.panel}>
       <div className={detailPageStyles.panelHeader}>
-        <h2 className={detailPageStyles.panelTitle}>Examples ({examples.length})</h2>
+        <div>
+          <h3 className={detailPageStyles.panelTitle}>Examples</h3>
+          <p className={detailPageStyles.panelSubtitle}>Shown to the AI as ✅ correct / ❌ incorrect code.</p>
+        </div>
+        {!builder.isExampleFormOpen ? (
+          <button
+            type="button"
+            onClick={() => dispatch(ConventionsBuilderActions.openExampleForm())}
+            className={detailPageStyles.secondaryButton}
+          >
+            Add example
+          </button>
+        ) : null}
       </div>
-      <div className={styles.body}>
-        {examples.map((example) => (
-          <div key={example.id} className={styles.item}>
-            <div className={styles.itemHeader}>
+      <div className={`${detailPageStyles.panelBody} ${styles.body}`}>
+        {builder.isExampleFormOpen ? <ExampleForm /> : null}
+        {builder.isLoadingDetail ? <p className={styles.muted}>Loading…</p> : null}
+        {!builder.isLoadingDetail && sorted.length === 0 && !builder.isExampleFormOpen ? (
+          <p className={styles.muted}>No examples yet.</p>
+        ) : null}
+        {sorted.map((example) => (
+          <div key={example.id} className={styles.example}>
+            <div className={styles.exampleHeader}>
               <span className={example.kind === 'correct' ? styles.correct : styles.incorrect}>
-                {example.kind === 'correct' ? 'Do' : "Don't"}
+                {example.kind === 'correct' ? '✅ Correct' : '❌ Incorrect'}
               </span>
-              <span className={styles.itemTitle}>{example.title}</span>
+              <span className={styles.exampleTitle}>{example.title}</span>
               {example.path_hint ? <span className={styles.path}>{example.path_hint}</span> : null}
               <button
                 type="button"
-                onClick={() => void dispatch(deleteConventionExampleThunk(example.id))}
-                className={styles.remove}
+                onClick={() => handleDelete(example.id, example.title)}
+                className={styles.deleteButton}
               >
-                Remove
+                Delete
               </button>
             </div>
             <pre className={styles.code}>{example.code}</pre>
             {example.note ? <p className={styles.note}>{example.note}</p> : null}
           </div>
         ))}
-        <div className={styles.form}>
-          <p className={detailPageStyles.sectionTitle}>Add example</p>
-          <div className={styles.grid}>
-            <input value={draft.title} onChange={(e) => update({ title: e.target.value })} placeholder="Title" className={formFieldStyles.input} />
-            <select value={draft.kind} onChange={(e) => update({ kind: e.target.value as ConventionExampleKind })} className={formFieldStyles.select}>
-              {EXAMPLE_KINDS.map((value) => (
-                <option key={value} value={value}>
-                  {value}
-                </option>
-              ))}
-            </select>
-            <select
-              value={draft.language}
-              onChange={(e) => update({ language: e.target.value as ConventionExampleLanguage })}
-              className={formFieldStyles.select}
-            >
-              {EXAMPLE_LANGUAGES.map((value) => (
-                <option key={value} value={value}>
-                  {value}
-                </option>
-              ))}
-            </select>
-            <input value={draft.path_hint} onChange={(e) => update({ path_hint: e.target.value })} placeholder="Path hint (optional)" className={formFieldStyles.input} />
-          </div>
-          <textarea value={draft.code} onChange={(e) => update({ code: e.target.value })} placeholder="Code" className={formFieldStyles.codeTextarea} />
-          <input value={draft.note} onChange={(e) => update({ note: e.target.value })} placeholder="Note (optional)" className={formFieldStyles.input} />
-          <div>
-            <button
-              type="button"
-              onClick={() => void dispatch(createConventionExampleThunk())}
-              className={detailPageStyles.primaryButton}
-              disabled={!draft.title.trim() || !draft.code.trim()}
-            >
-              Add example
-            </button>
-          </div>
-        </div>
       </div>
     </section>
   );
 };
 
 const styles = {
-  body: `px-4 py-4 flex flex-col gap-4`,
-  item: `border border-gray-200 rounded p-3 flex flex-col gap-2`,
-  itemHeader: `flex items-center gap-2 flex-wrap`,
-  correct: `px-1.5 py-0.5 rounded text-[10px] font-semibold uppercase bg-green-50 text-green-700`,
-  incorrect: `px-1.5 py-0.5 rounded text-[10px] font-semibold uppercase bg-red-50 text-red-700`,
-  itemTitle: `text-xs font-medium text-gray-900`,
-  path: `font-mono text-[11px] text-gray-500`,
-  remove: `ml-auto text-xs text-gray-500 hover:text-red-600 bg-transparent border-none cursor-pointer`,
-  code: `bg-gray-50 border border-gray-200 rounded p-2 text-[11px] font-mono text-gray-800 overflow-x-auto whitespace-pre`,
+  body: `flex flex-col gap-4`,
+  muted: `text-xs text-gray-500`,
+  example: `flex flex-col gap-1.5`,
+  exampleHeader: `flex items-center gap-2 flex-wrap`,
+  correct: `text-xs font-semibold text-green-700`,
+  incorrect: `text-xs font-semibold text-red-700`,
+  exampleTitle: `text-xs font-medium text-gray-900`,
+  path: `font-mono text-[10px] text-gray-500`,
+  deleteButton: `
+    ml-auto text-[11px] text-gray-500 hover:text-red-700 bg-transparent border-none cursor-pointer
+  `,
+  code: `
+    text-[11px] font-mono bg-gray-50 border border-gray-200 rounded p-3 overflow-x-auto text-gray-800
+    whitespace-pre
+  `,
   note: `text-xs text-gray-600`,
-  form: `flex flex-col gap-2 border-t border-gray-200 pt-4`,
-  grid: `grid grid-cols-1 md:grid-cols-4 gap-2`,
 };

@@ -10,7 +10,7 @@ import {
   loadGithubOrgsThunk,
 } from '@/store/thunks/software-system-repos';
 import { Overview } from './overview';
-import { Repositories } from './repositories';
+import { Tabs } from './tabs';
 
 export const ProjectDetailPage = () => {
   const dispatch = useAppDispatch();
@@ -45,7 +45,7 @@ export const ProjectDetailPage = () => {
   return (
     <div className={detailPageStyles.page}>
       <Overview />
-      <Repositories />
+      <Tabs />
     </div>
   );
 };

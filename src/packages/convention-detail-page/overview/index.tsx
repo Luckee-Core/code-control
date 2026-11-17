@@ -1,127 +1,96 @@
 'use client';
 
 import { useMemo } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAppDispatch, useAppSelector } from '@/store';
-import { CurrentConventionActions } from '@/store/current';
-import { deleteConventionThunk, updateConventionThunk } from '@/store/thunks/conventions';
 import { detailPageStyles } from '@/components/detail-page-styles';
-import { formFieldStyles } from '@/components/form-field-styles';
-import { CONVENTIONS_PATH } from '@/config/routes';
-import type { ConventionSeverity, ConventionStatus } from '@/model/convention';
-import { CONVENTION_SEVERITIES, CONVENTION_STATUSES } from '@/packages/conventions/convention-enums';
+import { SEVERITY_BADGE, STATUS_BADGE, badgeBase } from '@/packages/conventions/badges';
+import { useAppSelector } from '@/store';
+import { formatDate } from '@/utils/date-time';
+import { DeleteButton } from './header/buttons/delete';
+import { EditButton } from './header/buttons/edit';
+import { StatusButton } from './header/buttons/status';
 
 export const Overview = () => {
-  const router = useRouter();
-  const dispatch = useAppDispatch();
-  const convention = useAppSelector((state) => state.currentConvention.convention);
-  const options = useAppSelector((state) => state.conventionOptions);
-  const builder = useAppSelector((state) => state.conventionBuilder);
+  const current = useAppSelector((state) => state.currentConvention);
+  const catalog = useAppSelector((state) => state.conventionsCatalog);
 
-  const topics = useMemo(
-    () => options.topics.filter((topic) => topic.domain_key === convention.domain_key),
-    [options.topics, convention.domain_key]
+  const topicName = useMemo(
+    () => catalog.topics.find((topic) => topic.key === current.topic_key)?.name ?? current.topic_key,
+    [catalog.topics, current.topic_key],
   );
-  const update = (fields: Parameters<typeof CurrentConventionActions.updateConventionFields>[0]) =>
-    dispatch(CurrentConventionActions.updateConventionFields(fields));
-
-  const handleDelete = async () => {
-    if (!window.confirm(`Delete ${convention.key}? Its roles, examples and sources are deleted too.`)) return;
-    const result = await dispatch(deleteConventionThunk());
-    if (result === 200) router.push(CONVENTIONS_PATH);
-  };
+  const roleNames = useMemo(
+    () =>
+      current.role_keys
+        .map((key) => catalog.repo_roles.find((role) => role.key === key)?.name ?? key)
+        .join(', '),
+    [catalog.repo_roles, current.role_keys],
+  );
 
   return (
     <section className={detailPageStyles.panel}>
       <div className={detailPageStyles.panelHeader}>
         <div>
-          <h2 className={detailPageStyles.panelTitle}>{convention.key}</h2>
-          <p className={detailPageStyles.panelSubtitle}>Domain {convention.domain_key}. Save also saves the roles below.</p>
+          <div className={styles.badges}>
+            <span className={`${badgeBase} ${SEVERITY_BADGE[current.severity]}`}>{current.severity}</span>
+            <span className={`${badgeBase} ${STATUS_BADGE[current.status]}`}>{current.status}</span>
+          </div>
+          <h2 className={detailPageStyles.panelTitle}>{current.title}</h2>
+          <p className={styles.key}>{current.key}</p>
         </div>
         <div className={styles.actions}>
-          <button type="button" onClick={() => void handleDelete()} className={detailPageStyles.secondaryButton}>
-            Delete
-          </button>
-          <button
-            type="button"
-            onClick={() => void dispatch(updateConventionThunk())}
-            className={detailPageStyles.primaryButton}
-            disabled={builder.isSaving}
-          >
-            {builder.isSaving ? 'Saving…' : 'Save'}
-          </button>
+          <StatusButton />
+          <EditButton />
+          <DeleteButton />
         </div>
       </div>
-      <div className={styles.body}>
-        <label className={formFieldStyles.field}>
-          <span className={formFieldStyles.label}>Title</span>
-          <input value={convention.title} onChange={(e) => update({ title: e.target.value })} className={formFieldStyles.input} />
-        </label>
-        <div className={styles.grid}>
-          <label className={formFieldStyles.field}>
-            <span className={formFieldStyles.label}>Topic</span>
-            <select value={convention.topic_key} onChange={(e) => update({ topic_key: e.target.value })} className={formFieldStyles.select}>
-              {topics.map((topic) => (
-                <option key={topic.key} value={topic.key}>
-                  {topic.name}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className={formFieldStyles.field}>
-            <span className={formFieldStyles.label}>Severity</span>
-            <select
-              value={convention.severity}
-              onChange={(e) => update({ severity: e.target.value as ConventionSeverity })}
-              className={formFieldStyles.select}
-            >
-              {CONVENTION_SEVERITIES.map((value) => (
-                <option key={value} value={value}>
-                  {value}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className={formFieldStyles.field}>
-            <span className={formFieldStyles.label}>Status</span>
-            <select
-              value={convention.status}
-              onChange={(e) => update({ status: e.target.value as ConventionStatus })}
-              className={formFieldStyles.select}
-            >
-              {CONVENTION_STATUSES.map((value) => (
-                <option key={value} value={value}>
-                  {value}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className={formFieldStyles.field}>
-            <span className={formFieldStyles.label}>Sort order</span>
-            <input
-              type="number"
-              value={convention.sort_order}
-              onChange={(e) => update({ sort_order: Number(e.target.value) || 0 })}
-              className={formFieldStyles.input}
-            />
-          </label>
+      <div className={`${detailPageStyles.panelBody} ${styles.body}`}>
+        <div>
+          <p className={detailPageStyles.fieldLabel}>Statement</p>
+          <p className={styles.text}>{current.statement}</p>
         </div>
-        <label className={formFieldStyles.field}>
-          <span className={formFieldStyles.label}>Statement</span>
-          <textarea value={convention.statement} onChange={(e) => update({ statement: e.target.value })} className={formFieldStyles.textarea} />
-        </label>
-        <label className={formFieldStyles.field}>
-          <span className={formFieldStyles.label}>Rationale</span>
-          <textarea value={convention.rationale} onChange={(e) => update({ rationale: e.target.value })} className={formFieldStyles.textarea} />
-        </label>
-        {builder.error ? <p className={formFieldStyles.error}>{builder.error}</p> : null}
+        {current.rationale ? (
+          <div>
+            <p className={detailPageStyles.fieldLabel}>Why</p>
+            <p className={styles.text}>{current.rationale}</p>
+          </div>
+        ) : null}
+        <div className={styles.metaGrid}>
+          <div>
+            <p className={detailPageStyles.fieldLabel}>Topic</p>
+            <p className={styles.meta}>{topicName}</p>
+          </div>
+          <div>
+            <p className={detailPageStyles.fieldLabel}>Repo roles</p>
+            <p className={styles.meta}>{roleNames || '—'}</p>
+          </div>
+          <div>
+            <p className={detailPageStyles.fieldLabel}>Automatic check</p>
+            <p className={styles.meta}>{current.check_kind === 'none' ? 'None' : current.check_kind}</p>
+          </div>
+          <div>
+            <p className={detailPageStyles.fieldLabel}>Updated</p>
+            <p className={styles.meta}>{current.updated_at ? formatDate(current.updated_at) : '—'}</p>
+          </div>
+        </div>
+        {current.check_config ? (
+          <div>
+            <p className={detailPageStyles.fieldLabel}>Check config</p>
+            <pre className={styles.code}>{JSON.stringify(current.check_config, null, 2)}</pre>
+          </div>
+        ) : null}
       </div>
     </section>
   );
 };
 
 const styles = {
-  actions: `flex gap-2`,
-  body: `px-4 py-4 flex flex-col gap-3`,
-  grid: `grid grid-cols-2 md:grid-cols-4 gap-3`,
+  badges: `flex items-center gap-1.5 mb-1.5`,
+  key: `mt-0.5 font-mono text-[11px] text-gray-500`,
+  actions: `flex items-center gap-2 flex-wrap`,
+  body: `flex flex-col gap-4`,
+  text: `mt-1 text-sm text-gray-900 whitespace-pre-wrap`,
+  metaGrid: `grid grid-cols-2 md:grid-cols-4 gap-4`,
+  meta: `mt-1 text-xs text-gray-800`,
+  code: `
+    mt-1 text-[11px] font-mono bg-gray-50 border border-gray-200 rounded p-3 overflow-x-auto text-gray-800
+  `,
 };

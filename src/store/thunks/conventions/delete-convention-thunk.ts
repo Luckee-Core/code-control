@@ -1,30 +1,23 @@
-import { AppThunk } from '../../types';
-import { getApiBaseUrl } from '@/api/config';
-import { ConventionsActions } from '../../dumps';
-import { CurrentConventionActions } from '../../current';
 import { deleteConvention } from '@/api/conventions';
-
-type ResponseType = Promise<200 | 400 | 500>;
+import { CurrentConventionActions } from '../../current';
+import { ConventionsActions, ConventionsCatalogActions } from '../../dumps';
+import type { AppThunk } from '../../types';
 
 /**
- * Deletes the current convention.
+ * Deletes the current convention (examples and sources cascade server-side).
  */
-export const deleteConventionThunk = (): AppThunk<ResponseType> => {
-  return async (dispatch, getState): ResponseType => {
-    const { id } = getState().currentConvention.convention;
+export const deleteConventionThunk = (): AppThunk<Promise<200 | 400 | 500>> => {
+  return async (dispatch, getState) => {
+    const { id } = getState().currentConvention;
     if (!id) return 400;
-    try {
-      const response = await deleteConvention(id, getApiBaseUrl());
-      if (!response.success) {
-        console.error('Failed to delete convention:', response.error);
-        return 400;
-      }
-      dispatch(ConventionsActions.deleteConvention(id));
-      dispatch(CurrentConventionActions.reset());
-      return 200;
-    } catch (error) {
-      console.error('Error deleting convention:', error);
+    const response = await deleteConvention(id);
+    if (!response.success) {
+      console.error('❌ Failed to delete convention:', response.error);
       return 500;
     }
+    dispatch(ConventionsActions.deleteConvention(id));
+    dispatch(ConventionsCatalogActions.setConventionRoleLinks({ conventionId: id, links: [] }));
+    dispatch(CurrentConventionActions.reset());
+    return 200;
   };
 };

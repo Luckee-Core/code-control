@@ -1,20 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { Convention } from '@/model/convention';
-import type { ConventionExample } from '@/model/convention-example';
-import type { ConventionSource } from '@/model/convention-source';
-import type { ConventionDetail } from '@/model/convention-responses';
 
-type CurrentConventionState = {
-  convention: Convention;
-  roleKeys: string[];
-  examples: ConventionExample[];
-  sources: ConventionSource[];
-};
+/** The convention open on the detail page / in the form modal, plus its repo roles. */
+export type CurrentConventionState = Convention & { role_keys: string[] };
 
-const emptyConvention: Convention = {
+export const EMPTY_CURRENT_CONVENTION: CurrentConventionState = {
   id: '',
   key: '',
-  domain_key: '',
+  domain_key: 'data_model',
   topic_key: '',
   title: '',
   statement: '',
@@ -26,55 +19,25 @@ const emptyConvention: Convention = {
   sort_order: 0,
   created_at: '',
   updated_at: '',
-};
-
-const initialState: CurrentConventionState = {
-  convention: emptyConvention,
-  roleKeys: [],
-  examples: [],
-  sources: [],
+  role_keys: ['storage'],
 };
 
 export const currentConventionSlice = createSlice({
   name: 'currentConvention',
-  initialState,
+  initialState: EMPTY_CURRENT_CONVENTION,
   reducers: {
-    setConvention: (state, action: PayloadAction<Convention>) => {
-      if (state.convention.id !== action.payload.id) {
-        return { ...initialState, convention: action.payload };
-      }
-      state.convention = action.payload;
-    },
-    setDetail: (_state, action: PayloadAction<ConventionDetail>) => ({
-      convention: action.payload.convention,
-      roleKeys: action.payload.roles.map((role) => role.role_key),
-      examples: action.payload.examples,
-      sources: action.payload.sources,
+    setConvention: (_state, action: PayloadAction<CurrentConventionState>) => action.payload,
+    updateFields: (state, action: PayloadAction<Partial<CurrentConventionState>>) => ({
+      ...state,
+      ...action.payload,
     }),
-    updateConventionFields: (state, action: PayloadAction<Partial<Convention>>) => {
-      state.convention = { ...state.convention, ...action.payload };
+    toggleRole: (state, action: PayloadAction<string>) => {
+      const role = action.payload;
+      state.role_keys = state.role_keys.includes(role)
+        ? state.role_keys.filter((key) => key !== role)
+        : [...state.role_keys, role];
     },
-    toggleRoleKey: (state, action: PayloadAction<string>) => {
-      state.roleKeys = state.roleKeys.includes(action.payload)
-        ? state.roleKeys.filter((key) => key !== action.payload)
-        : [...state.roleKeys, action.payload].sort();
-    },
-    setRoleKeys: (state, action: PayloadAction<string[]>) => {
-      state.roleKeys = action.payload;
-    },
-    addExample: (state, action: PayloadAction<ConventionExample>) => {
-      state.examples.push(action.payload);
-    },
-    removeExample: (state, action: PayloadAction<string>) => {
-      state.examples = state.examples.filter((example) => example.id !== action.payload);
-    },
-    addSource: (state, action: PayloadAction<ConventionSource>) => {
-      state.sources.push(action.payload);
-    },
-    removeSource: (state, action: PayloadAction<string>) => {
-      state.sources = state.sources.filter((source) => source.id !== action.payload);
-    },
-    reset: () => initialState,
+    reset: () => EMPTY_CURRENT_CONVENTION,
   },
 });
 

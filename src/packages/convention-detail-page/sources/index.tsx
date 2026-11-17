@@ -1,74 +1,97 @@
 'use client';
 
-import { useAppDispatch, useAppSelector } from '@/store';
-import { ConventionBuilderActions } from '@/store/builders';
-import { createConventionSourceThunk, deleteConventionSourceThunk } from '@/store/thunks/conventions';
+import { useMemo } from 'react';
 import { detailPageStyles } from '@/components/detail-page-styles';
-import { formFieldStyles } from '@/components/form-field-styles';
+import { useAppDispatch, useAppSelector } from '@/store';
+import { ConventionsBuilderActions } from '@/store/builders';
+import { deleteConventionSourceThunk } from '@/store/thunks/conventions';
+import { SourceForm } from './form';
 
 export const Sources = () => {
   const dispatch = useAppDispatch();
-  const sources = useAppSelector((state) => state.currentConvention.sources);
-  const draft = useAppSelector((state) => state.conventionBuilder.sourceDraft);
-  const update = (fields: Parameters<typeof ConventionBuilderActions.updateSourceDraft>[0]) =>
-    dispatch(ConventionBuilderActions.updateSourceDraft(fields));
+  const sources = useAppSelector((state) => state.conventionSources);
+  const builder = useAppSelector((state) => state.conventionsBuilder);
+
+  const sorted = useMemo(
+    () => Object.values(sources).sort((a, b) => a.repo.localeCompare(b.repo) || a.adr_path.localeCompare(b.adr_path)),
+    [sources],
+  );
+
+  const handleDelete = (id: string) => {
+    if (window.confirm('Remove this source?')) {
+      void dispatch(deleteConventionSourceThunk(id));
+    }
+  };
 
   return (
     <section className={detailPageStyles.panel}>
       <div className={detailPageStyles.panelHeader}>
         <div>
-          <h2 className={detailPageStyles.panelTitle}>Sources ({sources.length})</h2>
-          <p className={detailPageStyles.panelSubtitle}>Where this rule came from. Not sent to the AI.</p>
+          <h3 className={detailPageStyles.panelTitle}>Sources</h3>
+          <p className={detailPageStyles.panelSubtitle}>
+            Where this rule comes from (paths relative to ~/github). Copies/versions show ADR drift.
+          </p>
         </div>
+        {!builder.isSourceFormOpen ? (
+          <button
+            type="button"
+            onClick={() => dispatch(ConventionsBuilderActions.openSourceForm())}
+            className={detailPageStyles.secondaryButton}
+          >
+            Add source
+          </button>
+        ) : null}
       </div>
-      <div className={styles.body}>
-        {sources.map((source) => (
-          <div key={source.id} className={styles.item}>
-            <div className={styles.itemHeader}>
-              <span className={styles.repo}>{source.repo}</span>
-              <span className={styles.path}>{source.adr_path}</span>
-              <button
-                type="button"
-                onClick={() => void dispatch(deleteConventionSourceThunk(source.id))}
-                className={styles.remove}
-              >
-                Remove
-              </button>
-            </div>
-            {source.excerpt ? <p className={styles.excerpt}>{source.excerpt}</p> : null}
-          </div>
-        ))}
-        <div className={styles.form}>
-          <p className={detailPageStyles.sectionTitle}>Add source</p>
-          <div className={styles.grid}>
-            <input value={draft.repo} onChange={(e) => update({ repo: e.target.value })} placeholder="Repo" className={formFieldStyles.input} />
-            <input value={draft.adr_path} onChange={(e) => update({ adr_path: e.target.value })} placeholder="ADR path" className={formFieldStyles.input} />
-          </div>
-          <textarea value={draft.excerpt} onChange={(e) => update({ excerpt: e.target.value })} placeholder="Excerpt (optional)" className={formFieldStyles.textarea} />
-          <div>
-            <button
-              type="button"
-              onClick={() => void dispatch(createConventionSourceThunk())}
-              className={detailPageStyles.primaryButton}
-              disabled={!draft.repo.trim() || !draft.adr_path.trim()}
-            >
-              Add source
-            </button>
-          </div>
-        </div>
+      <div className={`${detailPageStyles.panelBody} ${styles.body}`}>
+        {builder.isSourceFormOpen ? <SourceForm /> : null}
+        {!builder.isLoadingDetail && sorted.length === 0 && !builder.isSourceFormOpen ? (
+          <p className={styles.muted}>No sources yet.</p>
+        ) : null}
+        {sorted.length > 0 ? (
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th className={styles.th}>Repo</th>
+                <th className={styles.th}>Path</th>
+                <th className={styles.th}>Excerpt</th>
+                <th className={styles.th}>Copies / versions</th>
+                <th className={styles.th} />
+              </tr>
+            </thead>
+            <tbody>
+              {sorted.map((source) => (
+                <tr key={source.id} className={styles.row}>
+                  <td className={styles.cell}>{source.repo}</td>
+                  <td className={`${styles.cell} ${styles.mono}`}>{source.adr_path}</td>
+                  <td className={styles.cellMuted}>{source.excerpt || '—'}</td>
+                  <td className={styles.cellMuted}>
+                    {source.copy_count !== null ? `${source.copy_count} / ${source.variant_count ?? '?'}` : '—'}
+                  </td>
+                  <td className={styles.cell}>
+                    <button type="button" onClick={() => handleDelete(source.id)} className={styles.deleteButton}>
+                      Remove
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : null}
       </div>
     </section>
   );
 };
 
 const styles = {
-  body: `px-4 py-4 flex flex-col gap-3`,
-  item: `border border-gray-200 rounded p-3 flex flex-col gap-1`,
-  itemHeader: `flex items-center gap-2 flex-wrap`,
-  repo: `text-xs font-medium text-gray-900`,
-  path: `font-mono text-[11px] text-gray-500`,
-  remove: `ml-auto text-xs text-gray-500 hover:text-red-600 bg-transparent border-none cursor-pointer`,
-  excerpt: `text-xs text-gray-600 whitespace-pre-wrap`,
-  form: `flex flex-col gap-2 border-t border-gray-200 pt-4`,
-  grid: `grid grid-cols-1 md:grid-cols-2 gap-2`,
+  body: `flex flex-col gap-3 overflow-x-auto`,
+  muted: `text-xs text-gray-500`,
+  table: `w-full border-collapse text-xs`,
+  th: `
+    px-2 py-1.5 text-left border-b border-gray-300 text-[10px] font-semibold uppercase tracking-wide text-gray-500
+  `,
+  row: `align-top`,
+  cell: `px-2 py-1.5 border-b border-gray-200 text-gray-900`,
+  cellMuted: `px-2 py-1.5 border-b border-gray-200 text-gray-600`,
+  mono: `font-mono text-[11px] break-all`,
+  deleteButton: `text-[11px] text-gray-500 hover:text-red-700 bg-transparent border-none cursor-pointer`,
 };

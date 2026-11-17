@@ -1,39 +1,36 @@
 'use client';
 
 import { useMemo } from 'react';
+import Link from 'next/link';
 import { detailPageStyles } from '@/components/detail-page-styles';
 import { listFilterBarStyles } from '@/components/list-filter-bar-styles';
-import { formFieldStyles } from '@/components/form-field-styles';
+import { CONVENTIONS_CONTEXT_PATH, CONVENTIONS_VOCABULARY_PATH } from '@/config/routes';
 import { useAppDispatch, useAppSelector } from '@/store';
-import { ConventionBuilderActions } from '@/store/builders';
-import { CONVENTION_SEVERITIES, CONVENTION_STATUSES } from '../convention-enums';
-import { filterConventions } from '../filter-conventions';
-
-export type ConventionFilters = {
-  search: string;
-  topicKey: string;
-  severity: string;
-  status: string;
-};
+import { startConventionFormThunk } from '@/store/thunks/conventions';
+import { filterConventions, type ConventionFilterState } from '../filter-conventions';
 
 type FiltersProps = {
-  filters: ConventionFilters;
-  onChange: (filters: ConventionFilters) => void;
-  onClear: () => void;
+  filters: ConventionFilterState;
+  onChange: (filters: ConventionFilterState) => void;
 };
 
-export const Filters = ({ filters, onChange, onClear }: FiltersProps) => {
+const SEVERITIES = ['must', 'never', 'should', 'avoid'];
+const STATUSES = ['active', 'draft', 'deprecated'];
+
+export const Filters = ({ filters, onChange }: FiltersProps) => {
   const dispatch = useAppDispatch();
   const conventions = useAppSelector((state) => state.conventions);
-  const options = useAppSelector((state) => state.conventionOptions);
+  const catalog = useAppSelector((state) => state.conventionsCatalog);
 
   const countLabel = useMemo(() => {
     const all = Object.values(conventions);
-    const shown = filterConventions(all, options.topics, filters).length;
-    return shown === all.length ? `${all.length} conventions` : `${shown} of ${all.length} conventions`;
-  }, [conventions, options.topics, filters]);
+    const shown = filterConventions(all, catalog.convention_roles, filters).length;
+    const isFiltered = Object.values(filters).some(Boolean);
+    const noun = `convention${all.length === 1 ? '' : 's'}`;
+    return isFiltered ? `${shown} of ${all.length} ${noun}` : `${all.length} ${noun}`;
+  }, [conventions, catalog.convention_roles, filters]);
 
-  const hasFilters = Boolean(filters.search || filters.topicKey || filters.severity || filters.status);
+  const set = (patch: Partial<ConventionFilterState>) => onChange({ ...filters, ...patch });
 
   return (
     <div className={listFilterBarStyles.section}>
@@ -41,70 +38,99 @@ export const Filters = ({ filters, onChange, onClear }: FiltersProps) => {
         <input
           type="search"
           value={filters.search}
-          onChange={(event) => onChange({ ...filters, search: event.target.value })}
+          onChange={(event) => set({ search: event.target.value })}
           placeholder="Search key, title, or statement"
           aria-label="Search conventions"
           className={listFilterBarStyles.searchInput}
         />
+        {filters.search ? (
+          <button
+            type="button"
+            onClick={() => set({ search: '' })}
+            className={listFilterBarStyles.clearButton}
+            aria-label="Clear search"
+          >
+            ✕
+          </button>
+        ) : null}
       </div>
       <select
         value={filters.topicKey}
-        onChange={(event) => onChange({ ...filters, topicKey: event.target.value })}
-        className={formFieldStyles.select}
-        aria-label="Topic"
+        onChange={(event) => set({ topicKey: event.target.value })}
+        aria-label="Filter by topic"
+        className={styles.select}
       >
         <option value="">All topics</option>
-        {options.topics.map((topic) => (
+        {catalog.topics.map((topic) => (
           <option key={topic.key} value={topic.key}>
             {topic.name}
           </option>
         ))}
       </select>
       <select
+        value={filters.roleKey}
+        onChange={(event) => set({ roleKey: event.target.value })}
+        aria-label="Filter by repo role"
+        className={styles.select}
+      >
+        <option value="">All repo roles</option>
+        {catalog.repo_roles.map((role) => (
+          <option key={role.key} value={role.key}>
+            {role.name}
+          </option>
+        ))}
+      </select>
+      <select
         value={filters.severity}
-        onChange={(event) => onChange({ ...filters, severity: event.target.value })}
-        className={formFieldStyles.select}
-        aria-label="Severity"
+        onChange={(event) => set({ severity: event.target.value })}
+        aria-label="Filter by severity"
+        className={styles.select}
       >
         <option value="">All severities</option>
-        {CONVENTION_SEVERITIES.map((value) => (
-          <option key={value} value={value}>
-            {value}
+        {SEVERITIES.map((severity) => (
+          <option key={severity} value={severity}>
+            {severity.toUpperCase()}
           </option>
         ))}
       </select>
       <select
         value={filters.status}
-        onChange={(event) => onChange({ ...filters, status: event.target.value })}
-        className={formFieldStyles.select}
-        aria-label="Status"
+        onChange={(event) => set({ status: event.target.value })}
+        aria-label="Filter by status"
+        className={styles.select}
       >
         <option value="">All statuses</option>
-        {CONVENTION_STATUSES.map((value) => (
-          <option key={value} value={value}>
-            {value}
+        {STATUSES.map((status) => (
+          <option key={status} value={status}>
+            {status}
           </option>
         ))}
       </select>
-      {hasFilters ? (
-        <button type="button" onClick={onClear} className={listFilterBarStyles.clearFiltersButton}>
-          Clear filters
-        </button>
-      ) : null}
       <span className={styles.count}>{countLabel}</span>
-      <button
-        type="button"
-        onClick={() => dispatch(ConventionBuilderActions.openCreateModal())}
-        className={detailPageStyles.primaryButton}
-      >
-        New convention
-      </button>
+      <div className={styles.right}>
+        <Link href={CONVENTIONS_VOCABULARY_PATH} className={detailPageStyles.secondaryButton}>
+          Vocabulary
+        </Link>
+        <Link href={CONVENTIONS_CONTEXT_PATH} className={detailPageStyles.secondaryButton}>
+          AI context
+        </Link>
+        <button
+          type="button"
+          onClick={() => void dispatch(startConventionFormThunk('new'))}
+          className={detailPageStyles.primaryButton}
+        >
+          New convention
+        </button>
+      </div>
     </div>
   );
 };
 
 const styles = {
-  count: `
-    ml-auto text-xs text-gray-500
+  select: `
+    h-7 px-2 text-xs text-gray-900 bg-white border border-gray-300 rounded
+    focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer
   `,
-};
+  count: `shrink-0 text-xs text-gray-600 tabular-nums`,
+  right: `ml-auto flex items-center gap-2 flex-wrap`,
+} as const;

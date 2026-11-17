@@ -2,35 +2,41 @@
 
 import { useMemo } from 'react';
 import { useAppSelector } from '@/store';
-import type { ConventionFilters } from '../filters';
-import { filterConventions } from '../filter-conventions';
+import { filterConventions, type ConventionFilterState } from '../filter-conventions';
 import { Row } from './row';
 
 type TableProps = {
-  filters: ConventionFilters;
+  filters: ConventionFilterState;
 };
 
-const COLUMNS = ['Key', 'Title', 'Topic', 'Severity', 'Status'];
+const COLUMNS = ['Convention', 'Topic', 'Severity', 'Status', 'Roles', 'Check'];
 
 export const Table = ({ filters }: TableProps) => {
   const conventions = useAppSelector((state) => state.conventions);
-  const options = useAppSelector((state) => state.conventionOptions);
+  const catalog = useAppSelector((state) => state.conventionsCatalog);
 
-  const topicNameByKey = useMemo(
-    () => new Map(options.topics.map((topic) => [topic.key, topic.name])),
-    [options.topics]
-  );
+  const topicOrder = useMemo(() => {
+    const map = new Map<string, number>();
+    catalog.topics.forEach((topic, index) => map.set(topic.key, index));
+    return map;
+  }, [catalog.topics]);
 
   const visible = useMemo(
-    () => filterConventions(Object.values(conventions), options.topics, filters),
-    [conventions, options.topics, filters]
+    () =>
+      filterConventions(Object.values(conventions), catalog.convention_roles, filters).sort(
+        (a, b) =>
+          (topicOrder.get(a.topic_key) ?? 999) - (topicOrder.get(b.topic_key) ?? 999) ||
+          a.sort_order - b.sort_order ||
+          a.key.localeCompare(b.key),
+      ),
+    [conventions, catalog.convention_roles, filters, topicOrder],
   );
 
   if (Object.keys(conventions).length === 0) {
     return (
       <div className={styles.tableWrapper}>
         <div className={styles.emptyState}>
-          <p className={styles.emptyText}>No conventions yet</p>
+          <p className={styles.emptyText}>No conventions yet. Apply storage migrations 097–098 to seed them.</p>
         </div>
       </div>
     );
@@ -52,20 +58,16 @@ export const Table = ({ filters }: TableProps) => {
         <table className={styles.table}>
           <thead>
             <tr>
-              {COLUMNS.map((label) => (
-                <th key={label} className={styles.th}>
-                  {label}
+              {COLUMNS.map((column) => (
+                <th key={column} className={styles.th}>
+                  {column}
                 </th>
               ))}
             </tr>
           </thead>
           <tbody>
             {visible.map((convention) => (
-              <Row
-                key={convention.id}
-                convention={convention}
-                topicName={topicNameByKey.get(convention.topic_key) ?? convention.topic_key}
-              />
+              <Row key={convention.id} convention={convention} />
             ))}
           </tbody>
         </table>

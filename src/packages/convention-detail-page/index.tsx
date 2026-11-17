@@ -1,33 +1,33 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useAppDispatch, useAppSelector } from '@/store';
-import { useBreadcrumbs } from '@/hooks';
 import { detailPageStyles } from '@/components/detail-page-styles';
 import { CONVENTIONS_PATH } from '@/config/routes';
-import { getConventionOptionsThunk, loadCurrentConventionDetailThunk } from '@/store/thunks/conventions';
-import { Overview } from './overview';
-import { Roles } from './roles';
+import { useBreadcrumbs } from '@/hooks';
+import { FormModal } from '@/packages/conventions';
+import { useAppDispatch, useAppSelector } from '@/store';
+import { getConventionsThunk } from '@/store/thunks/conventions';
 import { Examples } from './examples';
+import { Overview } from './overview';
 import { Sources } from './sources';
 
 export const ConventionDetailPage = () => {
   const dispatch = useAppDispatch();
   const current = useAppSelector((state) => state.currentConvention);
-  const conventionId = current.convention.id;
+  const topicCount = useAppSelector((state) => state.conventionsCatalog.topics.length);
 
   useBreadcrumbs([
     { label: 'Conventions', href: CONVENTIONS_PATH },
-    { label: current.convention.key || 'Convention' },
+    { label: current.title || 'Convention' },
   ]);
 
   useEffect(() => {
-    if (!conventionId) return;
-    void dispatch(getConventionOptionsThunk());
-    void dispatch(loadCurrentConventionDetailThunk());
-  }, [dispatch, conventionId]);
+    if (topicCount === 0) {
+      void dispatch(getConventionsThunk());
+    }
+  }, [dispatch, topicCount]);
 
-  if (!conventionId) {
+  if (!current.id) {
     return (
       <div className={detailPageStyles.page}>
         <div className={detailPageStyles.emptyState}>
@@ -43,9 +43,9 @@ export const ConventionDetailPage = () => {
   return (
     <div className={detailPageStyles.page}>
       <Overview />
-      <Roles />
       <Examples />
       <Sources />
+      <FormModal />
     </div>
   );
 };

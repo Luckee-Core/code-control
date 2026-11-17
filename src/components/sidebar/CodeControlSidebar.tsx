@@ -6,7 +6,14 @@ import { ChevronRight } from 'lucide-react';
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useAppSelector } from '@/store';
 import { BrandLogo } from '@/components/brand-logo';
-import { CONVENTIONS_PATH, CONVENTION_DETAIL_PAGE_PATH, CUSTOMERS_PATH, CUSTOMER_DETAIL_PAGE_PATH, DASHBOARD_PATH, SOFTWARE_SYSTEMS_PATH, SOFTWARE_SYSTEM_DETAIL_PAGE_PATH } from '@/config/routes';
+import {
+  CONVENTIONS_PATH,
+  CUSTOMERS_PATH,
+  CUSTOMER_DETAIL_PAGE_PATH,
+  DASHBOARD_PATH,
+  SOFTWARE_SYSTEMS_PATH,
+  SOFTWARE_SYSTEM_DETAIL_PAGE_PATH,
+} from '@/config/routes';
 import { getNavigationLinks } from '@/utils/navigation';
 import type { NavigationLink } from '@/utils/navigation';
 
@@ -29,7 +36,8 @@ export const CodeControlSidebar = () => {
         return pathname === SOFTWARE_SYSTEMS_PATH || pathname === SOFTWARE_SYSTEM_DETAIL_PAGE_PATH;
       }
       if (href === CONVENTIONS_PATH) {
-        return pathname === CONVENTIONS_PATH || pathname === CONVENTION_DETAIL_PAGE_PATH;
+        // /conventions, /convention-detail-page, /conventions-vocabulary, /conventions-context
+        return pathname.startsWith(CONVENTIONS_PATH) || pathname.startsWith('/convention-');
       }
       return pathname === href || pathname.startsWith(`${href}/`);
     },

@@ -4,8 +4,12 @@ import {
   softwareSystemsReducer,
   softwareSystemReposReducer,
   conventionsReducer,
+  conventionsCatalogReducer,
+  conventionExamplesReducer,
+  conventionSourcesReducer,
+  dataModelProposalsReducer,
+  dataModelProposalExchangesReducer,
   conventionOptionsReducer,
-  conventionVocabularyReducer,
   conventionSnapshotsReducer,
 } from './dumps';
 import {
@@ -20,7 +24,8 @@ import {
   repositoriesBuilderReducer,
   studioStackBuilderReducer,
   customerOpsSyncBuilderReducer,
-  conventionBuilderReducer,
+  conventionsBuilderReducer,
+  dataModelBuilderReducer,
   aiContextBuilderReducer,
 } from './builders';
 
@@ -37,10 +42,15 @@ export const rootReducer = combineReducers({
   studioStackBuilder: studioStackBuilderReducer,
   customerOpsSyncBuilder: customerOpsSyncBuilderReducer,
   conventions: conventionsReducer,
-  conventionOptions: conventionOptionsReducer,
-  conventionVocabulary: conventionVocabularyReducer,
-  conventionSnapshots: conventionSnapshotsReducer,
+  conventionsCatalog: conventionsCatalogReducer,
+  conventionExamples: conventionExamplesReducer,
+  conventionSources: conventionSourcesReducer,
   currentConvention: currentConventionReducer,
-  conventionBuilder: conventionBuilderReducer,
+  conventionsBuilder: conventionsBuilderReducer,
+  dataModelProposals: dataModelProposalsReducer,
+  dataModelProposalExchanges: dataModelProposalExchangesReducer,
+  dataModelBuilder: dataModelBuilderReducer,
+  conventionOptions: conventionOptionsReducer,
+  conventionSnapshots: conventionSnapshotsReducer,
   aiContextBuilder: aiContextBuilderReducer,
 });
