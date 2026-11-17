@@ -1,3 +1,30 @@
 export * from './customer';
 export * from './project';
 export * from './project-repo';
+export type { RepoRole } from './repo-role';
+export type { ConventionDomain } from './convention-domain';
+export type { ConventionTopic } from './convention-topic';
+export type {
+  Convention,
+  ConventionSeverity,
+  ConventionStatus,
+  ConventionCheckKind,
+  CreateConventionInput,
+  UpdateConventionInput,
+  ListConventionsFilter,
+} from './convention';
+export type { ConventionRole } from './convention-role';
+export type {
+  ConventionExample,
+  ConventionExampleKind,
+  ConventionExampleLanguage,
+  CreateConventionExampleInput,
+  UpdateConventionExampleInput,
+} from './convention-example';
+export type { ConventionSource, CreateConventionSourceInput } from './convention-source';
+export type { ColumnType } from './column-type';
+export type { StandardColumn, StandardColumnSetBy } from './standard-column';
+export type { LifecycleOption } from './lifecycle-option';
+export type { TableArchetype } from './table-archetype';
+export * from './data-model-proposal';
+export * from './data-model-proposal-ai-exchange';
