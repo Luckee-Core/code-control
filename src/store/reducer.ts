@@ -11,6 +11,8 @@ import {
   dataModelProposalExchangesReducer,
   dataModelDeliveriesReducer,
   dataModelDeliveryPreviewsReducer,
+  setupPresetsReducer,
+  setupPresetResultsReducer,
 } from './dumps';
 import {
   currentCustomerReducer,
@@ -53,4 +55,6 @@ export const rootReducer = combineReducers({
   dataModelDeliveries: dataModelDeliveriesReducer,
   dataModelDeliveryPreviews: dataModelDeliveryPreviewsReducer,
   dataModelDeliveryBuilder: dataModelDeliveryBuilderReducer,
+  setupPresets: setupPresetsReducer,
+  setupPresetResults: setupPresetResultsReducer,
 });

@@ -6,6 +6,7 @@ const initialState: SoftwareSystem = {
   customer_id: '',
   name: '',
   description: null,
+  setup_preset_key: 'none',
   created_at: '',
   updated_at: '',
 };

@@ -33,6 +33,7 @@ type TargetRowProps = { target: DeliveryTarget };
 export const TargetRow = ({ target }: TargetRowProps) => {
   const dispatch = useAppDispatch();
   const deliveringRole = useAppSelector((state) => state.dataModelDeliveryBuilder.deliveringRole);
+  const autoMerge = useAppSelector((state) => state.dataModelDeliveryBuilder.autoMerge);
   const { role, repo, delivery } = target;
   const isBusy = deliveringRole !== '';
 
@@ -57,7 +58,9 @@ export const TargetRow = ({ target }: TargetRowProps) => {
             PR #{delivery.pr_number} · {delivery.files.length} files · {delivery.branch}
           </a>
         ) : null}
-        {delivery?.status === 'failed' && delivery.error ? <p className={styles.error}>{delivery.error}</p> : null}
+        {delivery?.error ? (
+          <p className={delivery.status === 'failed' ? styles.error : styles.note}>{delivery.error}</p>
+        ) : null}
       </div>
       {repo ? (
         <div className={styles.actions}>
@@ -84,7 +87,15 @@ export const TargetRow = ({ target }: TargetRowProps) => {
               disabled={isBusy}
               className={`${detailPageStyles.secondaryButton} disabled:opacity-50 disabled:cursor-not-allowed`}
             >
-              {deliveringRole === role ? 'Working…' : delivery?.pr_number ? 'Update PR' : 'Open PR'}
+              {deliveringRole === role
+                ? 'Working…'
+                : delivery?.pr_number
+                  ? autoMerge
+                    ? 'Update and merge'
+                    : 'Update PR'
+                  : autoMerge
+                    ? 'Open and merge'
+                    : 'Open PR'}
             </button>
           ) : null}
         </div>
@@ -102,5 +113,6 @@ const styles = {
   pr: `text-[11px] text-blue-600 hover:underline`,
   missing: `text-[11px] text-gray-500`,
   error: `text-[11px] text-red-700 whitespace-pre-wrap`,
+  note: `text-[11px] text-amber-800 whitespace-pre-wrap`,
   actions: `flex items-center gap-2 shrink-0`,
 };

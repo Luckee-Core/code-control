@@ -9,6 +9,7 @@ import { SOFTWARE_SYSTEM_DETAIL_PAGE_PATH } from '@/config/routes';
 import { CustomerInput } from './inputs/customer';
 import { NameInput } from './inputs/name';
 import { DescriptionInput } from './inputs/description';
+import { TypeInput } from './inputs/type';
 
 export const FormModal = () => {
   const router = useRouter();
@@ -43,6 +44,7 @@ export const FormModal = () => {
         <div className={styles.content}>
           <CustomerInput />
           <NameInput />
+          <TypeInput />
           <DescriptionInput />
         </div>
         <div className={styles.footer}>

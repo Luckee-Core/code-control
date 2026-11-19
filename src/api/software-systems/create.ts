@@ -6,6 +6,8 @@ export type CreateSoftwareSystemInput = {
   customer_id: string;
   name: string;
   description?: string | null;
+  /** setup_presets.key (project type). */
+  setup_preset_key?: string | null;
 };
 
 export const createSoftwareSystem = async (

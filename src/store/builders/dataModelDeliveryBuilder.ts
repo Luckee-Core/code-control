@@ -10,6 +10,8 @@ type DataModelDeliveryBuilderState = {
   deliverError: string | null;
   /** Role whose preview is open ('' when closed). */
   previewRole: string;
+  /** Squash-merge each PR right after opening it. */
+  autoMerge: boolean;
   previewStatus: Status;
   previewError: string | null;
   selectedPath: string;
@@ -21,6 +23,7 @@ const initialState: DataModelDeliveryBuilderState = {
   deliveringRole: '',
   deliverError: null,
   previewRole: '',
+  autoMerge: false,
   previewStatus: 'idle',
   previewError: null,
   selectedPath: '',
@@ -48,6 +51,9 @@ const dataModelDeliveryBuilderSlice = createSlice({
       state.previewStatus = action.payload.status;
       state.previewError = action.payload.error ?? null;
     },
+    setAutoMerge: (state, action: PayloadAction<boolean>) => {
+      state.autoMerge = action.payload;
+    },
     selectPath: (state, action: PayloadAction<string>) => {
       state.selectedPath = action.payload;
     },
@@ -57,7 +63,7 @@ const dataModelDeliveryBuilderSlice = createSlice({
       state.previewError = null;
       state.selectedPath = '';
     },
-    reset: () => initialState,
+    reset: (state) => ({ ...initialState, autoMerge: state.autoMerge }),
   },
 });
 

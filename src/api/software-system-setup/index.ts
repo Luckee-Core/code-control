@@ -6,6 +6,7 @@ export * from './createExpressRepo';
 export * from './createPythonRepo';
 export * from './createStorageRepo';
 export * from './updateRepoRole';
+export * from './applySetupPreset';
 export * from './createWebRepo';
 export * from './createReactNativeRepo';
 export * from './linkExistingRepo';

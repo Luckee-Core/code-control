@@ -22,6 +22,9 @@ type RepositoriesBuilderState = {
   linkError: string;
   listLoadStatus: LoadStatus;
   saveStatus: SaveStatus;
+  /** Project type (setup preset) run for the current software system. */
+  presetStatus: 'idle' | 'applying' | 'done' | 'error';
+  presetError: string;
 };
 
 const initialState: RepositoriesBuilderState = {
@@ -40,6 +43,8 @@ const initialState: RepositoriesBuilderState = {
   linkError: '',
   listLoadStatus: 'idle',
   saveStatus: 'idle',
+  presetStatus: 'idle',
+  presetError: '',
 };
 
 const repositoriesBuilderSlice = createSlice({
@@ -80,6 +85,10 @@ const repositoriesBuilderSlice = createSlice({
       state.existingRepoType = 'express';
       state.linkError = '';
       state.saveStatus = 'idle';
+    },
+    setPresetStatus: (state, action: PayloadAction<{ status: RepositoriesBuilderState['presetStatus']; error?: string }>) => {
+      state.presetStatus = action.payload.status;
+      state.presetError = action.payload.error ?? '';
     },
     setServerRuntime: (state, action: PayloadAction<ServerRuntime>) => {
       state.serverRuntime = action.payload;

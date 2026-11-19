@@ -1,3 +1,4 @@
+export { loadSetupPresetsThunk } from './load-setup-presets-thunk';
 export { getAllSoftwareSystemsThunk } from './get-all-projects-thunk';
 export { setCurrentSoftwareSystemThunk } from './set-current-project-thunk';
 export { getSoftwareSystemsByCustomerIdThunk } from './get-projects-by-customer-id-thunk';

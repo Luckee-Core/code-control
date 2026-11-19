@@ -9,6 +9,7 @@ import { WebApps } from './web-apps';
 import { ExpressModal } from './express-modal';
 import { WebModal } from './web-modal';
 import { AddExistingModal } from './add-existing-modal';
+import { PresetStatus } from './preset-status';
 
 const GITHUB_SETUP_QUICKSTART_URL =
   'https://github.com/Luckee-Core/code-control-express-server/blob/main/docs/oss-quickstart.md#connect-github';
@@ -41,6 +42,7 @@ export const Repositories = () => {
       </div>
 
       <div className={detailPageStyles.panelBody}>
+        <PresetStatus />
         {repositoriesBuilder.githubSetupError && (
           <div className={styles.setupBanner} role="status">
             <p className={styles.setupBannerTitle}>GitHub is not configured</p>
