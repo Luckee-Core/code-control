@@ -3,22 +3,38 @@
 import { useEffect } from 'react';
 import { detailPageStyles } from '@/components/detail-page-styles';
 import type { DeliveryTarget } from '@/api/data-model-deliveries';
+import type { DataModelDeliveryKind } from '@/model/data-model-delivery';
 import { useAppDispatch, useAppSelector } from '@/store';
 import { DataModelDeliveryBuilderActions } from '@/store/builders';
+import { deliveryTargetsKey } from '@/store/dumps';
 import { deliverDataModelThunk, getDataModelDeliveriesThunk } from '@/store/thunks/data-model-deliveries';
 import { Preview } from './preview';
 import { TargetRow } from './target-row';
 
 const EMPTY: DeliveryTarget[] = [];
 
+const COPY: Record<DataModelDeliveryKind, { title: string; subtitle: string }> = {
+  model: {
+    title: 'Deliver to repos',
+    subtitle:
+      'Opens one pull request per repo. Storage gets the migrations, models and seed table list; API express and web get the same models. Files are rendered by code from the approved tables. Repos already merged for this version are skipped. Merging never runs migrations: apply them in the storage repo afterwards.',
+  },
+  crud: {
+    title: 'Data access (standard CRUD)',
+    subtitle:
+      'Opens one pull request per repo with the code that reads and writes these tables: storage CRUD functions + invoke registry; API express invoke wrappers, routers, handlers and process functions under /api/data/{table}; web src/api, dumps and thunks plus the /api/data proxy. Each repo needs its data model PR merged first. Repos already merged for this version are skipped.',
+  },
+};
+
+type DeliverProps = { proposalId: string; kind: DataModelDeliveryKind };
+
 /**
- * Approved version only: one pull request per repo (storage gets migrations + models; express
- * and web get the models), rendered by code from the approved tables.
+ * Approved version only: one pull request per repo for one kind of generated code
+ * (model files or the CRUD layer), rendered by code from the approved tables.
  */
-export const Deliver = () => {
+export const Deliver = ({ proposalId, kind }: DeliverProps) => {
   const dispatch = useAppDispatch();
-  const selectedId = useAppSelector((state) => state.dataModelBuilder.selectedProposalId);
-  const targets = useAppSelector((state) => (selectedId ? state.dataModelDeliveries[selectedId] ?? EMPTY : EMPTY));
+  const targets = useAppSelector((state) => state.dataModelDeliveries[deliveryTargetsKey(proposalId, kind)] ?? EMPTY);
   const loadStatus = useAppSelector((state) => state.dataModelDeliveryBuilder.loadStatus);
   const loadError = useAppSelector((state) => state.dataModelDeliveryBuilder.loadError);
   const deliveringRole = useAppSelector((state) => state.dataModelDeliveryBuilder.deliveringRole);
@@ -26,8 +42,9 @@ export const Deliver = () => {
   const autoMerge = useAppSelector((state) => state.dataModelDeliveryBuilder.autoMerge);
 
   useEffect(() => {
-    if (selectedId) void dispatch(getDataModelDeliveriesThunk());
-  }, [dispatch, selectedId]);
+    dispatch(DataModelDeliveryBuilderActions.closePreview());
+    if (proposalId) void dispatch(getDataModelDeliveriesThunk(proposalId, kind));
+  }, [dispatch, proposalId, kind]);
 
   const deliverable = targets.filter((target) => target.repo && target.delivery?.status !== 'merged');
 
@@ -35,12 +52,8 @@ export const Deliver = () => {
     <section className={detailPageStyles.panel}>
       <div className={detailPageStyles.panelHeader}>
         <div>
-          <h2 className={detailPageStyles.panelTitle}>Deliver to repos</h2>
-          <p className={detailPageStyles.panelSubtitle}>
-            Opens one pull request per repo. Storage gets the migrations, models and seed table list; API express and
-            web get the same models. Files are rendered by code from the approved tables. Repos already merged for
-            this version are skipped. Merging never runs migrations: apply them in the storage repo afterwards.
-          </p>
+          <h2 className={detailPageStyles.panelTitle}>{COPY[kind].title}</h2>
+          <p className={detailPageStyles.panelSubtitle}>{COPY[kind].subtitle}</p>
         </div>
         <div className={styles.headerActions}>
           <label className={styles.autoMerge}>
@@ -54,7 +67,7 @@ export const Deliver = () => {
           </label>
           <button
             type="button"
-            onClick={() => void dispatch(deliverDataModelThunk())}
+            onClick={() => void dispatch(deliverDataModelThunk(proposalId, kind))}
             disabled={deliveringRole !== '' || deliverable.length === 0}
             className={detailPageStyles.primaryButton}
           >
@@ -77,11 +90,11 @@ export const Deliver = () => {
       ) : (
         <ul className={styles.list}>
           {targets.map((target) => (
-            <TargetRow key={target.role} target={target} />
+            <TargetRow key={target.role} target={target} proposalId={proposalId} kind={kind} />
           ))}
         </ul>
       )}
-      <Preview />
+      <Preview proposalId={proposalId} kind={kind} />
     </section>
   );
 };

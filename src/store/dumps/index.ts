@@ -6,7 +6,7 @@ export { conventionsCatalogReducer, ConventionsCatalogActions } from './conventi
 export { conventionExamplesReducer, ConventionExamplesActions } from './convention-examples';
 export { conventionSourcesReducer, ConventionSourcesActions } from './convention-sources';
 export { dataModelProposalsReducer, DataModelProposalsActions } from './data-model-proposals';
-export { dataModelDeliveriesReducer, DataModelDeliveriesActions } from './data-model-deliveries';
+export { dataModelDeliveriesReducer, DataModelDeliveriesActions, deliveryTargetsKey } from './data-model-deliveries';
 export { setupPresetsReducer, SetupPresetsActions } from './setup-presets';
 export { setupPresetResultsReducer, SetupPresetResultsActions } from './setup-preset-results';
 export {

@@ -1,20 +1,22 @@
 'use client';
 
 import { useMemo } from 'react';
+import type { DataModelDeliveryKind } from '@/model/data-model-delivery';
 import { useAppDispatch, useAppSelector } from '@/store';
 import { DataModelDeliveryBuilderActions } from '@/store/builders';
 import { deliveryPreviewKey } from '@/store/dumps';
 
+type PreviewProps = { proposalId: string; kind: DataModelDeliveryKind };
+
 /** Rendered files for one role: file list on the left, read-only code on the right. */
-export const Preview = () => {
+export const Preview = ({ proposalId, kind }: PreviewProps) => {
   const dispatch = useAppDispatch();
-  const selectedId = useAppSelector((state) => state.dataModelBuilder.selectedProposalId);
   const previewRole = useAppSelector((state) => state.dataModelDeliveryBuilder.previewRole);
   const previewStatus = useAppSelector((state) => state.dataModelDeliveryBuilder.previewStatus);
   const previewError = useAppSelector((state) => state.dataModelDeliveryBuilder.previewError);
   const selectedPath = useAppSelector((state) => state.dataModelDeliveryBuilder.selectedPath);
   const preview = useAppSelector((state) =>
-    selectedId && previewRole ? state.dataModelDeliveryPreviews[deliveryPreviewKey(selectedId, previewRole)] : undefined,
+    previewRole ? state.dataModelDeliveryPreviews[deliveryPreviewKey(proposalId, kind, previewRole)] : undefined,
   );
 
   const file = useMemo(() => preview?.files.find((item) => item.path === selectedPath), [preview, selectedPath]);

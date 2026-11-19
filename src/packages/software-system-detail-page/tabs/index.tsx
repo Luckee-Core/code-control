@@ -1,12 +1,13 @@
 'use client';
 
 import { useState } from 'react';
+import { Api } from '../api';
 import { DataModel } from '../data-model';
 import { Repositories } from '../repositories';
 
-type SoftwareSystemTab = 'Repositories' | 'Data model';
+type SoftwareSystemTab = 'Repositories' | 'Data model' | 'API';
 
-const SOFTWARE_SYSTEM_TABS: SoftwareSystemTab[] = ['Repositories', 'Data model'];
+const SOFTWARE_SYSTEM_TABS: SoftwareSystemTab[] = ['Repositories', 'Data model', 'API'];
 
 export const Tabs = () => {
   const [activeTab, setActiveTab] = useState<SoftwareSystemTab>('Repositories');
@@ -32,6 +33,7 @@ export const Tabs = () => {
       <div className={styles.tabContent}>
         {activeTab === 'Repositories' && <Repositories />}
         {activeTab === 'Data model' && <DataModel />}
+        {activeTab === 'API' && <Api />}
       </div>
     </>
   );

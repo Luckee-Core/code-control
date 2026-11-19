@@ -20,5 +20,6 @@ export const dataModelDeliveryPreviewsSlice = createSlice({
 export const DataModelDeliveryPreviewsActions = dataModelDeliveryPreviewsSlice.actions;
 export const dataModelDeliveryPreviewsReducer = dataModelDeliveryPreviewsSlice.reducer;
 
-/** Key for a proposal + role preview. */
-export const deliveryPreviewKey = (proposalId: string, role: string): string => `${proposalId}:${role}`;
+/** Key for a proposal + kind + role preview. */
+export const deliveryPreviewKey = (proposalId: string, kind: string, role: string): string =>
+  `${proposalId}:${kind}:${role}`;

@@ -2,7 +2,7 @@
 
 import { detailPageStyles } from '@/components/detail-page-styles';
 import type { DeliveryTarget } from '@/api/data-model-deliveries';
-import type { DataModelDeliveryStatus } from '@/model/data-model-delivery';
+import type { DataModelDeliveryKind, DataModelDeliveryStatus } from '@/model/data-model-delivery';
 import { useAppDispatch, useAppSelector } from '@/store';
 import {
   deliverDataModelThunk,
@@ -28,9 +28,9 @@ const STATUS_LABEL: Record<DataModelDeliveryStatus, string> = {
   failed: 'Failed',
 };
 
-type TargetRowProps = { target: DeliveryTarget };
+type TargetRowProps = { target: DeliveryTarget; proposalId: string; kind: DataModelDeliveryKind };
 
-export const TargetRow = ({ target }: TargetRowProps) => {
+export const TargetRow = ({ target, proposalId, kind }: TargetRowProps) => {
   const dispatch = useAppDispatch();
   const deliveringRole = useAppSelector((state) => state.dataModelDeliveryBuilder.deliveringRole);
   const autoMerge = useAppSelector((state) => state.dataModelDeliveryBuilder.autoMerge);
@@ -66,7 +66,7 @@ export const TargetRow = ({ target }: TargetRowProps) => {
         <div className={styles.actions}>
           <button
             type="button"
-            onClick={() => void dispatch(openDeliveryPreviewThunk(role))}
+            onClick={() => void dispatch(openDeliveryPreviewThunk(proposalId, kind, role))}
             className={detailPageStyles.secondaryButton}
           >
             Preview files
@@ -83,7 +83,7 @@ export const TargetRow = ({ target }: TargetRowProps) => {
           {delivery?.status !== 'merged' ? (
             <button
               type="button"
-              onClick={() => void dispatch(deliverDataModelThunk(role))}
+              onClick={() => void dispatch(deliverDataModelThunk(proposalId, kind, role))}
               disabled={isBusy}
               className={`${detailPageStyles.secondaryButton} disabled:opacity-50 disabled:cursor-not-allowed`}
             >
