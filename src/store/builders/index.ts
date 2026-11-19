@@ -12,3 +12,4 @@ export { conventionsBuilderReducer, ConventionsBuilderActions } from './conventi
 export { dataModelBuilderReducer, DataModelBuilderActions } from './dataModelBuilder';
 export { aiContextBuilderReducer, AiContextBuilderActions } from './aiContextBuilder';
 export { dataModelDeliveryBuilderReducer, DataModelDeliveryBuilderActions } from './dataModelDeliveryBuilder';
+export { ticketBuildBuilderReducer, TicketBuildBuilderActions } from './ticketBuildBuilder';
