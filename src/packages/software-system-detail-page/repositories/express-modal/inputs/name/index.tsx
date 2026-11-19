@@ -30,7 +30,9 @@ export const NameInput = () => {
         placeholder={
           repositoriesBuilder.serverRuntime === 'python'
             ? 'e.g. roads-crm-python-server'
-            : 'e.g. roads-crm-express-server'
+            : repositoriesBuilder.serverRuntime === 'storage'
+              ? 'e.g. roads-crm-storage-express-server'
+              : 'e.g. roads-crm-express-server'
         }
         className={styles.input}
         autoFocus

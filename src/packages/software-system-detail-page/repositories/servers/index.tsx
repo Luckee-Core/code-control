@@ -21,7 +21,7 @@ export const Servers = () => {
       Object.values(softwareSystemRepos).filter(
         (repo) =>
           repo.software_system_id === currentSoftwareSystem.id &&
-          (repo.repo_type === 'express' || repo.repo_type === 'python')
+          (repo.repo_type === 'express' || repo.repo_type === 'python' || repo.repo_type === 'storage-express')
       ),
     [softwareSystemRepos, currentSoftwareSystem.id]
   );

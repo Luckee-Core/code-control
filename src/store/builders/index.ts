@@ -15,3 +15,4 @@ export {
 export { conventionsBuilderReducer, ConventionsBuilderActions } from './conventionsBuilder';
 export { dataModelBuilderReducer, DataModelBuilderActions } from './dataModelBuilder';
 export { aiContextBuilderReducer, AiContextBuilderActions } from './aiContextBuilder';
+export { dataModelDeliveryBuilderReducer, DataModelDeliveryBuilderActions } from './dataModelDeliveryBuilder';

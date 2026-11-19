@@ -11,6 +11,8 @@ import {
   dataModelProposalExchangesReducer,
   conventionOptionsReducer,
   conventionSnapshotsReducer,
+  dataModelDeliveriesReducer,
+  dataModelDeliveryPreviewsReducer,
 } from './dumps';
 import {
   currentCustomerReducer,
@@ -27,6 +29,7 @@ import {
   conventionsBuilderReducer,
   dataModelBuilderReducer,
   aiContextBuilderReducer,
+  dataModelDeliveryBuilderReducer,
 } from './builders';
 
 export const rootReducer = combineReducers({
@@ -53,4 +56,7 @@ export const rootReducer = combineReducers({
   conventionOptions: conventionOptionsReducer,
   conventionSnapshots: conventionSnapshotsReducer,
   aiContextBuilder: aiContextBuilderReducer,
+  dataModelDeliveries: dataModelDeliveriesReducer,
+  dataModelDeliveryPreviews: dataModelDeliveryPreviewsReducer,
+  dataModelDeliveryBuilder: dataModelDeliveryBuilderReducer,
 });

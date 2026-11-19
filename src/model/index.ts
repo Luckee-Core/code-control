@@ -28,3 +28,4 @@ export type { LifecycleOption } from './lifecycle-option';
 export type { TableArchetype } from './table-archetype';
 export * from './data-model-proposal';
 export * from './data-model-proposal-ai-exchange';
+export * from './data-model-delivery';

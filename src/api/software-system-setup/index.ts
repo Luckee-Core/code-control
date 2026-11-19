@@ -4,6 +4,8 @@ export * from './getAllRepos';
 export * from './getGithubOrgs';
 export * from './createExpressRepo';
 export * from './createPythonRepo';
+export * from './createStorageRepo';
+export * from './updateRepoRole';
 export * from './createWebRepo';
 export * from './createReactNativeRepo';
 export * from './linkExistingRepo';
