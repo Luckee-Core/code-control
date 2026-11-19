@@ -9,6 +9,8 @@ import {
   conventionSourcesReducer,
   dataModelProposalsReducer,
   dataModelProposalExchangesReducer,
+  dataModelDeliveriesReducer,
+  dataModelDeliveryPreviewsReducer,
 } from './dumps';
 import {
   currentCustomerReducer,
@@ -24,6 +26,7 @@ import {
   customerOpsSyncBuilderReducer,
   conventionsBuilderReducer,
   dataModelBuilderReducer,
+  dataModelDeliveryBuilderReducer,
 } from './builders';
 
 export const rootReducer = combineReducers({
@@ -47,4 +50,7 @@ export const rootReducer = combineReducers({
   dataModelProposals: dataModelProposalsReducer,
   dataModelProposalExchanges: dataModelProposalExchangesReducer,
   dataModelBuilder: dataModelBuilderReducer,
+  dataModelDeliveries: dataModelDeliveriesReducer,
+  dataModelDeliveryPreviews: dataModelDeliveryPreviewsReducer,
+  dataModelDeliveryBuilder: dataModelDeliveryBuilderReducer,
 });

@@ -14,3 +14,4 @@ export {
 } from './customerOpsSyncBuilder';
 export { conventionsBuilderReducer, ConventionsBuilderActions } from './conventionsBuilder';
 export { dataModelBuilderReducer, DataModelBuilderActions } from './dataModelBuilder';
+export { dataModelDeliveryBuilderReducer, DataModelDeliveryBuilderActions } from './dataModelDeliveryBuilder';

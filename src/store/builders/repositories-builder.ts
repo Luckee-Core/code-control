@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 type LoadStatus = 'idle' | 'loading' | 'error';
 type SaveStatus = 'idle' | 'saving' | 'error';
 type ExistingRepoType = 'express' | 'python' | 'nextjs' | 'react-native';
-export type ServerRuntime = 'express' | 'python';
+export type ServerRuntime = 'express' | 'storage' | 'python';
 export type FrontendRuntime = 'nextjs' | 'react-native';
 
 type RepositoriesBuilderState = {

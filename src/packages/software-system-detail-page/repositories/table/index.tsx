@@ -1,14 +1,15 @@
 'use client';
 
-import type { ProjectRepo } from '@/model';
+import type { SoftwareSystemRepo } from '@/model/software-system-repo';
 import { Row } from './row';
 
 const REPOSITORY_HEADER = 'Repository';
+const ROLE_HEADER = 'Role';
 const ACTIONS_HEADER = 'Actions';
 const EMPTY_MESSAGE = 'No repositories yet';
 
 type TableProps = {
-  repos: ProjectRepo[];
+  repos: SoftwareSystemRepo[];
 };
 
 export const Table = ({ repos }: TableProps) => {
@@ -19,13 +20,14 @@ export const Table = ({ repos }: TableProps) => {
           <thead>
             <tr>
               <th className={styles.th}>{REPOSITORY_HEADER}</th>
+              <th className={styles.thRole}>{ROLE_HEADER}</th>
               <th className={styles.thActions}>{ACTIONS_HEADER}</th>
             </tr>
           </thead>
           <tbody>
             {repos.length === 0 ? (
               <tr>
-                <td className={styles.emptyCell} colSpan={2}>
+                <td className={styles.emptyCell} colSpan={3}>
                   {EMPTY_MESSAGE}
                 </td>
               </tr>
@@ -52,6 +54,10 @@ const styles = {
   th: `
     px-3 py-2 text-left text-[10px] font-semibold text-gray-600 uppercase tracking-wide
     bg-gray-100 border-b border-gray-300
+  `,
+  thRole: `
+    px-3 py-2 text-left text-[10px] font-semibold text-gray-600 uppercase tracking-wide
+    bg-gray-100 border-b border-gray-300 whitespace-nowrap w-36
   `,
   thActions: `
     px-3 py-2 text-left text-[10px] font-semibold text-gray-600 uppercase tracking-wide

@@ -40,6 +40,17 @@ export const RuntimeInput = () => {
           <input
             type="radio"
             name="create-server-runtime"
+            value="storage"
+            checked={repositoriesBuilder.serverRuntime === 'storage'}
+            onChange={() => handleChange('storage')}
+            className={styles.radio}
+          />
+          <span className={styles.optionText}>Storage (Postgres, migrations, invoke)</span>
+        </label>
+        <label className={styles.option}>
+          <input
+            type="radio"
+            name="create-server-runtime"
             value="python"
             checked={repositoriesBuilder.serverRuntime === 'python'}
             onChange={() => handleChange('python')}

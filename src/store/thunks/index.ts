@@ -5,3 +5,4 @@ export * from './studio-stack';
 export * from './customer-ops-sync';
 export * from './conventions';
 export * from './data-model-proposals';
+export * from './data-model-deliveries';

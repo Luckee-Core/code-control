@@ -1,13 +1,29 @@
 'use client';
 
-import type { ProjectRepo } from '@/model';
+import type { SoftwareSystemRepo } from '@/model/software-system-repo';
+import { useAppDispatch } from '@/store';
+import { updateRepoRoleThunk } from '@/store/thunks/software-system-repos';
 import { CopyGitCloneButton } from './copy-git-clone-button';
 
+/** Roles a repo can play (repo_roles keys). Storage, express and web receive data-model PRs. */
+const ROLE_OPTIONS = [
+  { value: '', label: '—' },
+  { value: 'storage', label: 'Storage' },
+  { value: 'express', label: 'API express' },
+  { value: 'web', label: 'Web' },
+  { value: 'dispatcher', label: 'Dispatcher' },
+  { value: 'dispatcher-web', label: 'Dispatcher web' },
+  { value: 'console', label: 'Console' },
+  { value: 'mobile', label: 'Mobile' },
+  { value: 'python', label: 'Python' },
+];
+
 type RowProps = {
-  repo: ProjectRepo;
+  repo: SoftwareSystemRepo;
 };
 
 export const Row = ({ repo }: RowProps) => {
+  const dispatch = useAppDispatch();
   return (
     <tr className={styles.row}>
       <td className={styles.cell}>
@@ -23,6 +39,20 @@ export const Row = ({ repo }: RowProps) => {
         ) : (
           <span className={styles.name}>{repo.name}</span>
         )}
+      </td>
+      <td className={styles.roleCell}>
+        <select
+          value={repo.role ?? ''}
+          onChange={(event) => void dispatch(updateRepoRoleThunk(repo.id, event.target.value || null))}
+          className={styles.roleSelect}
+          aria-label={`Role for ${repo.name}`}
+        >
+          {ROLE_OPTIONS.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
       </td>
       <td className={styles.actionsCell}>
         {repo.repo_url ? (
@@ -41,6 +71,13 @@ const styles = {
   `,
   cell: `
     px-3 py-2 text-xs text-gray-900 truncate
+  `,
+  roleCell: `
+    px-3 py-2 text-xs text-gray-900 whitespace-nowrap
+  `,
+  roleSelect: `
+    w-full px-1.5 py-1 text-xs bg-white border border-gray-300 rounded cursor-pointer
+    focus:outline-none focus:ring-1 focus:ring-blue-500
   `,
   actionsCell: `
     px-3 py-2 text-xs text-gray-900 whitespace-nowrap

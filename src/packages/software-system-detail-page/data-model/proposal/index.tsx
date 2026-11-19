@@ -3,6 +3,7 @@
 import { detailPageStyles } from '@/components/detail-page-styles';
 import { useAppSelector } from '@/store';
 import { AiCalls } from './ai-calls';
+import { Deliver } from './deliver';
 import { Header } from './header';
 import { Notes } from './notes';
 import { ReviseForm } from './revise-form';
@@ -31,6 +32,7 @@ export const Proposal = () => {
   return (
     <div className={styles.stack}>
       <Header />
+      {proposal.status === 'approved' && proposal.proposal ? <Deliver /> : null}
       {proposal.status === 'running' ? <RunningState /> : null}
       {proposal.status === 'failed' ? (
         <div className={styles.failed}>
