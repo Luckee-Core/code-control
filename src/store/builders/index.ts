@@ -8,10 +8,6 @@ export {
   type FrontendRuntime,
 } from './repositories-builder';
 export { studioStackBuilderReducer, StudioStackBuilderActions } from './studioStackBuilder';
-export {
-  customerOpsSyncBuilderReducer,
-  CustomerOpsSyncBuilderActions,
-} from './customerOpsSyncBuilder';
 export { conventionsBuilderReducer, ConventionsBuilderActions } from './conventionsBuilder';
 export { dataModelBuilderReducer, DataModelBuilderActions } from './dataModelBuilder';
 export { aiContextBuilderReducer, AiContextBuilderActions } from './aiContextBuilder';
