@@ -4,10 +4,11 @@ import { useState } from 'react';
 import { Api } from '../api';
 import { DataModel } from '../data-model';
 import { Repositories } from '../repositories';
+import { TicketBuilds } from '../ticket-builds';
 
-type SoftwareSystemTab = 'Repositories' | 'Data model' | 'API';
+type SoftwareSystemTab = 'Repositories' | 'Data model' | 'API' | 'Ticket builds';
 
-const SOFTWARE_SYSTEM_TABS: SoftwareSystemTab[] = ['Repositories', 'Data model', 'API'];
+const SOFTWARE_SYSTEM_TABS: SoftwareSystemTab[] = ['Repositories', 'Data model', 'API', 'Ticket builds'];
 
 export const Tabs = () => {
   const [activeTab, setActiveTab] = useState<SoftwareSystemTab>('Repositories');
@@ -34,6 +35,7 @@ export const Tabs = () => {
         {activeTab === 'Repositories' && <Repositories />}
         {activeTab === 'Data model' && <DataModel />}
         {activeTab === 'API' && <Api />}
+        {activeTab === 'Ticket builds' && <TicketBuilds />}
       </div>
     </>
   );

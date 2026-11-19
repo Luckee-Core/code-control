@@ -15,11 +15,15 @@ import {
   dataModelDeliveryPreviewsReducer,
   setupPresetsReducer,
   setupPresetResultsReducer,
+  ticketBuildsReducer,
+  ticketBuildReposReducer,
+  ticketBuildAiExchangesReducer,
 } from './dumps';
 import {
   currentCustomerReducer,
   currentSoftwareSystemReducer,
   currentConventionReducer,
+  currentTicketBuildReducer,
 } from './current';
 import {
   workspaceBuilderReducer,
@@ -31,6 +35,7 @@ import {
   dataModelBuilderReducer,
   aiContextBuilderReducer,
   dataModelDeliveryBuilderReducer,
+  ticketBuildBuilderReducer,
 } from './builders';
 
 export const rootReducer = combineReducers({
@@ -61,4 +66,9 @@ export const rootReducer = combineReducers({
   dataModelDeliveryBuilder: dataModelDeliveryBuilderReducer,
   setupPresets: setupPresetsReducer,
   setupPresetResults: setupPresetResultsReducer,
+  ticketBuilds: ticketBuildsReducer,
+  ticketBuildRepos: ticketBuildReposReducer,
+  ticketBuildAiExchanges: ticketBuildAiExchangesReducer,
+  currentTicketBuild: currentTicketBuildReducer,
+  ticketBuildBuilder: ticketBuildBuilderReducer,
 });

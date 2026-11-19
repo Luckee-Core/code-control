@@ -31,6 +31,7 @@ ADRs keep implementation consistent by documenting:
 33. [033 – Detail page layout chrome](./033-detail-page-layout-chrome.md) — `detailPageStyles` panels.
 35. [035 – List and dashboard table filter bars](./035-list-table-filter-bars.md) — `listFilterBarStyles`.
 38. [038 – UI token appendix](./038-ui-token-appendix.md) — Shared style module index.
+39. [039 – Ticket builds UI](./039-ticket-builds.md) — start page from My Ops Tracker, build detail (review/edit plan, per-repo PRs), software system tab.
 
 ### Product-specific
 
