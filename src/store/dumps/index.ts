@@ -18,3 +18,5 @@ export {
   dataModelProposalExchangesReducer,
   DataModelProposalExchangesActions,
 } from './data-model-proposal-exchanges';
+export { conventionOptionsReducer, ConventionOptionsActions } from './convention-options';
+export { conventionSnapshotsReducer, ConventionSnapshotsActions } from './convention-snapshots';

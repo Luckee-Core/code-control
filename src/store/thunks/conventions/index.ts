@@ -6,3 +6,4 @@ export { setConventionStatusThunk } from './set-convention-status-thunk';
 export { deleteConventionThunk } from './delete-convention-thunk';
 export { createConventionExampleThunk, deleteConventionExampleThunk } from './convention-example-thunks';
 export { createConventionSourceThunk, deleteConventionSourceThunk } from './convention-source-thunks';
+export { getConventionOptionsThunk } from './get-convention-options-thunk';

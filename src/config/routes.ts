@@ -7,3 +7,4 @@ export const CONVENTIONS_PATH = '/conventions';
 export const CONVENTION_DETAIL_PAGE_PATH = '/convention-detail-page';
 export const CONVENTIONS_VOCABULARY_PATH = '/conventions-vocabulary';
 export const CONVENTIONS_CONTEXT_PATH = '/conventions-context';
+export const AI_CONTEXT_PATH = '/ai-context';

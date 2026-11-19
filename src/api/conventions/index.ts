@@ -69,3 +69,10 @@ export const createConventionSource = (conventionId: string, payload: CreateConv
 /** DELETE /api/data/conventions/sources/:sourceId */
 export const deleteConventionSource = (sourceId: string) =>
   requestJson<{ id: string }>(`${BASE}/sources/${encodeURIComponent(sourceId)}`, { method: 'DELETE' });
+
+// AI-context preview and snapshots (used by the /ai-context page).
+export { getConventionOptions } from './get-convention-options';
+export { previewAiContext } from './preview-ai-context';
+export { createAiContextSnapshot } from './create-ai-context-snapshot';
+export { getConventionSnapshots } from './get-convention-snapshots';
+export { getConventionSnapshot } from './get-convention-snapshot';
