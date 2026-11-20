@@ -4,9 +4,7 @@ import { useMemo, useState } from 'react';
 import { detailPageStyles } from '@/components/detail-page-styles';
 import type { DataModelProposalAiExchangeSummary } from '@/model/data-model-proposal-ai-exchange';
 import { useAppSelector } from '@/store';
-import { getAnthropicModelPricing } from '../../utils/anthropic-model-pricing';
-import { computeExchangeCostUsd } from '../../utils/compute-exchange-cost-usd';
-import { formatEstimatedCostUsd } from '../../utils/format-estimated-cost-usd';
+import { computeExchangeCostUsd, formatEstimatedCostUsd, getAnthropicModelPricing } from '@/utils/ai-cost';
 
 const EMPTY: DataModelProposalAiExchangeSummary[] = [];
 
