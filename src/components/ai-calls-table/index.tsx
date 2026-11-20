@@ -7,8 +7,10 @@ import { computeExchangeCostUsd, formatEstimatedCostUsd, getAnthropicModelPricin
 /** One AI call as the table shows it (data-model proposal exchanges and agent run exchanges map to this). */
 export type AiCallRow = {
   id: string;
-  /** Step label, e.g. "Generate" or "pr_edit". */
+  /** Step label, e.g. "Generate" or "PR agent: pr_edit". */
   step: string;
+  /** What the call was for (e.g. the agent run title); adds an Item column when any row has one. */
+  item?: string;
   model: string;
   served_by_model: string;
   status: 'ok' | 'error';
@@ -48,6 +50,8 @@ const rowCost = (row: AiCallRow): number | null => {
 export const AiCallsTable = ({ rows, subtitle, onToggle, expandedId, renderExpanded }: AiCallsTableProps) => {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   if (rows.length === 0) return null;
+  const showItem = rows.some((row) => Boolean(row.item));
+  const columnCount = showItem ? 7 : 6;
 
   const totals = rows.reduce(
     (sum, row) => {
@@ -75,6 +79,7 @@ export const AiCallsTable = ({ rows, subtitle, onToggle, expandedId, renderExpan
           <thead>
             <tr>
               <th className={styles.th}>Step</th>
+              {showItem ? <th className={styles.th}>Item</th> : null}
               <th className={styles.th}>Model</th>
               <th className={styles.th}>Result</th>
               <th className={styles.thRight}>Tokens in / out</th>
@@ -101,6 +106,11 @@ export const AiCallsTable = ({ rows, subtitle, onToggle, expandedId, renderExpan
                         row.step
                       )}
                     </td>
+                    {showItem ? (
+                      <td className={styles.td} title={row.item}>
+                        <span className={styles.item}>{row.item || '—'}</span>
+                      </td>
+                    ) : null}
                     <td className={`${styles.td} ${styles.mono}`}>
                       {model}
                       {row.served_by_model && row.served_by_model !== row.model ? (
@@ -152,7 +162,7 @@ export const AiCallsTable = ({ rows, subtitle, onToggle, expandedId, renderExpan
                   </tr>
                   {isExpanded && renderExpanded ? (
                     <tr className={styles.row}>
-                      <td className={styles.expanded} colSpan={6}>
+                      <td className={styles.expanded} colSpan={columnCount}>
                         {renderExpanded(row.id)}
                       </td>
                     </tr>
@@ -163,7 +173,7 @@ export const AiCallsTable = ({ rows, subtitle, onToggle, expandedId, renderExpan
           </tbody>
           <tfoot>
             <tr className={styles.totalRow}>
-              <td className={styles.td} colSpan={3}>
+              <td className={styles.td} colSpan={columnCount - 3}>
                 Estimated total ({rows.length} {rows.length === 1 ? 'call' : 'calls'})
               </td>
               <td className={`${styles.tdRight} ${styles.mono}`}>
@@ -201,6 +211,7 @@ const styles = {
   muted: `text-[10px] text-gray-500`,
   ok: `text-green-700 font-medium`,
   err: `text-red-700`,
+  item: `block max-w-xs truncate`,
   stepButton: `bg-transparent border-0 p-0 text-left text-gray-800 cursor-pointer hover:underline font-mono`,
   expanded: `px-3 py-2 bg-gray-50`,
   costHoverWrap: `relative inline-block text-right`,
