@@ -18,12 +18,20 @@ import {
   ticketBuildsReducer,
   ticketBuildReposReducer,
   ticketBuildAiExchangesReducer,
+  agentRunsReducer,
+  agentRunDetailsReducer,
+  agentRunSummaryReducer,
+  agentRunExchangesReducer,
+  templateRunViewsReducer,
+  templateHeadsReducer,
+  conventionChangesReducer,
 } from './dumps';
 import {
   currentCustomerReducer,
   currentSoftwareSystemReducer,
   currentConventionReducer,
   currentTicketBuildReducer,
+  currentAgentRunReducer,
 } from './current';
 import {
   workspaceBuilderReducer,
@@ -36,6 +44,7 @@ import {
   aiContextBuilderReducer,
   dataModelDeliveryBuilderReducer,
   ticketBuildBuilderReducer,
+  agentRunsBuilderReducer,
 } from './builders';
 
 export const rootReducer = combineReducers({
@@ -71,4 +80,13 @@ export const rootReducer = combineReducers({
   ticketBuildAiExchanges: ticketBuildAiExchangesReducer,
   currentTicketBuild: currentTicketBuildReducer,
   ticketBuildBuilder: ticketBuildBuilderReducer,
+  agentRuns: agentRunsReducer,
+  agentRunDetails: agentRunDetailsReducer,
+  agentRunSummary: agentRunSummaryReducer,
+  agentRunExchanges: agentRunExchangesReducer,
+  templateRunViews: templateRunViewsReducer,
+  templateHeads: templateHeadsReducer,
+  conventionChanges: conventionChangesReducer,
+  currentAgentRun: currentAgentRunReducer,
+  agentRunsBuilder: agentRunsBuilderReducer,
 });

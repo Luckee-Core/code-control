@@ -58,6 +58,8 @@ export type SaveConventionPayload = {
   check_config: Record<string, unknown> | null;
   sort_order: number;
   role_keys: string[];
+  /** Why (convention change ledger). */
+  change_reason?: string;
 };
 
 export type CreateConventionExamplePayload = {

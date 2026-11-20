@@ -3,6 +3,7 @@
 import { useAppDispatch, useAppSelector } from '@/store';
 import { ConventionsBuilderActions } from '@/store/builders';
 import { saveConventionThunk } from '@/store/thunks/conventions';
+import { ChangeReasonInput } from './inputs/change-reason';
 import { CheckConfigInput } from './inputs/check-config';
 import { CheckKindInput } from './inputs/check-kind';
 import { KeyInput } from './inputs/key';
@@ -51,6 +52,7 @@ export const FormModal = () => {
           <RolesInput />
           <CheckKindInput />
           <CheckConfigInput />
+          <ChangeReasonInput />
           {builder.saveError ? <p className={styles.error}>{builder.saveError}</p> : null}
         </div>
         <div className={styles.footer}>

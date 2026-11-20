@@ -4,7 +4,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ChevronRight } from 'lucide-react';
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { useAppSelector } from '@/store';
+import { useAppDispatch, useAppSelector } from '@/store';
+import { getAgentRunSummaryThunk } from '@/store/thunks/agent-runs';
 import { BrandLogo } from '@/components/brand-logo';
 import {
   CONVENTIONS_PATH,
@@ -19,11 +20,29 @@ import type { NavigationLink } from '@/utils/navigation';
 
 export const CodeControlSidebar = () => {
   const pathname = usePathname();
+  const dispatch = useAppDispatch();
   const layoutBuilder = useAppSelector((state) => state.layoutBuilder);
+  const agentRunSummary = useAppSelector((state) => state.agentRunSummary);
   const isSidebarOpen = layoutBuilder.isSidebarOpen;
   const navigationLinks = useMemo(() => getNavigationLinks(), []);
   const [expandedItems, setExpandedItems] = useState<Set<string>>(
     () => new Set(navigationLinks.filter((l) => l.children?.length).map((l) => l.name)),
+  );
+
+  // Agent runs waiting on you (sidebar badges), refreshed every 15s.
+  useEffect(() => {
+    void dispatch(getAgentRunSummaryThunk());
+    const timer = setInterval(() => void dispatch(getAgentRunSummaryThunk()), 15_000);
+    return () => clearInterval(timer);
+  }, [dispatch, pathname]);
+
+  /** Child / agent links: exact href, or one of their detail-page prefixes. */
+  const linkActive = useCallback(
+    (link: NavigationLink): boolean => {
+      if (link.activePrefixes?.some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`))) return true;
+      return pathname === link.href || pathname.startsWith(`${link.href}/`);
+    },
+    [pathname],
   );
 
   const isLinkActive = useCallback(
@@ -46,8 +65,8 @@ export const CodeControlSidebar = () => {
 
   const isParentActive = useCallback(
     (link: NavigationLink): boolean =>
-      !!link.children?.some((child) => isLinkActive(child.href)),
-    [isLinkActive],
+      !!link.children?.some((child) => linkActive(child)),
+    [linkActive],
   );
 
   useEffect(() => {
@@ -117,7 +136,7 @@ export const CodeControlSidebar = () => {
                     {isExpanded && link.children && (
                       <ul className={styles.childList}>
                         {link.children.map((child) => {
-                          const childActive = isLinkActive(child.href);
+                          const childActive = linkActive(child);
                           return (
                             <li key={child.href} className={styles.childItem}>
                               <Link
@@ -127,6 +146,9 @@ export const CodeControlSidebar = () => {
                                 }`}
                               >
                                 <span>{child.name}</span>
+                                {child.badge && agentRunSummary[child.badge].waiting > 0 ? (
+                                  <span className={styles.badge}>{agentRunSummary[child.badge].waiting}</span>
+                                ) : null}
                               </Link>
                             </li>
                           );
@@ -137,15 +159,19 @@ export const CodeControlSidebar = () => {
                 );
               }
 
+              const active = link.activePrefixes ? linkActive(link) : isActive;
               return (
                 <li key={link.href} className={styles.menuItem}>
                   <Link
                     href={link.href}
                     className={`${styles.menuButton} ${
-                      isActive ? styles.menuButtonActive : styles.menuButtonInactive
+                      active ? styles.menuButtonActive : styles.menuButtonInactive
                     }`}
                   >
                     <span>{link.name}</span>
+                    {link.badge && agentRunSummary[link.badge].waiting > 0 ? (
+                      <span className={styles.badge}>{agentRunSummary[link.badge].waiting}</span>
+                    ) : null}
                   </Link>
                 </li>
               );
@@ -222,6 +248,10 @@ const styles = {
   `,
   childItem: `
     group relative
+  `,
+  badge: `
+    ml-auto inline-flex min-w-[1.25rem] items-center justify-center rounded-full
+    bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-800 ring-1 ring-inset ring-amber-200
   `,
   childButton: `
     flex w-full items-center gap-2 rounded px-2.5 py-1.5 text-xs font-medium

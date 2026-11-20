@@ -8,8 +8,10 @@ import { useAppDispatch, useAppSelector } from '@/store';
 import { DataModelDeliveryBuilderActions } from '@/store/builders';
 import { deliveryTargetsKey } from '@/store/dumps';
 import { deliverDataModelThunk, getDataModelDeliveriesThunk } from '@/store/thunks/data-model-deliveries';
+import { getTemplateHeadsThunk, listAgentRunsThunk } from '@/store/thunks/agent-runs';
 import { Preview } from './preview';
 import { TargetRow } from './target-row';
+import { UpdatePrModal } from './update-pr-modal';
 
 const EMPTY: DeliveryTarget[] = [];
 
@@ -40,11 +42,19 @@ export const Deliver = ({ proposalId, kind }: DeliverProps) => {
   const deliveringRole = useAppSelector((state) => state.dataModelDeliveryBuilder.deliveringRole);
   const deliverError = useAppSelector((state) => state.dataModelDeliveryBuilder.deliverError);
   const autoMerge = useAppSelector((state) => state.dataModelDeliveryBuilder.autoMerge);
+  const softwareSystemId = useAppSelector((state) => state.currentSoftwareSystem.id);
 
   useEffect(() => {
     dispatch(DataModelDeliveryBuilderActions.closePreview());
     if (proposalId) void dispatch(getDataModelDeliveriesThunk(proposalId, kind));
   }, [dispatch, proposalId, kind]);
+
+  // PR agent runs for this project (latest per PR) and template heads (Re-render when behind).
+  useEffect(() => {
+    if (!softwareSystemId) return;
+    void dispatch(listAgentRunsThunk({ agent: 'pr', software_system_id: softwareSystemId }, true));
+    void dispatch(getTemplateHeadsThunk());
+  }, [dispatch, softwareSystemId]);
 
   const deliverable = targets.filter((target) => target.repo && target.delivery?.status !== 'merged');
 
@@ -95,6 +105,7 @@ export const Deliver = ({ proposalId, kind }: DeliverProps) => {
         </ul>
       )}
       <Preview proposalId={proposalId} kind={kind} />
+      <UpdatePrModal />
     </section>
   );
 };

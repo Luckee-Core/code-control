@@ -49,6 +49,7 @@ export const saveConventionThunk = (): AppThunk<Promise<200 | 400 | 500>> => {
       check_config: checkConfig,
       sort_order: current.sort_order,
       role_keys: current.role_keys,
+      ...(builder.changeReason.trim() ? { change_reason: builder.changeReason.trim() } : {}),
     };
 
     dispatch(ConventionsBuilderActions.setSaveStatus({ status: 'saving' }));

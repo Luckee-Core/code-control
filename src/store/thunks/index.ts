@@ -6,3 +6,5 @@ export * from './conventions';
 export * from './data-model-proposals';
 export * from './data-model-deliveries';
 export * from './ticket-builds';
+export * from './agent-runs';
+export * from './convention-changes';

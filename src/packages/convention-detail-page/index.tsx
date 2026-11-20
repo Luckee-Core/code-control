@@ -8,6 +8,7 @@ import { FormModal } from '@/packages/conventions';
 import { useAppDispatch, useAppSelector } from '@/store';
 import { getConventionsThunk } from '@/store/thunks/conventions';
 import { Examples } from './examples';
+import { History } from './history';
 import { Overview } from './overview';
 import { Sources } from './sources';
 
@@ -45,6 +46,7 @@ export const ConventionDetailPage = () => {
       <Overview />
       <Examples />
       <Sources />
+      <History />
       <FormModal />
     </div>
   );

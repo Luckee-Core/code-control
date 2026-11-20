@@ -10,6 +10,8 @@ type ConventionsBuilderState = {
   isFormModalOpen: boolean;
   /** check_config edited as JSON text; parsed on save. */
   checkConfigText: string;
+  /** Why this edit is made (recorded in the convention change ledger). */
+  changeReason: string;
   saveStatus: SaveStatus;
   saveError: string | null;
   isLoadingDetail: boolean;
@@ -33,6 +35,7 @@ const EMPTY_SOURCE: CreateConventionSourcePayload = { repo: '', adr_path: '', ex
 const initialState: ConventionsBuilderState = {
   isFormModalOpen: false,
   checkConfigText: '',
+  changeReason: '',
   saveStatus: 'idle',
   saveError: null,
   isLoadingDetail: false,
@@ -49,6 +52,7 @@ const conventionsBuilderSlice = createSlice({
     openFormModal: (state, action: PayloadAction<{ checkConfigText: string }>) => {
       state.isFormModalOpen = true;
       state.checkConfigText = action.payload.checkConfigText;
+      state.changeReason = '';
       state.saveStatus = 'idle';
       state.saveError = null;
     },
@@ -59,6 +63,9 @@ const conventionsBuilderSlice = createSlice({
     },
     setCheckConfigText: (state, action: PayloadAction<string>) => {
       state.checkConfigText = action.payload;
+    },
+    setChangeReason: (state, action: PayloadAction<string>) => {
+      state.changeReason = action.payload;
     },
     setSaveStatus: (state, action: PayloadAction<{ status: SaveStatus; error?: string | null }>) => {
       state.saveStatus = action.payload.status;

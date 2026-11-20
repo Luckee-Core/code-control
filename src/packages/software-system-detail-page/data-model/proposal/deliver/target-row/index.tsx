@@ -1,9 +1,14 @@
 'use client';
 
+import { useMemo } from 'react';
+import { useRouter } from 'next/navigation';
+import { PILL, StatusBadge } from '@/components/agent-runs';
 import { detailPageStyles } from '@/components/detail-page-styles';
+import { PR_AGENT_RUN_DETAIL_PAGE_PATH } from '@/config/routes';
 import type { DeliveryTarget } from '@/api/data-model-deliveries';
 import type { DataModelDeliveryKind, DataModelDeliveryStatus } from '@/model/data-model-delivery';
-import { useAppDispatch, useAppSelector } from '@/store';
+import { AgentRunsBuilderActions, useAppDispatch, useAppSelector } from '@/store';
+import { openAgentRunThunk } from '@/store/thunks/agent-runs';
 import {
   deliverDataModelThunk,
   openDeliveryPreviewThunk,
@@ -31,11 +36,27 @@ const STATUS_LABEL: Record<DataModelDeliveryStatus, string> = {
 type TargetRowProps = { target: DeliveryTarget; proposalId: string; kind: DataModelDeliveryKind };
 
 export const TargetRow = ({ target, proposalId, kind }: TargetRowProps) => {
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const deliveringRole = useAppSelector((state) => state.dataModelDeliveryBuilder.deliveringRole);
   const autoMerge = useAppSelector((state) => state.dataModelDeliveryBuilder.autoMerge);
+  const agentRuns = useAppSelector((state) => state.agentRuns);
+  const templateHeads = useAppSelector((state) => state.templateHeads);
   const { role, repo, delivery } = target;
   const isBusy = deliveringRole !== '';
+
+  const latestRun = useMemo(
+    () =>
+      delivery
+        ? Object.values(agentRuns)
+            .filter((run) => run.agent === 'pr' && run.delivery_id === delivery.id)
+            .sort((a, b) => b.created_at.localeCompare(a.created_at))[0] ?? null
+        : null,
+    [agentRuns, delivery],
+  );
+  const templateHead = templateHeads[role];
+  const templatesBehind = Boolean(delivery?.pr_number && templateHead?.sha && delivery.template_sha !== templateHead.sha);
+  const prOpen = Boolean(delivery?.pr_number && delivery.status === 'opened');
 
   return (
     <li className={styles.row}>
@@ -58,6 +79,31 @@ export const TargetRow = ({ target, proposalId, kind }: TargetRowProps) => {
             PR #{delivery.pr_number} · {delivery.files.length} files · {delivery.branch}
           </a>
         ) : null}
+        {latestRun ? (
+          <div className={styles.agentRow}>
+            <span className={styles.agentLabel}>PR agent</span>
+            <StatusBadge status={latestRun.status} />
+            <button
+              type="button"
+              className={styles.agentLink}
+              onClick={() => {
+                void dispatch(openAgentRunThunk(latestRun));
+                router.push(PR_AGENT_RUN_DETAIL_PAGE_PATH);
+              }}
+            >
+              {latestRun.title || 'View run'}
+            </button>
+          </div>
+        ) : null}
+        {delivery?.convergence ? (
+          <span
+            className={delivery.convergence === 'converged' ? `${PILL} self-start bg-green-50 text-green-700 border-green-200` : `${PILL} self-start bg-amber-50 text-amber-800 border-amber-200`}
+            title={delivery.convergence_detail?.differing_paths.join(', ') || undefined}
+          >
+            {delivery.convergence === 'converged' ? 'Templates reproduce the PR fix' : `Templates differ in ${delivery.convergence_detail?.differing_paths.length ?? 0} file(s)`}
+          </span>
+        ) : null}
+        {templatesBehind ? <p className={styles.note}>Templates changed since this PR was rendered. Re-render to pick them up (PR agent edits on the branch are replaced).</p> : null}
         {delivery?.error ? (
           <p className={delivery.status === 'failed' ? styles.error : styles.note}>{delivery.error}</p>
         ) : null}
@@ -80,19 +126,33 @@ export const TargetRow = ({ target, proposalId, kind }: TargetRowProps) => {
               Refresh
             </button>
           ) : null}
+          {prOpen && delivery ? (
+            <button
+              type="button"
+              onClick={() => dispatch(AgentRunsBuilderActions.openUpdatePr(delivery.id))}
+              disabled={isBusy}
+              className={`${detailPageStyles.primaryButton} disabled:opacity-50 disabled:cursor-not-allowed`}
+              title="Give feedback: the PR agent proposes edits to this PR"
+            >
+              Update PR
+            </button>
+          ) : null}
           {delivery?.status !== 'merged' ? (
             <button
               type="button"
               onClick={() => void dispatch(deliverDataModelThunk(proposalId, kind, role))}
               disabled={isBusy}
               className={`${detailPageStyles.secondaryButton} disabled:opacity-50 disabled:cursor-not-allowed`}
+              title={delivery?.pr_number ? 'Render again from the templates and replace the PR branch' : undefined}
             >
               {deliveringRole === role
                 ? 'Working…'
                 : delivery?.pr_number
                   ? autoMerge
-                    ? 'Update and merge'
-                    : 'Update PR'
+                    ? 'Re-render and merge'
+                    : templatesBehind
+                      ? 'Re-render (templates changed)'
+                      : 'Re-render'
                   : autoMerge
                     ? 'Open and merge'
                     : 'Open PR'}
@@ -115,4 +175,7 @@ const styles = {
   error: `text-[11px] text-red-700 whitespace-pre-wrap`,
   note: `text-[11px] text-amber-800 whitespace-pre-wrap`,
   actions: `flex items-center gap-2 shrink-0`,
+  agentRow: `flex items-center gap-2 mt-0.5`,
+  agentLabel: `text-[10px] font-semibold uppercase tracking-wide text-gray-500`,
+  agentLink: `text-[11px] text-blue-600 hover:underline bg-transparent border-none p-0 cursor-pointer truncate max-w-xs text-left`,
 };
