@@ -13,13 +13,20 @@ export const Edits = ({ edits, findings, notes, omitted }: EditsProps) => {
   const dispatch = useAppDispatch();
   const selectedPath = useAppSelector((state) => state.agentRunsBuilder.selectedPath);
   const selected = useMemo(() => edits.find((edit) => edit.path === selectedPath) ?? edits[0] ?? null, [edits, selectedPath]);
+  const summary = useMemo(() => {
+    const deleted = edits.filter((edit) => edit.after_content === null).length;
+    const changed = edits.length - deleted;
+    const parts = [`${changed} file${changed === 1 ? '' : 's'} changed`];
+    if (deleted > 0) parts.push(`${deleted} deleted`);
+    return parts.join(', ');
+  }, [edits]);
 
   return (
     <section className={detailPageStyles.panel}>
       <div className={detailPageStyles.panelHeader}>
         <div>
           <h2 className={detailPageStyles.panelTitle}>Proposed changes to the PR</h2>
-          <p className={detailPageStyles.panelSubtitle}>{edits.length} file{edits.length === 1 ? '' : 's'}. Nothing is committed until you approve.</p>
+          <p className={detailPageStyles.panelSubtitle}>{summary}. Nothing is committed until you approve.</p>
         </div>
       </div>
       <div className={styles.body}>
@@ -32,7 +39,9 @@ export const Edits = ({ edits, findings, notes, omitted }: EditsProps) => {
                   onClick={() => dispatch(AgentRunsBuilderActions.selectPath(edit.path))}
                   className={selected?.path === edit.path ? styles.fileActive : styles.file}
                 >
-                  <span className={styles.tag}>{edit.before_content === null ? 'new' : 'edit'}</span>
+                  <span className={edit.after_content === null ? styles.tagDelete : styles.tag}>
+                    {edit.before_content === null ? 'new' : edit.after_content === null ? 'delete' : 'edit'}
+                  </span>
                   {edit.path}
                 </button>
               </li>
@@ -42,7 +51,8 @@ export const Edits = ({ edits, findings, notes, omitted }: EditsProps) => {
             {selected ? (
               <>
                 {selected.explanation ? <p className={styles.explanation}>{selected.explanation}</p> : null}
-                <DiffView before={selected.before_content ?? ''} after={selected.after_content} />
+                {selected.after_content === null ? <p className={styles.deleteNote}>This file is deleted from the branch when you approve.</p> : null}
+                <DiffView before={selected.before_content ?? ''} after={selected.after_content ?? ''} />
               </>
             ) : (
               <p className={styles.empty}>No edits.</p>
@@ -76,6 +86,8 @@ const styles = {
   file: `w-full text-left text-[11px] font-mono px-2 py-1 rounded hover:bg-gray-50 cursor-pointer break-all flex gap-2`,
   fileActive: `w-full text-left text-[11px] font-mono px-2 py-1 rounded bg-gray-100 ring-1 ring-inset ring-gray-300 break-all flex gap-2`,
   tag: `text-[9px] uppercase font-semibold text-gray-500 shrink-0`,
+  tagDelete: `text-[9px] uppercase font-semibold text-red-600 shrink-0`,
+  deleteNote: `text-xs text-red-700 bg-red-50 border border-red-200 rounded px-2 py-1`,
   viewer: `flex flex-col gap-2 min-w-0`,
   explanation: `text-xs text-gray-700`,
   empty: `text-xs text-gray-500`,

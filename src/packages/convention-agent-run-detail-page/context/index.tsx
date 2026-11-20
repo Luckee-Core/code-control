@@ -28,8 +28,9 @@ export const Context = ({ prRun, edits }: ContextProps) => {
             <li key={edit.path}>
               <button type="button" onClick={() => setOpen(open === edit.path ? '' : edit.path)} className={styles.file}>
                 {open === edit.path ? '▾' : '▸'} {edit.path}
+                {edit.after_content === null ? <span className={styles.deleted}> (deleted)</span> : null}
               </button>
-              {open === edit.path ? <DiffView before={edit.before_content ?? ''} after={edit.after_content} /> : null}
+              {open === edit.path ? <DiffView before={edit.before_content ?? ''} after={edit.after_content ?? ''} /> : null}
             </li>
           ))}
         </ul>
@@ -43,4 +44,5 @@ const styles = {
   feedback: `text-xs text-gray-900 whitespace-pre-wrap`,
   files: `flex flex-col gap-1`,
   file: `text-left text-[11px] font-mono text-blue-700 hover:underline bg-transparent border-none p-0 cursor-pointer`,
+  deleted: `text-red-600 font-sans`,
 };

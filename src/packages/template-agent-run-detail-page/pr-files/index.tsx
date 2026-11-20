@@ -59,6 +59,7 @@ export const PrFiles = ({ runId, repo, explanations }: PrFilesProps) => {
               >
                 <span className={AREA_BADGE[file.area] ?? AREA_BADGE.scaffold}>{file.area}</span>
                 <span className={styles.path}>{file.filename}</span>
+                {file.status === 'removed' ? <span className={styles.removed}>deleted</span> : file.status === 'added' ? <span className={styles.added}>new</span> : null}
               </button>
             </li>
           ))}
@@ -96,6 +97,8 @@ const styles = {
   file: `w-full text-left px-2 py-1 rounded hover:bg-gray-50 cursor-pointer flex items-start gap-2`,
   fileActive: `w-full text-left px-2 py-1 rounded bg-gray-100 ring-1 ring-inset ring-gray-300 flex items-start gap-2`,
   path: `text-[11px] font-mono break-all text-gray-800`,
+  removed: `text-[9px] uppercase font-semibold text-red-600 shrink-0`,
+  added: `text-[9px] uppercase font-semibold text-green-700 shrink-0`,
   viewer: `flex flex-col gap-2 min-w-0`,
   explanation: `text-xs text-gray-700`,
 };
