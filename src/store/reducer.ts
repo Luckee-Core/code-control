@@ -25,6 +25,7 @@ import {
   templateRunViewsReducer,
   templateHeadsReducer,
   conventionChangesReducer,
+  softwareSystemAiCallsReducer,
 } from './dumps';
 import {
   currentCustomerReducer,
@@ -87,6 +88,7 @@ export const rootReducer = combineReducers({
   templateRunViews: templateRunViewsReducer,
   templateHeads: templateHeadsReducer,
   conventionChanges: conventionChangesReducer,
+  softwareSystemAiCalls: softwareSystemAiCallsReducer,
   currentAgentRun: currentAgentRunReducer,
   agentRunsBuilder: agentRunsBuilderReducer,
 });

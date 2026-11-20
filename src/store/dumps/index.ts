@@ -30,3 +30,4 @@ export { agentRunExchangesReducer, AgentRunExchangesActions } from './agent-run-
 export { templateRunViewsReducer, TemplateRunViewsActions, templateViewKey } from './template-run-views';
 export { templateHeadsReducer, TemplateHeadsActions } from './template-heads';
 export { conventionChangesReducer, ConventionChangesActions } from './convention-changes';
+export { softwareSystemAiCallsReducer, SoftwareSystemAiCallsActions } from './software-system-ai-calls';
