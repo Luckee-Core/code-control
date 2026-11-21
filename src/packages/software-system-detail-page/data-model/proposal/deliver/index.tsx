@@ -26,6 +26,11 @@ const COPY: Record<DataModelDeliveryKind, { title: string; subtitle: string }> =
     subtitle:
       'Opens one pull request per repo with the code that reads and writes these tables: storage CRUD functions + invoke registry; API express invoke wrappers, routers, handlers and process functions under /api/data/{table}; web src/api, dumps and thunks plus the /api/data proxy. Each repo needs its data model PR merged first. Repos already merged for this version are skipped.',
   },
+  detail: {
+    title: 'Detail pages (web)',
+    subtitle:
+      'Opens one pull request on the web repo with a detail page per table (join tables skipped): a summary panel with every field, Edit and Delete in the ⋮ menu, an edit modal with one input per field, and a tab per related table with counts. List rows start opening their detail page. Needs the API and Layout PRs merged first. Files are only added when missing.',
+  },
   list: {
     title: 'List pages (web)',
     subtitle:
@@ -67,7 +72,7 @@ export const Deliver = ({ proposalId, kind }: DeliverProps) => {
   }, [dispatch, softwareSystemId]);
 
   // A merged layout or list-pages PR can be delivered again (new tables or pages since); other kinds are done once merged.
-  const redeliverable = kind === 'layout' || kind === 'list';
+  const redeliverable = kind === 'layout' || kind === 'list' || kind === 'detail';
   const deliverable = targets.filter((target) => target.repo && (redeliverable || target.delivery?.status !== 'merged'));
   const allMerged = targets.some((target) => target.repo) && targets.every((target) => !target.repo || target.delivery?.status === 'merged');
 
