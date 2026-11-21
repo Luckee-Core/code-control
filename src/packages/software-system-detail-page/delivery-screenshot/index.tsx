@@ -1,28 +1,33 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { detailPageStyles } from '@/components/detail-page-styles';
 import { useAppDispatch, useAppSelector } from '@/store';
 import { deliveryPreviewKey } from '@/store/dumps';
+import type { DataModelDeliveryKind } from '@/model/data-model-delivery';
 import { getDeliveryScreenshotThunk } from '@/store/thunks/data-model-deliveries';
 
-type ScreenshotProps = { proposalId: string };
+type DeliveryScreenshotProps = { proposalId: string; kind: DataModelDeliveryKind; subtitle: string; alt: string };
 
 /**
- * Screenshot of the generated app shell: the template's preview page rendered with this
- * project's name and the list pages its web repo has today. The same image goes in the layout PR.
+ * Screenshot of what a web delivery generates: the template's preview page for `kind`, rendered
+ * with this project's data and its web repo as it is today. The same image goes in the PR.
+ * Hidden until there is an image.
  */
-export const Screenshot = ({ proposalId }: ScreenshotProps) => {
+export const DeliveryScreenshot = ({ proposalId, kind, subtitle, alt }: DeliveryScreenshotProps) => {
   const dispatch = useAppDispatch();
-  const key = deliveryPreviewKey(proposalId, 'layout', 'web');
+  const key = deliveryPreviewKey(proposalId, kind, 'web');
   const screenshot = useAppSelector((state) => state.dataModelDeliveryScreenshots[key]);
   const status = useAppSelector((state) => state.dataModelDeliveryBuilder.screenshotStatus);
   const error = useAppSelector((state) => state.dataModelDeliveryBuilder.screenshotError);
 
+  // Try once per mounted panel and key (an error stops retries; the status is shared across tabs).
+  const triedKey = useRef('');
   useEffect(() => {
-    // Load once per proposal (an error stops retries); Refresh re-renders on demand.
-    if (proposalId && !screenshot && status === 'idle') void dispatch(getDeliveryScreenshotThunk(proposalId, 'layout', 'web'));
-  }, [dispatch, proposalId, screenshot, status]);
+    if (!proposalId || screenshot || triedKey.current === key) return;
+    triedKey.current = key;
+    void dispatch(getDeliveryScreenshotThunk(proposalId, kind, 'web'));
+  }, [dispatch, proposalId, kind, key, screenshot]);
 
   const isLoading = status === 'loading';
 
@@ -34,14 +39,11 @@ export const Screenshot = ({ proposalId }: ScreenshotProps) => {
       <div className={detailPageStyles.panelHeader}>
         <div>
           <h2 className={detailPageStyles.panelTitle}>Preview</h2>
-          <p className={detailPageStyles.panelSubtitle}>
-            How the shell looks with this project&apos;s name and the list pages the web repo has today. The same
-            screenshot goes in the layout PR.
-          </p>
+          <p className={detailPageStyles.panelSubtitle}>{subtitle}</p>
         </div>
         <button
           type="button"
-          onClick={() => void dispatch(getDeliveryScreenshotThunk(proposalId, 'layout', 'web'))}
+          onClick={() => void dispatch(getDeliveryScreenshotThunk(proposalId, kind, 'web'))}
           disabled={isLoading}
           className={`${detailPageStyles.secondaryButton} disabled:opacity-50 disabled:cursor-not-allowed`}
         >
@@ -55,7 +57,7 @@ export const Screenshot = ({ proposalId }: ScreenshotProps) => {
           src={`data:image/png;base64,${screenshot.png_base64}`}
           width={screenshot.width}
           height={screenshot.height}
-          alt="Generated app layout: sidebar, breadcrumb header and content area"
+          alt={alt}
           className={`${styles.image} ${isLoading ? 'opacity-60' : ''}`}
         />
         <figcaption className={styles.caption}>

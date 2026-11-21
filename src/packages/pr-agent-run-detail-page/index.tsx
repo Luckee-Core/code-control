@@ -50,7 +50,7 @@ export const PrAgentRunDetailPage = () => {
 
   const subtitle = (
     <>
-      {detail.software_system_name ?? 'Project'} · {delivery ? `${delivery.repo_full_name} (${delivery.role}, ${delivery.kind === 'crud' ? 'data access' : delivery.kind === 'layout' ? 'app layout' : 'data model'})` : run.role_key}
+      {detail.software_system_name ?? 'Project'} · {delivery ? `${delivery.repo_full_name} (${delivery.role}, ${delivery.kind === 'crud' ? 'data access' : delivery.kind === 'layout' ? 'app layout' : delivery.kind === 'list' ? 'list pages' : 'data model'})` : run.role_key}
       {delivery?.pr_number ? (
         <>
           {' · '}
