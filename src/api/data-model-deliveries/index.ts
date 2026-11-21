@@ -29,3 +29,7 @@ export const deliverDataModel = (
 /** POST /api/data/data-model-deliveries/:id/refresh (re-reads the PR state) */
 export const refreshDataModelDelivery = (id: string) =>
   requestJson<DataModelDelivery>(`${BASE}/${encodeURIComponent(id)}/refresh`, { method: 'POST' });
+
+/** POST /api/data/data-model-deliveries/:id/merge (squash-merges the open PR and deletes its branch) */
+export const mergeDataModelDelivery = (id: string) =>
+  requestJson<DataModelDelivery>(`${BASE}/${encodeURIComponent(id)}/merge`, { method: 'POST' });
