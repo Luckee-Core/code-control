@@ -8,6 +8,8 @@ type DataModelBuilderState = {
   selectedProposalId: string | null;
   contextDraft: string;
   feedbackDraft: string;
+  /** Option picked per open question (by question index); unset means the recommended option. */
+  questionAnswers: Record<number, string>;
   isLoading: boolean;
   loadError: string | null;
   submitStatus: SubmitStatus;
@@ -19,6 +21,7 @@ const initialState: DataModelBuilderState = {
   selectedProposalId: null,
   contextDraft: '',
   feedbackDraft: '',
+  questionAnswers: {},
   isLoading: false,
   loadError: null,
   submitStatus: 'idle',
@@ -40,6 +43,7 @@ const dataModelBuilderSlice = createSlice({
     selectProposal: (state, action: PayloadAction<string | null>) => {
       state.selectedProposalId = action.payload;
       state.feedbackDraft = '';
+      state.questionAnswers = {};
       state.submitStatus = 'idle';
       state.submitError = null;
     },
@@ -48,6 +52,9 @@ const dataModelBuilderSlice = createSlice({
     },
     setFeedbackDraft: (state, action: PayloadAction<string>) => {
       state.feedbackDraft = action.payload;
+    },
+    setQuestionAnswer: (state, action: PayloadAction<{ index: number; label: string }>) => {
+      state.questionAnswers[action.payload.index] = action.payload.label;
     },
     setSubmitStatus: (state, action: PayloadAction<{ status: SubmitStatus; error?: string | null }>) => {
       state.submitStatus = action.payload.status;

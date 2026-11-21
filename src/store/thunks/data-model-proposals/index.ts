@@ -6,3 +6,4 @@ export { reviseDataModelProposalThunk } from './revise-data-model-proposal-thunk
 export { approveDataModelProposalThunk } from './approve-data-model-proposal-thunk';
 export { deleteDataModelProposalThunk } from './delete-data-model-proposal-thunk';
 export { selectDataModelProposalThunk } from './select-data-model-proposal-thunk';
+export { buildAnswerFeedback, readProposalQuestions } from './proposal-questions';
