@@ -35,3 +35,15 @@ export type DeliveryPreview = {
   files: RenderedFile[];
   findings: RenderFinding[];
 };
+
+/** GET /api/data/data-model-deliveries/screenshot: the template's preview page as a PNG (2x). */
+export type DeliveryScreenshot = {
+  role: DeliveryRole;
+  repo_full_name: string;
+  base_branch: string;
+  template: { repo: string; sha: string };
+  /** Viewport in CSS pixels. */
+  width: number;
+  height: number;
+  png_base64: string;
+};

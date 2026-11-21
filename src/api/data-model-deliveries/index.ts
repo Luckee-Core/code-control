@@ -1,6 +1,6 @@
 import type { DataModelDelivery, DataModelDeliveryKind } from '@/model/data-model-delivery';
 import { requestJson } from '../request-json';
-import type { DeliveryPreview, DeliveryRole, DeliveryTarget } from './types';
+import type { DeliveryPreview, DeliveryRole, DeliveryScreenshot, DeliveryTarget } from './types';
 
 export type * from './types';
 
@@ -29,3 +29,11 @@ export const deliverDataModel = (
 /** POST /api/data/data-model-deliveries/:id/refresh (re-reads the PR state) */
 export const refreshDataModelDelivery = (id: string) =>
   requestJson<DataModelDelivery>(`${BASE}/${encodeURIComponent(id)}/refresh`, { method: 'POST' });
+
+/** POST /api/data/data-model-deliveries/:id/merge (squash-merges the open PR and deletes its branch) */
+export const mergeDataModelDelivery = (id: string) =>
+  requestJson<DataModelDelivery>(`${BASE}/${encodeURIComponent(id)}/merge`, { method: 'POST' });
+
+/** GET /api/data/data-model-deliveries/screenshot?proposal_id=&role=&kind= (template preview page as a PNG; writes nothing) */
+export const screenshotDataModelDelivery = (proposalId: string, kind: DataModelDeliveryKind, role: DeliveryRole) =>
+  requestJson<DeliveryScreenshot>(`${BASE}/screenshot?proposal_id=${encodeURIComponent(proposalId)}&role=${role}&kind=${kind}`);

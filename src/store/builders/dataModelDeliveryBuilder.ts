@@ -15,6 +15,9 @@ type DataModelDeliveryBuilderState = {
   previewStatus: Status;
   previewError: string | null;
   selectedPath: string;
+  /** Template preview screenshot (Layout tab). */
+  screenshotStatus: Status;
+  screenshotError: string | null;
 };
 
 const initialState: DataModelDeliveryBuilderState = {
@@ -27,6 +30,8 @@ const initialState: DataModelDeliveryBuilderState = {
   previewStatus: 'idle',
   previewError: null,
   selectedPath: '',
+  screenshotStatus: 'idle',
+  screenshotError: null,
 };
 
 const dataModelDeliveryBuilderSlice = createSlice({
@@ -62,6 +67,10 @@ const dataModelDeliveryBuilderSlice = createSlice({
       state.previewStatus = 'idle';
       state.previewError = null;
       state.selectedPath = '';
+    },
+    setScreenshotStatus: (state, action: PayloadAction<{ status: Status; error?: string | null }>) => {
+      state.screenshotStatus = action.payload.status;
+      state.screenshotError = action.payload.error ?? null;
     },
     reset: (state) => ({ ...initialState, autoMerge: state.autoMerge }),
   },

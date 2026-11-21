@@ -107,11 +107,25 @@ export const Deliver = ({ proposalId, kind }: DeliverProps) => {
       {targets.length === 0 ? (
         <p className={styles.empty}>{loadStatus === 'loading' ? 'Loading…' : 'No delivery targets.'}</p>
       ) : (
-        <ul className={styles.list}>
-          {targets.map((target) => (
-            <TargetRow key={target.role} target={target} proposalId={proposalId} kind={kind} />
-          ))}
-        </ul>
+        <div className={styles.tableWrapper}>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th className={styles.thRepo}>Repository</th>
+                <th className={styles.thStatus}>Status</th>
+                <th className={styles.th}>Pull request</th>
+                <th className={styles.thActions}>
+                  <span className="sr-only">Actions</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {targets.map((target) => (
+                <TargetRow key={target.role} target={target} proposalId={proposalId} kind={kind} />
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
       <Preview proposalId={proposalId} kind={kind} />
       <UpdatePrModal />
@@ -123,7 +137,12 @@ const styles = {
   headerActions: `flex items-center gap-3 shrink-0`,
   autoMerge: `inline-flex items-center gap-1.5 text-xs text-gray-700 cursor-pointer select-none`,
   checkbox: `h-3.5 w-3.5 cursor-pointer`,
-  list: `divide-y divide-gray-200`,
+  tableWrapper: `mx-4 my-3 bg-white rounded border border-gray-300 overflow-x-auto`,
+  table: `w-full text-left border-collapse text-xs table-fixed`,
+  th: `px-3 py-2 text-left text-[10px] font-semibold text-gray-600 uppercase tracking-wide bg-gray-100 border-b border-gray-300`,
+  thRepo: `px-3 py-2 text-left text-[10px] font-semibold text-gray-600 uppercase tracking-wide bg-gray-100 border-b border-gray-300 w-56`,
+  thStatus: `px-3 py-2 text-left text-[10px] font-semibold text-gray-600 uppercase tracking-wide bg-gray-100 border-b border-gray-300 w-28`,
+  thActions: `px-2 py-2 bg-gray-100 border-b border-gray-300 w-12`,
   empty: `px-4 py-4 text-xs text-gray-500`,
   error: `mx-4 mt-3 text-xs text-red-700 bg-red-50 border border-red-200 rounded px-3 py-2 whitespace-pre-wrap`,
 };
