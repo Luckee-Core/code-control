@@ -23,6 +23,9 @@ const ICONS: Record<TargetAction['icon'], ComponentType<{ className?: string }>>
 };
 
 const MENU_WIDTH = 208;
+const MENU_ITEM_HEIGHT = 32;
+const MENU_MAX_HEIGHT = 288;
+const VIEWPORT_GAP = 8;
 
 type ActionsMenuProps = { label: string; actions: TargetAction[]; busy: boolean };
 
@@ -30,7 +33,7 @@ type ActionsMenuProps = { label: string; actions: TargetAction[]; busy: boolean 
 export const ActionsMenu = ({ label, actions, busy }: ActionsMenuProps) => {
   const triggerRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
-  const [menuPosition, setMenuPosition] = useState<{ top: number; left: number } | null>(null);
+  const [menuPosition, setMenuPosition] = useState<{ top: number; left: number; maxHeight: number } | null>(null);
 
   useEffect(() => {
     if (!menuPosition) return;
@@ -39,8 +42,21 @@ export const ActionsMenu = ({ label, actions, busy }: ActionsMenuProps) => {
       if (triggerRef.current?.contains(target) || menuRef.current?.contains(target)) return;
       setMenuPosition(null);
     };
+    // The menu is fixed to the viewport: close it when anything scrolls or resizes so it never
+    // floats away from its row (and scrolling stays free while it is open).
+    const handleScroll = (event: Event) => {
+      if (menuRef.current?.contains(event.target as Node)) return;
+      setMenuPosition(null);
+    };
+    const close = () => setMenuPosition(null);
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('scroll', handleScroll, true);
+    window.addEventListener('resize', close);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('scroll', handleScroll, true);
+      window.removeEventListener('resize', close);
+    };
   }, [menuPosition]);
 
   const handleToggle = () => {
@@ -49,37 +65,50 @@ export const ActionsMenu = ({ label, actions, busy }: ActionsMenuProps) => {
       return;
     }
     const rect = triggerRef.current.getBoundingClientRect();
-    setMenuPosition({ top: rect.bottom + 4, left: Math.max(8, rect.right - MENU_WIDTH) });
+    const menuHeight = Math.min(MENU_MAX_HEIGHT, actions.length * MENU_ITEM_HEIGHT + 8);
+    const spaceBelow = window.innerHeight - rect.bottom - VIEWPORT_GAP;
+    const spaceAbove = rect.top - VIEWPORT_GAP;
+    // Open upward when the menu doesn't fit below the trigger and there is more room above.
+    const openUp = spaceBelow < menuHeight && spaceAbove > spaceBelow;
+    const top = openUp ? Math.max(VIEWPORT_GAP, rect.top - 4 - menuHeight) : rect.bottom + 4;
+    setMenuPosition({ top, left: Math.max(VIEWPORT_GAP, rect.right - MENU_WIDTH), maxHeight: openUp ? spaceAbove : spaceBelow });
   };
 
   const menu =
     menuPosition && typeof document !== 'undefined'
       ? createPortal(
-          <>
-            <button type="button" className={styles.backdrop} aria-label="Close menu" onClick={() => setMenuPosition(null)} />
-            <div ref={menuRef} className={styles.menu} role="menu" style={{ top: menuPosition.top, left: menuPosition.left, width: MENU_WIDTH }}>
-              {actions.map((action) => {
-                const Icon = ICONS[action.icon];
-                return (
-                  <button
-                    key={action.key}
-                    type="button"
-                    role="menuitem"
-                    title={action.title}
-                    disabled={action.disabled}
-                    className={action.icon === 'merge' ? styles.menuItemMerge : styles.menuItem}
-                    onClick={() => {
-                      setMenuPosition(null);
-                      action.onSelect();
-                    }}
-                  >
-                    <Icon className={styles.menuItemIcon} />
-                    {action.label}
-                  </button>
-                );
-              })}
-            </div>
-          </>,
+          <div
+            ref={menuRef}
+            className={styles.menu}
+            role="menu"
+            style={{
+              top: menuPosition.top,
+              left: menuPosition.left,
+              width: MENU_WIDTH,
+              maxHeight: Math.min(MENU_MAX_HEIGHT, Math.max(120, menuPosition.maxHeight)),
+            }}
+          >
+            {actions.map((action) => {
+              const Icon = ICONS[action.icon];
+              return (
+                <button
+                  key={action.key}
+                  type="button"
+                  role="menuitem"
+                  title={action.title}
+                  disabled={action.disabled}
+                  className={action.icon === 'merge' ? styles.menuItemMerge : styles.menuItem}
+                  onClick={() => {
+                    setMenuPosition(null);
+                    action.onSelect();
+                  }}
+                >
+                  <Icon className={styles.menuItemIcon} />
+                  {action.label}
+                </button>
+              );
+            })}
+          </div>,
           document.body,
         )
       : null;
@@ -111,9 +140,8 @@ const styles = {
     disabled:opacity-50 disabled:cursor-not-allowed
   `,
   icon: `h-4 w-4`,
-  backdrop: `fixed inset-0 z-[60] cursor-default bg-transparent border-none`,
   menu: `
-    fixed z-[70] max-h-72 overflow-y-auto overflow-x-hidden
+    fixed z-[70] overflow-y-auto overflow-x-hidden
     bg-white rounded-md shadow-lg border border-gray-300 py-1
   `,
   menuItem: `

@@ -26,14 +26,17 @@ export const Screenshot = ({ proposalId }: ScreenshotProps) => {
 
   const isLoading = status === 'loading';
 
+  // Only shown once there is an image: no section while the first render runs or when it fails.
+  if (!screenshot?.png_base64) return null;
+
   return (
     <section className={detailPageStyles.panel}>
       <div className={detailPageStyles.panelHeader}>
         <div>
           <h2 className={detailPageStyles.panelTitle}>Preview</h2>
           <p className={detailPageStyles.panelSubtitle}>
-            How the shell looks with this project&apos;s name and the list pages the web repo has today. Rendered from
-            the template&apos;s preview page; the same screenshot goes in the layout PR.
+            How the shell looks with this project&apos;s name and the list pages the web repo has today. The same
+            screenshot goes in the layout PR.
           </p>
         </div>
         <button
@@ -46,35 +49,27 @@ export const Screenshot = ({ proposalId }: ScreenshotProps) => {
         </button>
       </div>
       {error ? <p className={styles.error}>{error}</p> : null}
-      <div className={styles.body}>
-        {screenshot?.png_base64 ? (
-          <figure className={styles.figure}>
-            {/* eslint-disable-next-line @next/next/no-img-element -- a data URL, nothing for next/image to optimize */}
-            <img
-              src={`data:image/png;base64,${screenshot.png_base64}`}
-              width={screenshot.width}
-              height={screenshot.height}
-              alt="Generated app layout: sidebar, breadcrumb header and content area"
-              className={`${styles.image} ${isLoading ? 'opacity-60' : ''}`}
-            />
-            <figcaption className={styles.caption}>
-              {screenshot.repo_full_name} @ {screenshot.base_branch} · template {screenshot.template.repo}@
-              {screenshot.template.sha.slice(0, 7)}
-            </figcaption>
-          </figure>
-        ) : (
-          <div className={styles.placeholder}>{isLoading ? 'Rendering screenshot…' : error ? 'No screenshot' : ''}</div>
-        )}
-      </div>
+      <figure className={styles.figure}>
+        {/* eslint-disable-next-line @next/next/no-img-element -- a data URL, nothing for next/image to optimize */}
+        <img
+          src={`data:image/png;base64,${screenshot.png_base64}`}
+          width={screenshot.width}
+          height={screenshot.height}
+          alt="Generated app layout: sidebar, breadcrumb header and content area"
+          className={`${styles.image} ${isLoading ? 'opacity-60' : ''}`}
+        />
+        <figcaption className={styles.caption}>
+          {screenshot.repo_full_name} @ {screenshot.base_branch} · template {screenshot.template.repo}@
+          {screenshot.template.sha.slice(0, 7)}
+        </figcaption>
+      </figure>
     </section>
   );
 };
 
 const styles = {
-  body: `px-4 py-3`,
-  figure: `flex flex-col gap-2`,
+  figure: `px-4 py-3 flex flex-col gap-2`,
   image: `w-full h-auto rounded border border-gray-300 shadow-sm transition-opacity`,
   caption: `text-[11px] text-gray-500 font-mono`,
-  placeholder: `aspect-[1280/760] w-full rounded border border-dashed border-gray-300 bg-gray-50 flex items-center justify-center text-xs text-gray-500`,
   error: `mx-4 mt-3 text-xs text-red-700 bg-red-50 border border-red-200 rounded px-3 py-2 whitespace-pre-wrap`,
 };
