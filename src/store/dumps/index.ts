@@ -14,6 +14,7 @@ export {
   DataModelDeliveryPreviewsActions,
   deliveryPreviewKey,
 } from './data-model-delivery-previews';
+export { dataModelDeliveryScreenshotsReducer, DataModelDeliveryScreenshotsActions } from './data-model-delivery-screenshots';
 export {
   dataModelProposalExchangesReducer,
   DataModelProposalExchangesActions,

@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from '@/store';
 import { getDataModelProposalsThunk } from '@/store/thunks/data-model-proposals';
 import { Deliver } from '../data-model/proposal/deliver';
 import { DeliveryAiCalls } from '../delivery-ai-calls';
+import { Screenshot } from './screenshot';
 
 const SHELL_PARTS = [
   { name: 'AppLayout', detail: 'src/app/(app)/layout.tsx wraps every app screen once' },
@@ -94,6 +95,7 @@ export const Layout = () => {
           </table>
         </div>
       </section>
+      <Screenshot proposalId={approved.id} />
       <Deliver proposalId={approved.id} kind="layout" />
       <DeliveryAiCalls kind="layout" area="Layout" />
     </div>
