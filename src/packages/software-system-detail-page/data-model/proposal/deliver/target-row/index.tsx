@@ -98,7 +98,7 @@ export const TargetRow = ({ target, proposalId, kind }: TargetRowProps) => {
         onSelect: () => dispatch(AgentRunsBuilderActions.openUpdatePr(delivery.id)),
       });
     }
-    if (delivery?.status !== 'merged' || kind === 'layout') {
+    if (delivery?.status !== 'merged' || kind === 'layout' || kind === 'list') {
       actions.push({
         key: 'deliver',
         label: deliverLabel,

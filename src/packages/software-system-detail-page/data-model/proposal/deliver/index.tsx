@@ -26,6 +26,11 @@ const COPY: Record<DataModelDeliveryKind, { title: string; subtitle: string }> =
     subtitle:
       'Opens one pull request per repo with the code that reads and writes these tables: storage CRUD functions + invoke registry; API express invoke wrappers, routers, handlers and process functions under /api/data/{table}; web src/api, dumps and thunks plus the /api/data proxy. Each repo needs its data model PR merged first. Repos already merged for this version are skipped.',
   },
+  list: {
+    title: 'List pages (web)',
+    subtitle:
+      'Opens one pull request on the web repo with a list page per table (join tables skipped): the route, a table with sortable headers, live search, enum and yes/no filters, the filters slice and list builder in Redux, and a sidebar link for each page. Needs the API and Layout PRs merged first. Files are only added when missing. Deliver again after adding tables to get their pages.',
+  },
   layout: {
     title: 'App layout (web)',
     subtitle:
@@ -61,8 +66,9 @@ export const Deliver = ({ proposalId, kind }: DeliverProps) => {
     void dispatch(getTemplateHeadsThunk());
   }, [dispatch, softwareSystemId]);
 
-  // A merged layout can be delivered again (new tables or pages since); other kinds are done once merged.
-  const deliverable = targets.filter((target) => target.repo && (kind === 'layout' || target.delivery?.status !== 'merged'));
+  // A merged layout or list-pages PR can be delivered again (new tables or pages since); other kinds are done once merged.
+  const redeliverable = kind === 'layout' || kind === 'list';
+  const deliverable = targets.filter((target) => target.repo && (redeliverable || target.delivery?.status !== 'merged'));
   const allMerged = targets.some((target) => target.repo) && targets.every((target) => !target.repo || target.delivery?.status === 'merged');
 
   return (
@@ -94,7 +100,7 @@ export const Deliver = ({ proposalId, kind }: DeliverProps) => {
                 : 'Opening PRs…'
               : deliverable.length === 0 && targets.some((target) => target.delivery?.status === 'merged')
                 ? 'All merged'
-                : kind === 'layout' && allMerged
+                : redeliverable && allMerged
                   ? 'Deliver again'
                   : autoMerge
                   ? 'Open and merge all'
