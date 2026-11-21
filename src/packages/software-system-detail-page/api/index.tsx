@@ -5,7 +5,7 @@ import { detailPageStyles } from '@/components/detail-page-styles';
 import { useAppDispatch, useAppSelector } from '@/store';
 import { getDataModelProposalsThunk } from '@/store/thunks/data-model-proposals';
 import { Deliver } from '../data-model/proposal/deliver';
-import { ApiAiCalls } from './ai-calls';
+import { DeliveryAiCalls } from '../delivery-ai-calls';
 
 /**
  * API tab: the data-access layer for the approved data model (standard CRUD per table),
@@ -68,7 +68,7 @@ export const Api = () => {
         </ul>
       </section>
       <Deliver proposalId={approved.id} kind="crud" />
-      <ApiAiCalls />
+      <DeliveryAiCalls kind="crud" area="API" />
     </div>
   );
 };

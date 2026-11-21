@@ -26,13 +26,18 @@ const COPY: Record<DataModelDeliveryKind, { title: string; subtitle: string }> =
     subtitle:
       'Opens one pull request per repo with the code that reads and writes these tables: storage CRUD functions + invoke registry; API express invoke wrappers, routers, handlers and process functions under /api/data/{table}; web src/api, dumps and thunks plus the /api/data proxy. Each repo needs its data model PR merged first. Repos already merged for this version are skipped.',
   },
+  layout: {
+    title: 'App layout (web)',
+    subtitle:
+      'Opens one pull request on the web repo with the app shell: AppLayout in the (app) route group, the sidebar, the breadcrumb header and Redux trail, route constants for every table, and sidebar links for list pages that already exist. Shell files are only added when missing. Deliver again after adding pages: it adds their links, and does nothing when nothing changed.',
+  },
 };
 
 type DeliverProps = { proposalId: string; kind: DataModelDeliveryKind };
 
 /**
  * Approved version only: one pull request per repo for one kind of generated code
- * (model files or the CRUD layer), rendered by code from the approved tables.
+ * (model files, the CRUD layer or the web app layout), rendered by code from the approved tables.
  */
 export const Deliver = ({ proposalId, kind }: DeliverProps) => {
   const dispatch = useAppDispatch();
@@ -56,7 +61,9 @@ export const Deliver = ({ proposalId, kind }: DeliverProps) => {
     void dispatch(getTemplateHeadsThunk());
   }, [dispatch, softwareSystemId]);
 
-  const deliverable = targets.filter((target) => target.repo && target.delivery?.status !== 'merged');
+  // A merged layout can be delivered again (new tables or pages since); other kinds are done once merged.
+  const deliverable = targets.filter((target) => target.repo && (kind === 'layout' || target.delivery?.status !== 'merged'));
+  const allMerged = targets.some((target) => target.repo) && targets.every((target) => !target.repo || target.delivery?.status === 'merged');
 
   return (
     <section className={detailPageStyles.panel}>
@@ -87,7 +94,9 @@ export const Deliver = ({ proposalId, kind }: DeliverProps) => {
                 : 'Opening PRs…'
               : deliverable.length === 0 && targets.some((target) => target.delivery?.status === 'merged')
                 ? 'All merged'
-                : autoMerge
+                : kind === 'layout' && allMerged
+                  ? 'Deliver again'
+                  : autoMerge
                   ? 'Open and merge all'
                   : 'Open all PRs'}
           </button>

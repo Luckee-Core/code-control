@@ -137,7 +137,7 @@ export const TargetRow = ({ target, proposalId, kind }: TargetRowProps) => {
               Update PR
             </button>
           ) : null}
-          {delivery?.status !== 'merged' ? (
+          {delivery?.status !== 'merged' || kind === 'layout' ? (
             <button
               type="button"
               onClick={() => void dispatch(deliverDataModelThunk(proposalId, kind, role))}
@@ -147,7 +147,9 @@ export const TargetRow = ({ target, proposalId, kind }: TargetRowProps) => {
             >
               {deliveringRole === role
                 ? 'Working…'
-                : delivery?.pr_number
+                : delivery?.status === 'merged'
+                  ? 'Deliver again'
+                  : delivery?.pr_number
                   ? autoMerge
                     ? 'Re-render and merge'
                     : templatesBehind
