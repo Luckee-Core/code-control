@@ -19,7 +19,7 @@ export const deliverDataModelThunk =
     const roles: DeliveryRole[] = role
       ? [role]
       : targets
-          .filter((target) => target.repo && (kind === 'layout' || kind === 'list' || kind === 'detail' || target.delivery?.status !== 'merged'))
+          .filter((target) => target.repo && (kind === 'layout' || kind === 'list' || kind === 'detail' || kind === 'dashboard' || target.delivery?.status !== 'merged'))
           .map((target) => target.role);
     if (roles.length === 0) return 200;
     dispatch(DataModelDeliveryBuilderActions.setDelivering({ role: role ?? 'all' }));

@@ -36,6 +36,11 @@ const COPY: Record<DataModelDeliveryKind, { title: string; subtitle: string }> =
     subtitle:
       'Opens one pull request on the web repo with a list page per table (join tables skipped): the route, a table with sortable headers, live search, enum and yes/no filters, the filters slice and list builder in Redux, and a sidebar link for each page. Needs the API and Layout PRs merged first. Files are only added when missing. Deliver again after adding tables to get their pages.',
   },
+  dashboard: {
+    title: 'Dashboard (web)',
+    subtitle:
+      'Opens one pull request on the web repo with the home screen at /dashboard: one summary card per table (join tables skipped) with its row count, active vs archived and counts per value of the first enum column, plus the most recently updated rows across tables. Adds Dashboard as the first sidebar link and redirects / to it unless the root page was customized. Needs the API and Layout PRs merged first. Cards and recent activity are regenerated on every delivery; deliver again after adding list or detail pages to link them.',
+  },
   layout: {
     title: 'App layout (web)',
     subtitle:
@@ -72,7 +77,7 @@ export const Deliver = ({ proposalId, kind }: DeliverProps) => {
   }, [dispatch, softwareSystemId]);
 
   // A merged layout or list-pages PR can be delivered again (new tables or pages since); other kinds are done once merged.
-  const redeliverable = kind === 'layout' || kind === 'list' || kind === 'detail';
+  const redeliverable = kind === 'layout' || kind === 'list' || kind === 'detail' || kind === 'dashboard';
   const deliverable = targets.filter((target) => target.repo && (redeliverable || target.delivery?.status !== 'merged'));
   const allMerged = targets.some((target) => target.repo) && targets.every((target) => !target.repo || target.delivery?.status === 'merged');
 
