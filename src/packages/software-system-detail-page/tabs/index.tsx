@@ -4,12 +4,13 @@ import { useState } from 'react';
 import { AiCosts } from '../ai-costs';
 import { Api } from '../api';
 import { DataModel } from '../data-model';
+import { Layout } from '../layout';
 import { Repositories } from '../repositories';
 import { TicketBuilds } from '../ticket-builds';
 
-type SoftwareSystemTab = 'Repositories' | 'Data model' | 'API' | 'Ticket builds' | 'AI costs';
+type SoftwareSystemTab = 'Repositories' | 'Data model' | 'API' | 'Layout' | 'Ticket builds' | 'AI costs';
 
-const SOFTWARE_SYSTEM_TABS: SoftwareSystemTab[] = ['Repositories', 'Data model', 'API', 'Ticket builds', 'AI costs'];
+const SOFTWARE_SYSTEM_TABS: SoftwareSystemTab[] = ['Repositories', 'Data model', 'API', 'Layout', 'Ticket builds', 'AI costs'];
 
 export const Tabs = () => {
   const [activeTab, setActiveTab] = useState<SoftwareSystemTab>('Repositories');
@@ -36,6 +37,7 @@ export const Tabs = () => {
         {activeTab === 'Repositories' && <Repositories />}
         {activeTab === 'Data model' && <DataModel />}
         {activeTab === 'API' && <Api />}
+        {activeTab === 'Layout' && <Layout />}
         {activeTab === 'Ticket builds' && <TicketBuilds />}
         {activeTab === 'AI costs' && <AiCosts />}
       </div>

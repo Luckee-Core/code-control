@@ -4,6 +4,7 @@ import { useEffect, useMemo } from 'react';
 import { AiCallsTable } from '@/components/ai-calls-table';
 import { detailPageStyles } from '@/components/detail-page-styles';
 import type { AiCostCall, AiCostSource } from '@/model/ai-cost-call';
+import type { DataModelDeliveryKind } from '@/model/data-model-delivery';
 import { useAppDispatch, useAppSelector } from '@/store';
 import { getSoftwareSystemAiCallsThunk } from '@/store/thunks/software-systems';
 
@@ -15,11 +16,17 @@ const AGENT_LABEL: Partial<Record<AiCostSource, string>> = {
   template_agent: 'Template agent',
 };
 
+type DeliveryAiCallsProps = {
+  kind: DataModelDeliveryKind;
+  /** Tab name used in the copy, e.g. "API" or "Layout". */
+  area: string;
+};
+
 /**
- * AI calls for the API tab: the agent runs on its data-access (crud) pull requests — PR agent
- * edits plus the convention and template runs they led to — with estimated cost and a total.
+ * AI calls for a delivery tab: the agent runs on that kind's pull requests — PR agent edits plus
+ * the convention and template runs they led to — with estimated cost and a total.
  */
-export const ApiAiCalls = () => {
+export const DeliveryAiCalls = ({ kind, area }: DeliveryAiCallsProps) => {
   const dispatch = useAppDispatch();
   const softwareSystemId = useAppSelector((state) => state.currentSoftwareSystem.id);
   const loaded = useAppSelector((state) => (softwareSystemId ? state.softwareSystemAiCalls[softwareSystemId] : undefined));
@@ -31,7 +38,7 @@ export const ApiAiCalls = () => {
   const rows = useMemo(
     () =>
       (loaded ?? EMPTY)
-        .filter((call) => call.delivery_kind === 'crud')
+        .filter((call) => call.delivery_kind === kind)
         .map((call) => ({
           id: `${call.source}:${call.id}`,
           step: `${AGENT_LABEL[call.source] ?? call.source}: ${call.purpose}`,
@@ -45,7 +52,7 @@ export const ApiAiCalls = () => {
           output_tokens: call.output_tokens,
           duration_ms: call.duration_ms,
         })),
-    [loaded],
+    [loaded, kind],
   );
 
   if (!loaded) return null;
@@ -55,14 +62,14 @@ export const ApiAiCalls = () => {
         <div className={detailPageStyles.panelHeader}>
           <h2 className={detailPageStyles.panelTitle}>AI calls</h2>
         </div>
-        <p className={styles.empty}>No AI calls for the API pull requests yet.</p>
+        <p className={styles.empty}>No AI calls for the {area} pull requests yet.</p>
       </section>
     );
   }
   return (
     <AiCallsTable
       rows={rows}
-      subtitle="Agent runs on the API pull requests (PR agent edits and the convention and template runs they led to), newest first. Costs are estimated from token counts and Anthropic list prices (not an invoice)."
+      subtitle={`Agent runs on the ${area} pull requests (PR agent edits and the convention and template runs they led to), newest first. Costs are estimated from token counts and Anthropic list prices (not an invoice).`}
     />
   );
 };
