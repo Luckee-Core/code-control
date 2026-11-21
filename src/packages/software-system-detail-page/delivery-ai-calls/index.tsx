@@ -62,7 +62,11 @@ export const DeliveryAiCalls = ({ kind, area }: DeliveryAiCallsProps) => {
         <div className={detailPageStyles.panelHeader}>
           <h2 className={detailPageStyles.panelTitle}>AI calls</h2>
         </div>
-        <p className={styles.empty}>No AI calls for the {area} pull requests yet.</p>
+        <p className={styles.empty}>
+          No AI calls for the {area} pull requests. These PRs are rendered from the templates by code, so opening or merging
+          one costs nothing. Calls show up here when you use Update PR (the PR agent) on one, along with the convention and
+          template runs that leads to.
+        </p>
       </section>
     );
   }
