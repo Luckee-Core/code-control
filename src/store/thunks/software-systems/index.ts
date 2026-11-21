@@ -5,3 +5,4 @@ export { getSoftwareSystemsByCustomerIdThunk } from './get-projects-by-customer-
 export { createSoftwareSystemThunk } from './create-project-thunk';
 export { updateSoftwareSystemThunk } from './update-project-thunk';
 export { deleteSoftwareSystemThunk } from './delete-project-thunk';
+export { getSoftwareSystemAiCallsThunk } from './get-software-system-ai-calls-thunk';

@@ -1,7 +1,7 @@
 /**
  * Client-side $/1M token estimates for the Anthropic Messages API (womenheart-admin-panel / luckee-web pattern).
  * Standard-tier list prices as of 2026-11. Update when Anthropic publishes new prices.
- * Used only for the AI calls cost table, not billing. Thinking tokens are billed as output.
+ * Used only for the AI calls cost tables (data-model proposals, agent runs), not billing. Thinking tokens are billed as output.
  */
 export type AnthropicModelPricing = {
   input_cost_per_million_usd: number;
