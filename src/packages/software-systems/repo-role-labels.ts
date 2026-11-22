@@ -8,6 +8,7 @@ export const REPO_ROLE_LABELS: Record<string, string> = {
   console: 'Console',
   mobile: 'Mobile',
   python: 'Python',
+  gateway: 'Main gateway',
 };
 
 export const repoRoleLabel = (key: string): string => REPO_ROLE_LABELS[key] ?? key;

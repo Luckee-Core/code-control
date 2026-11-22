@@ -18,6 +18,9 @@ type DataModelDeliveryBuilderState = {
   /** Template preview screenshot (Layout tab). */
   screenshotStatus: Status;
   screenshotError: string | null;
+  /** Dispatcher tab plan load. */
+  planStatus: Status;
+  planError: string | null;
 };
 
 const initialState: DataModelDeliveryBuilderState = {
@@ -32,6 +35,8 @@ const initialState: DataModelDeliveryBuilderState = {
   selectedPath: '',
   screenshotStatus: 'idle',
   screenshotError: null,
+  planStatus: 'idle',
+  planError: null,
 };
 
 const dataModelDeliveryBuilderSlice = createSlice({
@@ -41,6 +46,10 @@ const dataModelDeliveryBuilderSlice = createSlice({
     setLoad: (state, action: PayloadAction<{ status: Status; error?: string | null }>) => {
       state.loadStatus = action.payload.status;
       state.loadError = action.payload.error ?? null;
+    },
+    setPlanStatus: (state, action: PayloadAction<{ status: Status; error?: string | null }>) => {
+      state.planStatus = action.payload.status;
+      state.planError = action.payload.error ?? null;
     },
     setDelivering: (state, action: PayloadAction<{ role: string; error?: string | null }>) => {
       state.deliveringRole = action.payload.role;

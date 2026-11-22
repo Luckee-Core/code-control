@@ -6,14 +6,36 @@ import { Api } from '../api';
 import { Dashboard } from '../dashboard';
 import { DataModel } from '../data-model';
 import { DetailPages } from '../detail-pages';
+import { Dispatcher } from '../dispatcher';
 import { Layout } from '../layout';
 import { Repositories } from '../repositories';
 import { Tables } from '../tables';
 import { TicketBuilds } from '../ticket-builds';
 
-type SoftwareSystemTab = 'Repositories' | 'Data model' | 'API' | 'Layout' | 'Tables' | 'Detail pages' | 'Dashboard' | 'Ticket builds' | 'AI costs';
+type SoftwareSystemTab =
+  | 'Repositories'
+  | 'Data model'
+  | 'API'
+  | 'Layout'
+  | 'Tables'
+  | 'Detail pages'
+  | 'Dashboard'
+  | 'Dispatcher'
+  | 'Ticket builds'
+  | 'AI costs';
 
-const SOFTWARE_SYSTEM_TABS: SoftwareSystemTab[] = ['Repositories', 'Data model', 'API', 'Layout', 'Tables', 'Detail pages', 'Dashboard', 'Ticket builds', 'AI costs'];
+const SOFTWARE_SYSTEM_TABS: SoftwareSystemTab[] = [
+  'Repositories',
+  'Data model',
+  'API',
+  'Layout',
+  'Tables',
+  'Detail pages',
+  'Dashboard',
+  'Dispatcher',
+  'Ticket builds',
+  'AI costs',
+];
 
 export const Tabs = () => {
   const [activeTab, setActiveTab] = useState<SoftwareSystemTab>('Repositories');
@@ -44,6 +66,7 @@ export const Tabs = () => {
         {activeTab === 'Tables' && <Tables />}
         {activeTab === 'Detail pages' && <DetailPages />}
         {activeTab === 'Dashboard' && <Dashboard />}
+        {activeTab === 'Dispatcher' && <Dispatcher />}
         {activeTab === 'Ticket builds' && <TicketBuilds />}
         {activeTab === 'AI costs' && <AiCosts />}
       </div>

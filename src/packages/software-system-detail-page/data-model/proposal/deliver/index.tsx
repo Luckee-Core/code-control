@@ -41,6 +41,11 @@ const COPY: Record<DataModelDeliveryKind, { title: string; subtitle: string }> =
     subtitle:
       'Opens one pull request on the web repo with the home screen at /dashboard: one summary card per table (join tables skipped) with its row count, active vs archived and counts per value of the first enum column, plus the most recently updated rows across tables. Adds Dashboard as the first sidebar link and redirects / to it unless the root page was customized. Needs the API and Layout PRs merged first. Cards and recent activity are regenerated on every delivery; deliver again after adding list or detail pages to link them.',
   },
+  dispatcher: {
+    title: 'Project dispatcher',
+    subtitle:
+      'Opens four pull requests that put this project behind the studio\u2019s main gateway: storage gets the exposed-endpoint seed (health, meta, invoke); the dispatcher repo becomes the loopback project dispatcher; the dispatcher web repo becomes its operator page; the main gateway repo gets the registration and session-table migrations. Storage needs its data model PR merged first. Ports are assigned on the first delivery and kept.',
+  },
   layout: {
     title: 'App layout (web)',
     subtitle:

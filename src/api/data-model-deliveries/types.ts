@@ -1,7 +1,7 @@
 import type { DataModelDelivery } from '@/model/data-model-delivery';
 import type { SoftwareSystemRepo } from '@/model/software-system-repo';
 
-export type DeliveryRole = 'storage' | 'express' | 'web';
+export type DeliveryRole = 'storage' | 'express' | 'web' | 'dispatcher' | 'dispatcher-web' | 'gateway';
 
 /** One file Code Control writes into a repo. */
 export type RenderedFile = {
