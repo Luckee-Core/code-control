@@ -4,19 +4,27 @@ import { useEffect, useRef } from 'react';
 import { detailPageStyles } from '@/components/detail-page-styles';
 import { useAppDispatch, useAppSelector } from '@/store';
 import { deliveryPreviewKey } from '@/store/dumps';
+import type { DeliveryRole } from '@/api/data-model-deliveries';
 import type { DataModelDeliveryKind } from '@/model/data-model-delivery';
 import { getDeliveryScreenshotThunk } from '@/store/thunks/data-model-deliveries';
 
-type DeliveryScreenshotProps = { proposalId: string; kind: DataModelDeliveryKind; subtitle: string; alt: string };
+type DeliveryScreenshotProps = {
+  proposalId: string;
+  kind: DataModelDeliveryKind;
+  subtitle: string;
+  alt: string;
+  /** Repo role whose template preview to show (default web). */
+  role?: DeliveryRole;
+};
 
 /**
  * Screenshot of what a web delivery generates: the template's preview page for `kind`, rendered
  * with this project's data and its web repo as it is today. The same image goes in the PR.
  * Hidden until there is an image.
  */
-export const DeliveryScreenshot = ({ proposalId, kind, subtitle, alt }: DeliveryScreenshotProps) => {
+export const DeliveryScreenshot = ({ proposalId, kind, subtitle, alt, role = 'web' }: DeliveryScreenshotProps) => {
   const dispatch = useAppDispatch();
-  const key = deliveryPreviewKey(proposalId, kind, 'web');
+  const key = deliveryPreviewKey(proposalId, kind, role);
   const screenshot = useAppSelector((state) => state.dataModelDeliveryScreenshots[key]);
   const status = useAppSelector((state) => state.dataModelDeliveryBuilder.screenshotStatus);
   const error = useAppSelector((state) => state.dataModelDeliveryBuilder.screenshotError);
@@ -26,8 +34,8 @@ export const DeliveryScreenshot = ({ proposalId, kind, subtitle, alt }: Delivery
   useEffect(() => {
     if (!proposalId || screenshot || triedKey.current === key) return;
     triedKey.current = key;
-    void dispatch(getDeliveryScreenshotThunk(proposalId, kind, 'web'));
-  }, [dispatch, proposalId, kind, key, screenshot]);
+    void dispatch(getDeliveryScreenshotThunk(proposalId, kind, role));
+  }, [dispatch, proposalId, kind, role, key, screenshot]);
 
   const isLoading = status === 'loading';
 
@@ -43,7 +51,7 @@ export const DeliveryScreenshot = ({ proposalId, kind, subtitle, alt }: Delivery
         </div>
         <button
           type="button"
-          onClick={() => void dispatch(getDeliveryScreenshotThunk(proposalId, kind, 'web'))}
+          onClick={() => void dispatch(getDeliveryScreenshotThunk(proposalId, kind, role))}
           disabled={isLoading}
           className={`${detailPageStyles.secondaryButton} disabled:opacity-50 disabled:cursor-not-allowed`}
         >

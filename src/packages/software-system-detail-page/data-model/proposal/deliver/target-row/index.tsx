@@ -16,8 +16,16 @@ import {
   refreshDataModelDeliveryThunk,
 } from '@/store/thunks/data-model-deliveries';
 import { ActionsMenu, type TargetAction } from './actions-menu';
+import type { DeliveryRole } from '@/api/data-model-deliveries';
 
-const ROLE_LABEL = { storage: 'Storage', express: 'API express', web: 'Web' } as const;
+const ROLE_LABEL: Record<DeliveryRole, string> = {
+  storage: 'Storage',
+  express: 'API express',
+  web: 'Web',
+  dispatcher: 'Dispatcher express',
+  'dispatcher-web': 'Dispatcher web',
+  gateway: 'Main gateway',
+};
 
 const BADGE = 'inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wide border';
 const STATUS_BADGE: Record<DataModelDeliveryStatus, string> = {
@@ -156,7 +164,11 @@ export const TargetRow = ({ target, proposalId, kind }: TargetRowProps) => {
       <td className={styles.cell}>
         <div className={styles.stack}>
           {!repo ? (
-            <span className={styles.muted}>Create it (or set a repo&apos;s role) in the Repositories tab.</span>
+            <span className={styles.muted}>
+              {role === 'gateway'
+                ? 'Set MAIN_GATEWAY_REPO (owner/repo of on-device-dispatcher-express-server) in the Code Control express .env.'
+                : 'Create it (or set a repo\u2019s role) in the Repositories tab.'}
+            </span>
           ) : delivery?.pr_url ? (
             <>
               <a href={delivery.pr_url} target="_blank" rel="noopener noreferrer" className={styles.pr}>
