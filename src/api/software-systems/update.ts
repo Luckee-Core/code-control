@@ -5,6 +5,7 @@ import type { SoftwareSystem } from '@/model/software-system';
 export type UpdateProjectInput = {
   name?: string;
   description?: string | null;
+  setup_preset_key?: string | null;
 };
 
 export const updateSoftwareSystem = async (

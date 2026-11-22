@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '@/store';
 import { WorkspaceBuilderActions } from '@/store/builders';
 import { CurrentSoftwareSystemActions } from '@/store/current';
-import { createSoftwareSystemThunk } from '@/store/thunks/software-systems';
+import { createSoftwareSystemThunk, updateSoftwareSystemThunk } from '@/store/thunks/software-systems';
 import { SOFTWARE_SYSTEM_DETAIL_PAGE_PATH } from '@/config/routes';
 import { CustomerInput } from './inputs/customer';
 import { NameInput } from './inputs/name';
@@ -16,14 +16,24 @@ export const FormModal = () => {
   const dispatch = useAppDispatch();
   const workspaceBuilder = useAppSelector((state) => state.workspaceBuilder);
   const current = useAppSelector((state) => state.currentSoftwareSystem);
+  const softwareSystems = useAppSelector((state) => state.softwareSystems);
+  const editingId = workspaceBuilder.editingSoftwareSystemId;
+  const saved = editingId ? softwareSystems[editingId] : undefined;
 
   const handleClose = () => {
     dispatch(WorkspaceBuilderActions.closeSoftwareSystemModal());
-    dispatch(CurrentSoftwareSystemActions.reset());
+    // Editing: put back the saved row so unsaved changes don't stick on the detail page.
+    if (saved) dispatch(CurrentSoftwareSystemActions.setSoftwareSystem(saved));
+    else if (!editingId) dispatch(CurrentSoftwareSystemActions.reset());
   };
 
   const handleSave = async () => {
     if (!current.name.trim() || !current.customer_id) return;
+    if (editingId) {
+      const result = await dispatch(updateSoftwareSystemThunk());
+      if (result.status !== 200) window.alert(result.error ?? 'Failed to save');
+      return;
+    }
     const result = await dispatch(createSoftwareSystemThunk());
     if (result === 200) {
       router.push(SOFTWARE_SYSTEM_DETAIL_PAGE_PATH);
@@ -36,7 +46,7 @@ export const FormModal = () => {
     <div className={styles.overlay} onClick={handleClose}>
       <div className={styles.modal} onClick={(event) => event.stopPropagation()}>
         <div className={styles.header}>
-          <h2 className={styles.title}>Create SoftwareSystem</h2>
+          <h2 className={styles.title}>{editingId ? 'Edit software system' : 'Create SoftwareSystem'}</h2>
           <button type="button" onClick={handleClose} className={styles.closeButton}>
             ×
           </button>
@@ -57,7 +67,7 @@ export const FormModal = () => {
             className={styles.saveButton}
             disabled={!current.name.trim() || !current.customer_id}
           >
-            Create
+            {editingId ? 'Save' : 'Create'}
           </button>
         </div>
       </div>
