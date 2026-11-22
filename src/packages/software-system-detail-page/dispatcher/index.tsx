@@ -133,12 +133,15 @@ export const Dispatcher = () => {
               <div className={styles.fact}>
                 <dt className={detailPageStyles.fieldLabel}>Main gateway secrets</dt>
                 <dd className={styles.mono}>
-                  {plan.secrets.main_gate}, {plan.secrets.main_admin}
+                  {plan.secrets.main_gate}, {plan.secrets.main_admin}{' '}
+                  <span className={styles.muted}>(generated at runtime)</span>
                 </dd>
               </div>
               <div className={styles.fact}>
                 <dt className={detailPageStyles.fieldLabel}>Storage secret (dispatcher)</dt>
-                <dd className={styles.mono}>{plan.secrets.storage}</dd>
+                <dd className={styles.mono}>
+                  {plan.secrets.storage} <span className={styles.muted}>(generated at runtime)</span>
+                </dd>
               </div>
               <div className={styles.fact}>
                 <dt className={detailPageStyles.fieldLabel}>Session tables</dt>
