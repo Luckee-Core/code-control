@@ -11,6 +11,7 @@ export const TypeInput = () => {
   const dispatch = useAppDispatch();
   const presetsByKey = useAppSelector((state) => state.setupPresets);
   const selectedKey = useAppSelector((state) => state.currentSoftwareSystem.setup_preset_key ?? 'none');
+  const isEditing = useAppSelector((state) => Boolean(state.workspaceBuilder.editingSoftwareSystemId));
 
   useEffect(() => {
     void dispatch(loadSetupPresetsThunk());
@@ -45,7 +46,8 @@ export const TypeInput = () => {
           {selected.role_keys.length > 0 ? (
             <>
               {' '}
-              Creates {selected.role_keys.length} GitHub repos: {selected.role_keys.map(repoRoleLabel).join(', ')}.
+              {isEditing ? 'Lists' : 'Creates'} {selected.role_keys.length} GitHub repos: {selected.role_keys.map(repoRoleLabel).join(', ')}.
+              {isEditing ? ' Saving does not create repos; use Create missing repos on the Repositories tab.' : null}
             </>
           ) : null}
         </p>

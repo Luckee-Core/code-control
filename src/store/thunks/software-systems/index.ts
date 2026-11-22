@@ -4,5 +4,6 @@ export { setCurrentSoftwareSystemThunk } from './set-current-project-thunk';
 export { getSoftwareSystemsByCustomerIdThunk } from './get-projects-by-customer-id-thunk';
 export { createSoftwareSystemThunk } from './create-project-thunk';
 export { updateSoftwareSystemThunk } from './update-project-thunk';
+export { openEditSoftwareSystemThunk } from './open-edit-software-system-thunk';
 export { deleteSoftwareSystemThunk } from './delete-project-thunk';
 export { getSoftwareSystemAiCallsThunk } from './get-software-system-ai-calls-thunk';

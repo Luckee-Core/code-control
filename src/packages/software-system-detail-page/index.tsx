@@ -11,6 +11,7 @@ import {
 } from '@/store/thunks/software-system-repos';
 import { Overview } from './overview';
 import { Tabs } from './tabs';
+import { FormModal } from '../software-systems/form-modal';
 
 export const ProjectDetailPage = () => {
   const dispatch = useAppDispatch();
@@ -46,6 +47,7 @@ export const ProjectDetailPage = () => {
     <div className={detailPageStyles.page}>
       <Overview />
       <Tabs />
+      <FormModal />
     </div>
   );
 };
