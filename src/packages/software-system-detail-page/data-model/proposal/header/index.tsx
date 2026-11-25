@@ -8,6 +8,7 @@ import {
 } from '@/store/thunks/data-model-proposals';
 import { formatDate } from '@/utils/date-time';
 import { STATUS_BADGE, STATUS_LABEL } from '../../status-badge';
+import { downloadProposalJson } from './download-proposal-json';
 
 export const Header = () => {
   const dispatch = useAppDispatch();
@@ -15,6 +16,7 @@ export const Header = () => {
   const proposal = useAppSelector((state) => (selectedId ? state.dataModelProposals[selectedId] : undefined));
   const submitStatus = useAppSelector((state) => state.dataModelBuilder.submitStatus);
   const submitError = useAppSelector((state) => state.dataModelBuilder.submitError);
+  const softwareSystemName = useAppSelector((state) => state.currentSoftwareSystem.name);
 
   if (!proposal) return null;
 
@@ -51,6 +53,15 @@ export const Header = () => {
           </p>
         </div>
         <div className={styles.actions}>
+          {proposal.proposal ? (
+            <button
+              type="button"
+              onClick={() => downloadProposalJson(proposal, softwareSystemName)}
+              className={detailPageStyles.secondaryButton}
+            >
+              Download JSON
+            </button>
+          ) : null}
           <button
             type="button"
             onClick={handleDelete}
