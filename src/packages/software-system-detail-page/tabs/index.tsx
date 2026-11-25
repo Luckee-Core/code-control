@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useAppSelector } from '@/store';
 import { AiCosts } from '../ai-costs';
 import { Api } from '../api';
 import { Dashboard } from '../dashboard';
@@ -39,13 +40,18 @@ const SOFTWARE_SYSTEM_TABS: SoftwareSystemTab[] = [
 
 export const Tabs = () => {
   const [activeTab, setActiveTab] = useState<SoftwareSystemTab>('Repositories');
+  const presetKey = useAppSelector((state) => state.currentSoftwareSystem.setup_preset_key);
+  const preset = useAppSelector((state) => (presetKey ? state.setupPresets[presetKey] : undefined));
+  // A project type that creates repos but no dispatcher (e.g. Supabase Customer) has no Dispatcher tab.
+  const hidesDispatcher = Boolean(preset && preset.role_keys.length > 0 && !preset.role_keys.includes('dispatcher'));
+  const tabs = hidesDispatcher ? SOFTWARE_SYSTEM_TABS.filter((tab) => tab !== 'Dispatcher') : SOFTWARE_SYSTEM_TABS;
 
   return (
     <>
       <div className={styles.tabsPanel}>
         <div className={styles.tabsRow}>
           <div className={styles.tabsContainer}>
-            {SOFTWARE_SYSTEM_TABS.map((tab) => (
+            {tabs.map((tab) => (
               <button
                 key={tab}
                 type="button"
@@ -66,7 +72,7 @@ export const Tabs = () => {
         {activeTab === 'Tables' && <Tables />}
         {activeTab === 'Detail pages' && <DetailPages />}
         {activeTab === 'Dashboard' && <Dashboard />}
-        {activeTab === 'Dispatcher' && <Dispatcher />}
+        {activeTab === 'Dispatcher' && !hidesDispatcher && <Dispatcher />}
         {activeTab === 'Ticket builds' && <TicketBuilds />}
         {activeTab === 'AI costs' && <AiCosts />}
       </div>
