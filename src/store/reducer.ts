@@ -28,6 +28,9 @@ import {
   conventionChangesReducer,
   softwareSystemAiCallsReducer,
   dispatcherPlansReducer,
+  systemBuildRunsReducer,
+  systemBuildRunStepsReducer,
+  systemBuildRunEventsReducer,
 } from './dumps';
 import {
   currentCustomerReducer,
@@ -48,6 +51,8 @@ import {
   dataModelDeliveryBuilderReducer,
   ticketBuildBuilderReducer,
   agentRunsBuilderReducer,
+  systemBuildRunBuilderReducer,
+  softwareSystemTabsBuilderReducer,
 } from './builders';
 
 export const rootReducer = combineReducers({
@@ -95,4 +100,9 @@ export const rootReducer = combineReducers({
   dispatcherPlans: dispatcherPlansReducer,
   currentAgentRun: currentAgentRunReducer,
   agentRunsBuilder: agentRunsBuilderReducer,
+  systemBuildRuns: systemBuildRunsReducer,
+  systemBuildRunSteps: systemBuildRunStepsReducer,
+  systemBuildRunEvents: systemBuildRunEventsReducer,
+  systemBuildRunBuilder: systemBuildRunBuilderReducer,
+  softwareSystemTabsBuilder: softwareSystemTabsBuilderReducer,
 });
