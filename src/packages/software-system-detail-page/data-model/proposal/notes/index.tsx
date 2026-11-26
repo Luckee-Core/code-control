@@ -67,7 +67,7 @@ export const Notes = () => {
                       ))}
                     </div>
                   ) : (
-                    <p className={styles.why}>Answer in the Revise box below.</p>
+                    <p className={styles.why}>Answer in the Revise box above.</p>
                   )}
                 </div>
               );

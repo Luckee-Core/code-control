@@ -33,6 +33,7 @@ export const Proposal = () => {
     <div className={styles.stack}>
       <Header />
       {proposal.status === 'approved' && proposal.proposal ? <Deliver proposalId={proposal.id} kind="model" /> : null}
+      {proposal.proposal && proposal.status !== 'running' ? <ReviseForm /> : null}
       {proposal.status === 'running' ? <RunningState /> : null}
       {proposal.status === 'failed' ? (
         <div className={styles.failed}>
@@ -53,7 +54,6 @@ export const Proposal = () => {
             ))}
           </div>
           <Notes />
-          <ReviseForm />
         </>
       ) : null}
       <AiCalls />
