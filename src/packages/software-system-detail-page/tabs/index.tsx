@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { useAppSelector } from '@/store';
+import { useAppDispatch, useAppSelector } from '@/store';
+import { SoftwareSystemTabsBuilderActions, type SoftwareSystemTab } from '@/store/builders';
 import { AiCosts } from '../ai-costs';
 import { Api } from '../api';
 import { Dashboard } from '../dashboard';
@@ -12,18 +12,6 @@ import { Layout } from '../layout';
 import { Repositories } from '../repositories';
 import { Tables } from '../tables';
 import { TicketBuilds } from '../ticket-builds';
-
-type SoftwareSystemTab =
-  | 'Repositories'
-  | 'Data model'
-  | 'API'
-  | 'Layout'
-  | 'Tables'
-  | 'Detail pages'
-  | 'Dashboard'
-  | 'Dispatcher'
-  | 'Ticket builds'
-  | 'AI costs';
 
 const SOFTWARE_SYSTEM_TABS: SoftwareSystemTab[] = [
   'Repositories',
@@ -39,7 +27,8 @@ const SOFTWARE_SYSTEM_TABS: SoftwareSystemTab[] = [
 ];
 
 export const Tabs = () => {
-  const [activeTab, setActiveTab] = useState<SoftwareSystemTab>('Repositories');
+  const dispatch = useAppDispatch();
+  const activeTab = useAppSelector((state) => state.softwareSystemTabsBuilder.activeTab);
   const presetKey = useAppSelector((state) => state.currentSoftwareSystem.setup_preset_key);
   const preset = useAppSelector((state) => (presetKey ? state.setupPresets[presetKey] : undefined));
   // A project type that creates repos but no dispatcher (e.g. Supabase Customer) has no Dispatcher tab.
@@ -55,7 +44,7 @@ export const Tabs = () => {
               <button
                 key={tab}
                 type="button"
-                onClick={() => setActiveTab(tab)}
+                onClick={() => dispatch(SoftwareSystemTabsBuilderActions.setActiveTab(tab))}
                 className={activeTab === tab ? styles.tabActive : styles.tab}
               >
                 {tab}

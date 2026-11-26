@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '@/store';
+import { SoftwareSystemTabsBuilderActions } from '@/store/builders';
 import { useBreadcrumbs } from '@/hooks';
 import { detailPageStyles } from '@/components/detail-page-styles';
 import { SOFTWARE_SYSTEMS_PATH } from '@/config/routes';
@@ -9,6 +10,7 @@ import {
   getReposBySoftwareSystemIdThunk,
   loadGithubOrgsThunk,
 } from '@/store/thunks/software-system-repos';
+import { BuildAll } from './build-all';
 import { Overview } from './overview';
 import { Tabs } from './tabs';
 import { FormModal } from '../software-systems/form-modal';
@@ -26,6 +28,7 @@ export const ProjectDetailPage = () => {
     if (!currentSoftwareSystem.id) {
       return;
     }
+    dispatch(SoftwareSystemTabsBuilderActions.reset());
     void dispatch(getReposBySoftwareSystemIdThunk());
     void dispatch(loadGithubOrgsThunk());
   }, [dispatch, currentSoftwareSystem.id]);
@@ -46,6 +49,7 @@ export const ProjectDetailPage = () => {
   return (
     <div className={detailPageStyles.page}>
       <Overview />
+      <BuildAll />
       <Tabs />
       <FormModal />
     </div>

@@ -32,6 +32,7 @@ ADRs keep implementation consistent by documenting:
 35. [035 – List and dashboard table filter bars](./035-list-table-filter-bars.md) — `listFilterBarStyles`.
 38. [038 – UI token appendix](./038-ui-token-appendix.md) — Shared style module index.
 39. [039 – Ticket builds UI](./039-ticket-builds.md) — start page from My Ops Tracker, build detail (review/edit plan, per-repo PRs), software system tab.
+40. [040 – Build all panel](./040-build-all.md) — Build all on the software system page: steps, PR links, log, continue/cancel; open tab in Redux.
 
 ### Product-specific
 
