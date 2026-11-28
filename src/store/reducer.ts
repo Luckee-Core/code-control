@@ -31,6 +31,7 @@ import {
   systemBuildRunsReducer,
   systemBuildRunStepsReducer,
   systemBuildRunEventsReducer,
+  recentSoftwareSystemOpensReducer,
 } from './dumps';
 import {
   currentCustomerReducer,
@@ -103,6 +104,7 @@ export const rootReducer = combineReducers({
   systemBuildRuns: systemBuildRunsReducer,
   systemBuildRunSteps: systemBuildRunStepsReducer,
   systemBuildRunEvents: systemBuildRunEventsReducer,
+  recentSoftwareSystemOpens: recentSoftwareSystemOpensReducer,
   systemBuildRunBuilder: systemBuildRunBuilderReducer,
   softwareSystemTabsBuilder: softwareSystemTabsBuilderReducer,
 });

@@ -36,3 +36,4 @@ export * from './agent-run';
 export * from './system-build-run';
 export * from './system-build-run-step';
 export * from './system-build-run-event';
+export * from './software-system-open';
