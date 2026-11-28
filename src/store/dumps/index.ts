@@ -36,3 +36,4 @@ export { dispatcherPlansReducer, DispatcherPlansActions } from './dispatcher-pla
 export { systemBuildRunsReducer, SystemBuildRunsActions } from './system-build-runs';
 export { systemBuildRunStepsReducer, SystemBuildRunStepsActions } from './system-build-run-steps';
 export { systemBuildRunEventsReducer, SystemBuildRunEventsActions } from './system-build-run-events';
+export { recentSoftwareSystemOpensReducer, RecentSoftwareSystemOpensActions } from './recent-software-system-opens';

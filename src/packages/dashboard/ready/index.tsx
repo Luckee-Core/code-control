@@ -5,6 +5,7 @@ import { useAppSelector } from '@/store';
 import { STUDIO_READY_LEAD } from '@/config/studio-setup-content';
 import { detailPageStyles } from '@/components/detail-page-styles';
 import { DashboardQuickLinks } from './quick-links';
+import { RecentProjects } from './recent-projects';
 
 /**
  * Home dashboard when the local stack health check has passed.
@@ -42,6 +43,8 @@ export const DashboardReadyView = () => {
           </div>
         </div>
       </div>
+
+      <RecentProjects />
 
       <DashboardQuickLinks />
     </div>

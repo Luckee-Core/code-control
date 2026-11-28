@@ -8,3 +8,5 @@ export { openEditSoftwareSystemThunk } from './open-edit-software-system-thunk';
 export { deleteSoftwareSystemThunk } from './delete-project-thunk';
 export { getSoftwareSystemAiCallsThunk } from './get-software-system-ai-calls-thunk';
 export { getDispatcherPlanThunk } from './get-dispatcher-plan-thunk';
+export { recordSoftwareSystemOpenThunk } from './record-software-system-open-thunk';
+export { getRecentSoftwareSystemOpensThunk } from './get-recent-software-system-opens-thunk';

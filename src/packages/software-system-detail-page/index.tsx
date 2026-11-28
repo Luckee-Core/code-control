@@ -6,6 +6,7 @@ import { SoftwareSystemTabsBuilderActions } from '@/store/builders';
 import { useBreadcrumbs } from '@/hooks';
 import { detailPageStyles } from '@/components/detail-page-styles';
 import { SOFTWARE_SYSTEMS_PATH } from '@/config/routes';
+import { recordSoftwareSystemOpenThunk } from '@/store/thunks/software-systems';
 import {
   getReposBySoftwareSystemIdThunk,
   loadGithubOrgsThunk,
@@ -31,6 +32,7 @@ export const ProjectDetailPage = () => {
     dispatch(SoftwareSystemTabsBuilderActions.reset());
     void dispatch(getReposBySoftwareSystemIdThunk());
     void dispatch(loadGithubOrgsThunk());
+    void dispatch(recordSoftwareSystemOpenThunk());
   }, [dispatch, currentSoftwareSystem.id]);
 
   if (!currentSoftwareSystem.id) {

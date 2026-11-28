@@ -7,3 +7,5 @@ export { updateSoftwareSystem } from './update';
 export { deleteSoftwareSystem } from './delete';
 export { getSoftwareSystemAiCalls } from './get-ai-calls';
 export { getSoftwareSystemDispatcherPlan } from './get-dispatcher-plan';
+export { recordSoftwareSystemOpen } from './record-open';
+export { getRecentSoftwareSystemOpens } from './get-recent-opens';
