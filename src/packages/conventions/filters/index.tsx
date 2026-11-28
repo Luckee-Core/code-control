@@ -7,46 +7,43 @@ import { listFilterBarStyles } from '@/components/list-filter-bar-styles';
 import { CONVENTIONS_CONTEXT_PATH, CONVENTIONS_VOCABULARY_PATH } from '@/config/routes';
 import { useAppDispatch, useAppSelector } from '@/store';
 import { startConventionFormThunk } from '@/store/thunks/conventions';
-import { filterConventions, type ConventionFilterState } from '../filter-conventions';
-
-type FiltersProps = {
-  filters: ConventionFilterState;
-  onChange: (filters: ConventionFilterState) => void;
-};
+import { ConventionsFiltersActions } from '@/store/filters';
+import { filterConventions, listTopicNames } from '../filter-conventions';
 
 const SEVERITIES = ['must', 'never', 'should', 'avoid'];
 const STATUSES = ['active', 'draft', 'deprecated'];
 
-export const Filters = ({ filters, onChange }: FiltersProps) => {
+export const Filters = () => {
   const dispatch = useAppDispatch();
   const conventions = useAppSelector((state) => state.conventions);
   const catalog = useAppSelector((state) => state.conventionsCatalog);
+  const filters = useAppSelector((state) => state.conventionsFilters);
 
   const countLabel = useMemo(() => {
     const all = Object.values(conventions);
-    const shown = filterConventions(all, catalog.convention_roles, filters).length;
+    const shown = filterConventions(all, catalog.topics, catalog.convention_roles, filters).length;
     const isFiltered = Object.values(filters).some(Boolean);
     const noun = `convention${all.length === 1 ? '' : 's'}`;
     return isFiltered ? `${shown} of ${all.length} ${noun}` : `${all.length} ${noun}`;
-  }, [conventions, catalog.convention_roles, filters]);
+  }, [conventions, catalog.topics, catalog.convention_roles, filters]);
 
-  const set = (patch: Partial<ConventionFilterState>) => onChange({ ...filters, ...patch });
+  const topicNames = useMemo(() => listTopicNames(catalog.topics), [catalog.topics]);
 
   return (
     <div className={listFilterBarStyles.section}>
       <div className={listFilterBarStyles.searchInputWrapper}>
         <input
           type="search"
-          value={filters.search}
-          onChange={(event) => set({ search: event.target.value })}
+          value={filters.searchTerm}
+          onChange={(event) => dispatch(ConventionsFiltersActions.setSearchTerm(event.target.value))}
           placeholder="Search key, title, or statement"
           aria-label="Search conventions"
           className={listFilterBarStyles.searchInput}
         />
-        {filters.search ? (
+        {filters.searchTerm ? (
           <button
             type="button"
-            onClick={() => set({ search: '' })}
+            onClick={() => dispatch(ConventionsFiltersActions.setSearchTerm(''))}
             className={listFilterBarStyles.clearButton}
             aria-label="Clear search"
           >
@@ -55,21 +52,21 @@ export const Filters = ({ filters, onChange }: FiltersProps) => {
         ) : null}
       </div>
       <select
-        value={filters.topicKey}
-        onChange={(event) => set({ topicKey: event.target.value })}
+        value={filters.topicName}
+        onChange={(event) => dispatch(ConventionsFiltersActions.setTopicName(event.target.value))}
         aria-label="Filter by topic"
         className={styles.select}
       >
         <option value="">All topics</option>
-        {catalog.topics.map((topic) => (
-          <option key={topic.key} value={topic.key}>
-            {topic.name}
+        {topicNames.map((name) => (
+          <option key={name} value={name}>
+            {name}
           </option>
         ))}
       </select>
       <select
         value={filters.roleKey}
-        onChange={(event) => set({ roleKey: event.target.value })}
+        onChange={(event) => dispatch(ConventionsFiltersActions.setRoleKey(event.target.value))}
         aria-label="Filter by repo role"
         className={styles.select}
       >
@@ -82,7 +79,7 @@ export const Filters = ({ filters, onChange }: FiltersProps) => {
       </select>
       <select
         value={filters.severity}
-        onChange={(event) => set({ severity: event.target.value })}
+        onChange={(event) => dispatch(ConventionsFiltersActions.setSeverity(event.target.value))}
         aria-label="Filter by severity"
         className={styles.select}
       >
@@ -95,7 +92,7 @@ export const Filters = ({ filters, onChange }: FiltersProps) => {
       </select>
       <select
         value={filters.status}
-        onChange={(event) => set({ status: event.target.value })}
+        onChange={(event) => dispatch(ConventionsFiltersActions.setStatus(event.target.value))}
         aria-label="Filter by status"
         className={styles.select}
       >
