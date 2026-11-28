@@ -10,6 +10,8 @@ type SystemBuildRunBuilderState = {
   submitStatus: SubmitStatus;
   submitError: string | null;
   isLogOpen: boolean;
+  /** The full-screen In progress view. */
+  isProgressOpen: boolean;
 };
 
 const initialState: SystemBuildRunBuilderState = {
@@ -18,6 +20,7 @@ const initialState: SystemBuildRunBuilderState = {
   submitStatus: 'idle',
   submitError: null,
   isLogOpen: false,
+  isProgressOpen: false,
 };
 
 const systemBuildRunBuilderSlice = createSlice({
@@ -34,6 +37,9 @@ const systemBuildRunBuilderSlice = createSlice({
     },
     setLogOpen: (state, action: PayloadAction<boolean>) => {
       state.isLogOpen = action.payload;
+    },
+    setProgressOpen: (state, action: PayloadAction<boolean>) => {
+      state.isProgressOpen = action.payload;
     },
     reset: () => initialState,
   },
