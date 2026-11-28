@@ -3,6 +3,7 @@
 import { useEffect, useMemo } from 'react';
 import { detailPageStyles } from '@/components/detail-page-styles';
 import { useAppDispatch, useAppSelector } from '@/store';
+import { SystemBuildRunBuilderActions } from '@/store/builders';
 import { getDataModelProposalsThunk } from '@/store/thunks/data-model-proposals';
 import {
   cancelSystemBuildRunThunk,
@@ -13,12 +14,13 @@ import {
 } from '@/store/thunks/system-build-runs';
 import { POLL_MS, RUN_BADGE, RUN_LABEL } from './config';
 import { Log } from './log';
+import { ProgressView } from './progress-view';
 import { Steps } from './steps';
 
 /**
  * Build all: delivers the approved data model through every tab in order (Data model → API →
  * Layout → Tables → Detail pages → Dashboard → Dispatcher), squash-merging each PR. Shows the
- * newest run's steps; polls while it runs.
+ * newest run's steps; polls while it runs. Starting a run opens the full-screen In progress view.
  */
 export const BuildAll = () => {
   const dispatch = useAppDispatch();
@@ -77,6 +79,11 @@ export const BuildAll = () => {
           <p className={detailPageStyles.panelSubtitle}>{subtitle}</p>
         </div>
         <div className={styles.actions}>
+          {run ? (
+            <button type="button" onClick={() => dispatch(SystemBuildRunBuilderActions.setProgressOpen(true))} className={detailPageStyles.secondaryButton}>
+              {isActive ? 'Watch' : 'View progress'}
+            </button>
+          ) : null}
           {canContinue && run ? (
             <button type="button" onClick={() => void dispatch(continueSystemBuildRunThunk(run.id))} disabled={isBusy} className={detailPageStyles.primaryButton}>
               Continue
@@ -102,6 +109,7 @@ export const BuildAll = () => {
           <Log runId={run.id} />
         </div>
       ) : null}
+      {run && builder.isProgressOpen ? <ProgressView runId={run.id} /> : null}
     </section>
   );
 };

@@ -23,6 +23,7 @@ export const startSystemBuildRunThunk = (): AppThunk<Promise<202 | 400 | 500>> =
     }
     dispatch(storeSystemBuildRunDetailThunk(response.data));
     dispatch(SystemBuildRunBuilderActions.setSubmitStatus({ status: 'idle' }));
+    dispatch(SystemBuildRunBuilderActions.setProgressOpen(true));
     return 202;
   };
 };
