@@ -55,6 +55,7 @@ import {
   systemBuildRunBuilderReducer,
   softwareSystemTabsBuilderReducer,
 } from './builders';
+import { conventionsFiltersReducer } from './filters';
 
 export const rootReducer = combineReducers({
   customers: customersReducer,
@@ -73,6 +74,7 @@ export const rootReducer = combineReducers({
   conventionSources: conventionSourcesReducer,
   currentConvention: currentConventionReducer,
   conventionsBuilder: conventionsBuilderReducer,
+  conventionsFilters: conventionsFiltersReducer,
   dataModelProposals: dataModelProposalsReducer,
   dataModelProposalExchanges: dataModelProposalExchangesReducer,
   dataModelBuilder: dataModelBuilderReducer,

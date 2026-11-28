@@ -2,18 +2,15 @@
 
 import { useMemo } from 'react';
 import { useAppSelector } from '@/store';
-import { filterConventions, type ConventionFilterState } from '../filter-conventions';
+import { filterConventions } from '../filter-conventions';
 import { Row } from './row';
-
-type TableProps = {
-  filters: ConventionFilterState;
-};
 
 const COLUMNS = ['Convention', 'Topic', 'Severity', 'Status', 'Roles', 'Check'];
 
-export const Table = ({ filters }: TableProps) => {
+export const Table = () => {
   const conventions = useAppSelector((state) => state.conventions);
   const catalog = useAppSelector((state) => state.conventionsCatalog);
+  const filters = useAppSelector((state) => state.conventionsFilters);
 
   const topicOrder = useMemo(() => {
     const map = new Map<string, number>();
@@ -23,13 +20,13 @@ export const Table = ({ filters }: TableProps) => {
 
   const visible = useMemo(
     () =>
-      filterConventions(Object.values(conventions), catalog.convention_roles, filters).sort(
+      filterConventions(Object.values(conventions), catalog.topics, catalog.convention_roles, filters).sort(
         (a, b) =>
           (topicOrder.get(a.topic_key) ?? 999) - (topicOrder.get(b.topic_key) ?? 999) ||
           a.sort_order - b.sort_order ||
           a.key.localeCompare(b.key),
       ),
-    [conventions, catalog.convention_roles, filters, topicOrder],
+    [conventions, catalog.topics, catalog.convention_roles, filters, topicOrder],
   );
 
   if (Object.keys(conventions).length === 0) {

@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { useBreadcrumbs } from '@/hooks';
 import { useAppDispatch } from '@/store';
 import { getConventionsThunk } from '@/store/thunks/conventions';
-import { EMPTY_CONVENTION_FILTERS, type ConventionFilterState } from './filter-conventions';
 import { Filters } from './filters';
 import { FormModal } from './form-modal';
 import { Table } from './table';
@@ -13,7 +12,6 @@ export { FormModal } from './form-modal';
 
 export const Conventions = () => {
   const dispatch = useAppDispatch();
-  const [filters, setFilters] = useState<ConventionFilterState>(EMPTY_CONVENTION_FILTERS);
   const [loadFailed, setLoadFailed] = useState(false);
 
   useBreadcrumbs([{ label: 'Conventions' }]);
@@ -24,9 +22,9 @@ export const Conventions = () => {
 
   return (
     <div className={styles.page}>
-      <Filters filters={filters} onChange={setFilters} />
+      <Filters />
       {loadFailed ? <p className={styles.error}>Could not load conventions. Is the storage server reachable?</p> : null}
-      <Table filters={filters} />
+      <Table />
       <FormModal />
     </div>
   );
